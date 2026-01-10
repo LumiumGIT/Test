@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal", "LumiumPortal\LumiumPortal.csproj", "{BE680615-A082-44ED-9C8A-35658C08836B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE680615-A082-44ED-9C8A-35658C08836B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE680615-A082-44ED-9C8A-35658C08836B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE680615-A082-44ED-9C8A-35658C08836B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE680615-A082-44ED-9C8A-35658C08836B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
