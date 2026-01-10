@@ -1,6 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal", "LumiumPortal\LumiumPortal.csproj", "{BE680615-A082-44ED-9C8A-35658C08836B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.Web", "LumiumPortal.Web\LumiumPortal.Web.csproj", "{BE680615-A082-44ED-9C8A-35658C08836B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.Application", "LumiumPortal.Application\LumiumPortal.Application.csproj", "{972A9D4B-A615-45E6-A107-8E95BE7F34F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.Domain", "LumiumPortal.Domain\LumiumPortal.Domain.csproj", "{71BB2D1A-31D6-4ED0-8FAD-0D7362EF73A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.Infrastructure", "LumiumPortal.Infrastructure\LumiumPortal.Infrastructure.csproj", "{5A5A093C-82E1-4E48-B923-0944EA2F9388}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.API", "LumiumPortal.API\LumiumPortal.API.csproj", "{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.MultiTenancy", "LumiumPortal.MultiTenancy\LumiumPortal.MultiTenancy.csproj", "{4699B992-4266-408B-8150-5185896FDCA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +22,25 @@ Global
 		{BE680615-A082-44ED-9C8A-35658C08836B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE680615-A082-44ED-9C8A-35658C08836B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE680615-A082-44ED-9C8A-35658C08836B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{972A9D4B-A615-45E6-A107-8E95BE7F34F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{972A9D4B-A615-45E6-A107-8E95BE7F34F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{972A9D4B-A615-45E6-A107-8E95BE7F34F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{972A9D4B-A615-45E6-A107-8E95BE7F34F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71BB2D1A-31D6-4ED0-8FAD-0D7362EF73A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71BB2D1A-31D6-4ED0-8FAD-0D7362EF73A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71BB2D1A-31D6-4ED0-8FAD-0D7362EF73A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71BB2D1A-31D6-4ED0-8FAD-0D7362EF73A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5A093C-82E1-4E48-B923-0944EA2F9388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5A093C-82E1-4E48-B923-0944EA2F9388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5A093C-82E1-4E48-B923-0944EA2F9388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5A093C-82E1-4E48-B923-0944EA2F9388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4699B992-4266-408B-8150-5185896FDCA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4699B992-4266-408B-8150-5185896FDCA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4699B992-4266-408B-8150-5185896FDCA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4699B992-4266-408B-8150-5185896FDCA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

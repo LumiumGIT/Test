@@ -1,4 +1,4 @@
-using LumiumPortal.Components;
+using LumiumPortal.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
