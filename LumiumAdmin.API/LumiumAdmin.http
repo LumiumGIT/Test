@@ -1,0 +1,6 @@
+@LumiumAdmin_HostAddress = http://localhost:5023
+
+GET {{LumiumAdmin_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
