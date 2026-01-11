@@ -8,6 +8,8 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1"/>
+        <ProjectReference Include="..\Lumium.Domain\Lumium.Domain.csproj" />
+        <ProjectReference Include="..\Lumium.Application\Lumium.Application.csproj" />
     </ItemGroup>
 
 </Project>
