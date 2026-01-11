@@ -9,10 +9,16 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
         <ProjectReference Include="..\Lumium.Domain\Lumium.Domain.csproj" />
         <ProjectReference Include="..\Lumium.Application\Lumium.Application.csproj" />
+        <ProjectReference Include="..\Lumium.Infrastructure\Lumium.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

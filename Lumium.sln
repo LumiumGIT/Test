@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lumium.Infrastructure", "Lu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumPortal.API", "LumiumPortal.API\LumiumPortal.API.csproj", "{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lumium.MultiTenancy", "Lumium.MultiTenancy\Lumium.MultiTenancy.csproj", "{4699B992-4266-408B-8150-5185896FDCA0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumAdmin.Web", "LumiumAdmin.Web\LumiumAdmin.Web.csproj", "{2AE45FBE-435D-4B67-99A0-01FC95D6E631}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumiumAdmin.API", "LumiumAdmin.API\LumiumAdmin.API.csproj", "{E15C81CA-8D79-4B93-8469-5750617D6FFA}"
@@ -42,10 +40,6 @@ Global
 		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5517AC1A-6B95-4D45-BF55-DF46B2EB77B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4699B992-4266-408B-8150-5185896FDCA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4699B992-4266-408B-8150-5185896FDCA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4699B992-4266-408B-8150-5185896FDCA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4699B992-4266-408B-8150-5185896FDCA0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2AE45FBE-435D-4B67-99A0-01FC95D6E631}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2AE45FBE-435D-4B67-99A0-01FC95D6E631}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AE45FBE-435D-4B67-99A0-01FC95D6E631}.Release|Any CPU.ActiveCfg = Release|Any CPU
