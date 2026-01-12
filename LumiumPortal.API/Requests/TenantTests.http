@@ -1,0 +1,23 @@
+### Test 1: Tenant Resolution sa header-om
+GET http://localhost:{{port}}/api/test/tenant-info
+X-Tenant-Id: tenant_test
+
+### Test 2: Bez tenant-a
+GET http://localhost:{{port}}/api/test/tenant-info
+
+### Test 3: Nepostojeći tenant
+GET http://localhost:{{port}}/api/test/tenant-info
+X-Tenant-Id: fake_tenant
+
+### Login Test
+POST http://localhost:5207/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "tenantIdentifier": "tenant_test"
+}
+
+### Test sa JWT tokenom
+GET http://localhost:5207/api/test/tenant-info
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzVkZTllNy1iNzMxLTQ0N2UtYWI1Ni0wOTRmOGRjYjEzMTQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0ZW5hbnRfaWQiOiJhM2I0MzBmOC1iODZlLTQ1YWUtYmVmZC1lNmZiM2UyYjMwMGUiLCJqdGkiOiJiM2M3YThmZC1mNTIxLTQwZTQtYTViNC02NDQ2YzhmZjMwNzAiLCJleHAiOjE3NjgyNDM4MjQsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.bPvK8uP_nYP1exgVsyhNNMVhmdUqrxveRR49YGFtoFU

@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LumiumPortal.API.Controllers;
 
+[ApiController]
+[Route("api/test")] 
 public class TestController(ITenantContext tenantContext) : ControllerBase
 {
-    private readonly ITenantContext _tenantContext = tenantContext;
-
     [HttpGet("tenant-info")]
     public IActionResult GetTenantInfo()
     {
         return Ok(new
         {
-            IsResolved = _tenantContext.IsResolved,
-            TenantId = _tenantContext.TenantId,
-            SchemaName = _tenantContext.SchemaName
+            IsResolved = tenantContext.IsResolved,
+            TenantId = tenantContext.TenantId,
+            SchemaName = tenantContext.SchemaName
         });
     }
 }
