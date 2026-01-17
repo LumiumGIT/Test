@@ -1,5 +1,8 @@
 using System.Text;
+using Dapper;
+using Lumium.Application;
 using Lumium.Application.Common.Interfaces;
+using Lumium.Infrastructure.Interceptors;
 using Lumium.Infrastructure.Middleware;
 using Lumium.Infrastructure.MultiTenancy;
 using Lumium.Infrastructure.Persistence;
@@ -15,22 +18,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
+builder.Services.AddApplication(); 
 
 builder.Services.AddDbContext<MasterDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MasterDatabase")));
 
 builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 {
-    var tenantContext = serviceProvider.GetRequiredService<ITenantContext>();
-    
-    // Ovde ćeš kasnije dodati logiku za per-tenant connection string
-    // Za sada koristi master connection
     var connectionString = builder.Configuration.GetConnectionString("ApplicationDatabase");
-    options.UseNpgsql(connectionString);
+    var interceptor = serviceProvider.GetRequiredService<TenantConnectionInterceptor>();
+    
+    options.UseNpgsql(connectionString)
+        .AddInterceptors(interceptor); 
 });
 
+builder.Services.AddScoped<TenantConnectionInterceptor>();
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 builder.Services.AddScoped<ITenantContext, TenantContext>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -49,6 +55,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+DefaultTypeMap.MatchNamesWithUnderscores = true; 
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -60,6 +68,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication(); 
 app.UseMiddleware<TenantResolutionMiddleware>();

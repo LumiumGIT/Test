@@ -63,11 +63,11 @@ public class TenantResolutionMiddleware(RequestDelegate next)
         // 4. Resolve tenant po ID-u
         if (!string.IsNullOrEmpty(tenantId))
         {
-            var tenant = await masterDb.Tenants
-                .FirstOrDefaultAsync(t => t.Id.ToString() == tenantId && t.IsActive);
-
-            if (tenant != null)
+            if (Guid.TryParse(tenantId, out var tenantGuid))
             {
+                var tenant = await masterDb.Tenants
+                    .FirstOrDefaultAsync(t => t.Id == tenantGuid && t.IsActive);
+                
                 ((TenantContext)tenantContext).SetTenant(
                     tenant.Id.ToString(), 
                     tenant.SchemaName);

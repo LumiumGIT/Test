@@ -15,9 +15,64 @@ Content-Type: application/json
 
 {
   "email": "test@test.com",
-  "tenantIdentifier": "tenant_test"
+  "tenantIdentifier": "tenant_test",
+  "password": "test123"
 }
 
 ### Test sa JWT tokenom
 GET http://localhost:5207/api/test/tenant-info
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzVkZTllNy1iNzMxLTQ0N2UtYWI1Ni0wOTRmOGRjYjEzMTQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0ZW5hbnRfaWQiOiJhM2I0MzBmOC1iODZlLTQ1YWUtYmVmZC1lNmZiM2UyYjMwMGUiLCJqdGkiOiJiMzgyODMyNC1iYWNmLTQ1ZjgtYmRiNC1mZDcyNWFhMmUwNTgiLCJleHAiOjE3NjgzMjE4NDQsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.f2pzNtX30xxKZK4SSjszzUHsW7qPgZeKTC_h8B7bIOc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzVkZTllNy1iNzMxLTQ0N2UtYWI1Ni0wOTRmOGRjYjEzMTQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0ZW5hbnRfaWQiOiJhM2I0MzBmOC1iODZlLTQ1YWUtYmVmZC1lNmZiM2UyYjMwMGUiLCJqdGkiOiI5ZGNhYWY0Yy00YTJlLTQzZDgtOTY5NS01NDExNzhlMzQ5ZjMiLCJleHAiOjE3Njg2MTg0MjYsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.g06qPUgeDIzQFva45e5J7vNVDcq-V9fEvglfcvmo2bs
+
+### 2. GET Customers (prazna lista ili sa seed-ovanim podacima)
+GET http://localhost:5207/api/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzVkZTllNy1iNzMxLTQ0N2UtYWI1Ni0wOTRmOGRjYjEzMTQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0ZW5hbnRfaWQiOiJhM2I0MzBmOC1iODZlLTQ1YWUtYmVmZC1lNmZiM2UyYjMwMGUiLCJqdGkiOiI5ZGNhYWY0Yy00YTJlLTQzZDgtOTY5NS01NDExNzhlMzQ5ZjMiLCJleHAiOjE3Njg2MTg0MjYsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.g06qPUgeDIzQFva45e5J7vNVDcq-V9fEvglfcvmo2bs
+
+### 3. Create New Customer
+POST http://localhost:5207/api/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzVkZTllNy1iNzMxLTQ0N2UtYWI1Ni0wOTRmOGRjYjEzMTQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0ZW5hbnRfaWQiOiJhM2I0MzBmOC1iODZlLTQ1YWUtYmVmZC1lNmZiM2UyYjMwMGUiLCJqdGkiOiI5ZGNhYWY0Yy00YTJlLTQzZDgtOTY5NS01NDExNzhlMzQ5ZjMiLCJleHAiOjE3Njg2MTg0MjYsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.g06qPUgeDIzQFva45e5J7vNVDcq-V9fEvglfcvmo2bs
+Content-Type: application/json
+
+{
+  "name": "Alice Johnson",
+  "email": "alice@example.com",
+  "phone": "+381691234567",
+  "address": "123 Main St, Belgrade"
+}
+
+### 5. Create Customer sa invalid data (prazan Name)
+POST http://localhost:5207/api/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YzVkZTllNy1iNzMxLTQ0N2UtYWI1Ni0wOTRmOGRjYjEzMTQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0ZW5hbnRfaWQiOiJhM2I0MzBmOC1iODZlLTQ1YWUtYmVmZC1lNmZiM2UyYjMwMGUiLCJqdGkiOiI5ZGNhYWY0Yy00YTJlLTQzZDgtOTY5NS01NDExNzhlMzQ5ZjMiLCJleHAiOjE3Njg2MTg0MjYsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.g06qPUgeDIzQFva45e5J7vNVDcq-V9fEvglfcvmo2bs
+Content-Type: application/json
+
+{
+  "name": "aaaaaaa This is a very long name that exceeds the maximum length of 255 characters and should fail validation because it is way too long for a customer name field which has a limit of 255 characters so this will definitely trigger the validation error message",
+  "email": "test@example.com"
+}
+
+### 6. GET Customers bez Authorization header-a
+GET http://localhost:5207/api/customers
+
+### 7. Login kao Tenant A (tenant_test)
+POST http://localhost:5207/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "tenantIdentifier": "tenant_test",
+  "password": "test123"
+}
+
+### 8. Login kao Tenant B (tenant_acme)
+POST http://localhost:5207/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@acme.com",
+  "tenantIdentifier": "tenant_acme",
+  "password": "test123"
+  
+}
+
+### 9. GET Customers sa Tenant A tokenom
+GET http://localhost:5207/api/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ODI5MTBjMC1hNDdhLTRlYWMtOTA1ZS1iNWFmOWQ4YjIxZWYiLCJlbWFpbCI6InVzZXJAYWNtZS5jb20iLCJ0ZW5hbnRfaWQiOiIzMDJmMmQ5Mi1kMjhmLTQxYWItYTliNi00NzUwNmMyZGQ0YmQiLCJqdGkiOiJhMmIyYWVhYS1jZTk5LTRlNDMtYjE3OS0zMzYxMjkzNTQ3MzMiLCJleHAiOjE3Njg2OTMyNTQsImlzcyI6Ikx1bWl1bUFQSSIsImF1ZCI6Ikx1bWl1bVBvcnRhbCJ9.dHyaPKqaxPODby-qvkMykk_NmgmcXvPBKpGbpMKwlbE
