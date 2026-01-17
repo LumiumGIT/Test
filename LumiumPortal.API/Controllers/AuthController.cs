@@ -18,19 +18,22 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        // 1. Nađi tenant u master DB
+        // 1. Nađi tenant po IDENTIFIER-u (user-friendly)
         var tenant = await masterContext.Tenants
-            .FirstOrDefaultAsync(t => t.Identifier == request.TenantIdentifier  && t.IsActive);
+            .FirstOrDefaultAsync(t => 
+                t.Identifier == request.TenantIdentifier && t.IsActive);
 
         if (tenant == null)
         {
             return Unauthorized(new { message = "Invalid tenant" });
         }
 
-        // 2. Postavi tenant context
-        ((TenantContext)tenantContext).SetTenant(tenant.Id.ToString(), tenant.SchemaName);
+        // 2. Postavi tenant context (koristi ID)
+        ((TenantContext)tenantContext).SetTenant(
+            tenant.Id.ToString(),  // ← ID u context
+            tenant.SchemaName);
 
-        // 3. Nađi korisnika u tenant schema
+        // 3. Nađi korisnika
         var user = await appContext.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email && u.IsActive);
 
@@ -39,24 +42,13 @@ public class AuthController(
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // TODO: Ovde kasnije dodati password verification
-        // Za sada preskačemo proveru password-a
+        // 4. JWT sadrži tenant ID (ne identifier)
+        var token = jwtService.GenerateToken(
+            user.Id, 
+            user.Email, 
+            tenant.Id.ToString());
 
-        // 4. Generiši JWT token
-        var token = jwtService.GenerateToken(user.Id, user.Email, user.TenantId);
-
-        return Ok(new
-        {
-            token,
-            user = new
-            {
-                user.Id,
-                user.Email,
-                user.FirstName,
-                user.LastName,
-                user.TenantId
-            }
-        });
+        return Ok(new { token, user });
     }
 }
 
