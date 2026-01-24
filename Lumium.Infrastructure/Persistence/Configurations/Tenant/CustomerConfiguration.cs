@@ -1,0 +1,26 @@
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
+
+public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
+{
+    public void Configure(EntityTypeBuilder<Customer> builder)
+    {
+        builder.ToTable("customers");
+        
+        builder.Property(e => e.Id).HasColumnName("id");
+        builder.Property(e => e.TenantId).HasColumnName("tenant_id");
+        builder.Property(e => e.Name).HasColumnName("name");
+        builder.Property(e => e.Email).HasColumnName("email");
+        builder.Property(e => e.Phone).HasColumnName("phone");
+        builder.Property(e => e.Address).HasColumnName("address");
+        builder.Property(e => e.IsActive).HasColumnName("is_active");
+        builder.Property(e => e.CreatedAt).HasColumnName("created_at");
+        builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+            
+        builder.HasIndex(e => e.Email);
+        builder.HasIndex(e => e.TenantId);
+    }
+}

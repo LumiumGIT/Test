@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Lumium.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Infrastructure.Persistence;
@@ -9,18 +10,23 @@ public class MasterDbContext(DbContextOptions<MasterDbContext> options) : DbCont
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Tenant>(entity =>
-        {
-            entity.ToTable("tenants");
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Identifier).HasColumnName("identifier");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.SchemaName).HasColumnName("schema_name");
-            entity.Property(e => e.ConnectionString).HasColumnName("connection_string");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-        });
-
+        ApplyConfigurations(modelBuilder);
         base.OnModelCreating(modelBuilder);
+    }
+    
+    private void ApplyConfigurations(ModelBuilder modelBuilder)
+    {
+        var configurationTypes = ReflectionHelper
+            .GetAllTypesImplementingOpenGenericType(
+                typeof(IEntityTypeConfiguration<>),
+                typeof(MasterDbContext).Assembly)
+            .Where(t => !t.IsAbstract)
+            .Where(t => t.Namespace?.Contains("Configurations.Master") == true);
+
+        foreach (var configurationType in configurationTypes)
+        {
+            dynamic configuration = Activator.CreateInstance(configurationType)!;
+            modelBuilder.ApplyConfiguration(configuration);
+        }
     }
 }

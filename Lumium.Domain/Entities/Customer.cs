@@ -1,9 +1,9 @@
+using Domain.Common;
+
 namespace Domain.Entities;
 
-public class Customer
+public class Customer : TenantEntity
 {
-    public Guid Id { get; set; }
-    public string TenantId { get; set; } = null!;
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string? Phone { get; set; }
