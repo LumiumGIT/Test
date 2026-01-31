@@ -20,39 +20,39 @@ public class TenantResolutionMiddleware(RequestDelegate next)
         {
             tenantId = context.User.FindFirst("tenant_id")?.Value;
         }
-    
+
         // 2. Subdomain (sadrži identifier kao string)
         if (string.IsNullOrEmpty(tenantId))
         {
             var host = context.Request.Host.Host;
             var parts = host.Split('.');
-        
+
             if (parts.Length > 2) // subdomain.lumium.com
             {
                 var subdomain = parts[0];
                 var tenant = await masterDb.Tenants
                     .FirstOrDefaultAsync(t => t.Identifier == subdomain && t.IsActive);
-            
+
                 if (tenant != null)
                 {
                     tenantId = tenant.Id.ToString();
                 }
             }
         }
-    
+
         // 3. X-Tenant-Id Header (može biti identifier ili id)
         if (string.IsNullOrEmpty(tenantId))
         {
             if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var headerValue))
             {
                 var headerTenant = headerValue.ToString();
-            
+
                 // Probaj kao identifier prvo, pa kao ID
                 var tenant = await masterDb.Tenants
-                    .FirstOrDefaultAsync(t => 
-                        (t.Identifier == headerTenant || t.Id.ToString() == headerTenant) 
+                    .FirstOrDefaultAsync(t =>
+                        (t.Identifier == headerTenant || t.Id.ToString() == headerTenant)
                         && t.IsActive);
-            
+
                 if (tenant != null)
                 {
                     tenantId = tenant.Id.ToString();
@@ -67,9 +67,9 @@ public class TenantResolutionMiddleware(RequestDelegate next)
             {
                 var tenant = await masterDb.Tenants
                     .FirstOrDefaultAsync(t => t.Id == tenantGuid && t.IsActive);
-                
+
                 ((TenantContext)tenantContext).SetTenant(
-                    tenant.Id.ToString(), 
+                    tenant.Id.ToString(),
                     tenant.SchemaName);
             }
         }

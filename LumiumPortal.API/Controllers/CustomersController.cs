@@ -8,7 +8,7 @@ namespace LumiumPortal.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] 
+[Authorize]
 public class CustomersController(ISender sender) : ControllerBase
 {
     [HttpGet]

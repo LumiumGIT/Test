@@ -7,26 +7,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Lumium.Application\Lumium.Application.csproj" />
-      <ProjectReference Include="..\Lumium.Domain\Lumium.Domain.csproj" />
+        <ProjectReference Include="..\Lumium.Application\Lumium.Application.csproj"/>
+        <ProjectReference Include="..\Lumium.Domain\Lumium.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Migrations\" />
-      <Folder Include="Persistence\Migrations\Application\" />
-      <Folder Include="Persistence\Migrations\Master\" />
+        <Folder Include="Migrations\"/>
+        <Folder Include="Persistence\Migrations\Application\"/>
+        <Folder Include="Persistence\Migrations\Master\"/>
     </ItemGroup>
 
 </Project>

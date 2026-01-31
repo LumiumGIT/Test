@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LumiumPortal.API.Controllers;
 
 [ApiController]
-[Route("api/test")] 
+[Route("api/test")]
 public class TestController(ITenantContext tenantContext) : ControllerBase
 {
     [HttpGet("tenant-info")]

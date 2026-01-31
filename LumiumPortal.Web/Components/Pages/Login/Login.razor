@@ -1,0 +1,53 @@
+@page "/login"
+@rendermode InteractiveServer
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudStack Spacing="3" AlignItems="AlignItems.Center" Class="mb-6">
+            <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Large" Color="Color.Primary"/>
+            <MudText Typo="Typo.h4">Dobro dosli na Lumium Portal</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                Unesite ime vase kompanije:
+            </MudText>
+        </MudStack>
+
+        <MudForm @ref="_form" @bind-IsValid="_isValid" ValidationDelay="0">
+            <MudTextField
+                @bind-Value="_companyName"
+                Label="Ime kompanije"
+                Variant="Variant.Outlined"
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Business"
+                Required="true"
+                RequiredError="Ime kompanije je obavezno1"
+                HelperText="Primeri: Acme Corp, Test Tenant"
+                Immediate="true"
+                Class="mb-4"/>
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4" CloseIcon="true" CloseIconClicked="ClearError">
+                    @_errorMessage
+                </MudAlert>
+            }
+
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                FullWidth="true"
+                Size="Size.Large"
+                OnClick="@ContinueToLogin"
+                Disabled="string.IsNullOrWhiteSpace(_companyName) || _isLoading">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2"/>
+                    <span>Obrada...</span>
+                }
+                else
+                {
+                    <span>Nastavite</span>
+                }
+            </MudButton>
+        </MudForm>
+    </MudPaper>
+</MudContainer>

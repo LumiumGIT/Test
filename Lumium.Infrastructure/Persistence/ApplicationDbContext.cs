@@ -14,23 +14,26 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Customer> Customers { get; set; } = null!;
-    
-    public string GetTenantId() => tenantContext.TenantId ?? "public";
-    
+
+    public string GetTenantId()
+    {
+        return tenantContext.TenantId ?? "public";
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.ReplaceService<IModelCacheKeyFactory, DynamicModelCacheKeyFactory>();
-        
+
         base.OnConfiguring(optionsBuilder);
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ApplyConfigurations(modelBuilder);
         ApplyGlobalQueryFilters(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
-    
+
     private void ApplyConfigurations(ModelBuilder modelBuilder)
     {
         var configurationTypes = ReflectionHelper
@@ -55,34 +58,38 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             {
                 continue;
             }
-            
+
             var parameter = Expression.Parameter(entityType.ClrType, "e");
             var property = Expression.Property(parameter, nameof(TenantEntity.TenantId));
             var tenantId = Expression.Property(
-                Expression.Constant(tenantContext), 
+                Expression.Constant(tenantContext),
                 nameof(ITenantContext.TenantId));
             var body = Expression.Equal(property, tenantId);
             var lambda = Expression.Lambda(body, parameter);
-                
+
             modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
         }
     }
-    
+
     public async Task SetSearchPathAsync(string schemaName)
     {
         if (string.IsNullOrEmpty(schemaName))
+        {
             return;
+        }
 
         var connection = Database.GetDbConnection();
-        
+
         if (connection.State != ConnectionState.Open)
+        {
             await connection.OpenAsync();
+        }
 
         await using var command = connection.CreateCommand();
         command.CommandText = $"SET search_path TO {schemaName}";
         await command.ExecuteNonQueryAsync();
     }
-    
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries<TenantEntity>())

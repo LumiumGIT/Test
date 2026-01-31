@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
-builder.Services.AddApplication(); 
+builder.Services.AddApplication();
 
 builder.Services.AddDbContext<MasterDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MasterDatabase")));
@@ -27,9 +27,9 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
 {
     var connectionString = builder.Configuration.GetConnectionString("ApplicationDatabase");
     var interceptor = serviceProvider.GetRequiredService<TenantConnectionInterceptor>();
-    
+
     options.UseNpgsql(connectionString)
-        .AddInterceptors(interceptor); 
+        .AddInterceptors(interceptor);
 });
 
 builder.Services.AddScoped<TenantConnectionInterceptor>();
@@ -55,7 +55,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-DefaultTypeMap.MatchNamesWithUnderscores = true; 
+DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var app = builder.Build();
 
@@ -71,7 +71,7 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseMiddleware<TenantResolutionMiddleware>();
 app.UseAuthorization();
 

@@ -27,10 +27,14 @@ public class TenantConnectionInterceptor(ITenantContext tenantContext) : DbConne
     private async Task SetSearchPathAsync(DbConnection connection, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(tenantContext.SchemaName))
+        {
             return;
+        }
 
         if (connection.State != ConnectionState.Open)
+        {
             return;
+        }
 
         await using var command = connection.CreateCommand();
         command.CommandText = $"SET search_path TO {tenantContext.SchemaName}";
@@ -40,10 +44,14 @@ public class TenantConnectionInterceptor(ITenantContext tenantContext) : DbConne
     private void SetSearchPath(DbConnection connection)
     {
         if (string.IsNullOrEmpty(tenantContext.SchemaName))
+        {
             return;
+        }
 
         if (connection.State != ConnectionState.Open)
+        {
             return;
+        }
 
         using var command = connection.CreateCommand();
         command.CommandText = $"SET search_path TO {tenantContext.SchemaName}";

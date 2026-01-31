@@ -11,7 +11,7 @@ public class GetCustomersQueryHandler(IApplicationDbContext context, ITenantCont
     : IRequestHandler<GetCustomersQuery, List<CustomerDto>>
 {
     public async Task<List<CustomerDto>> Handle(
-        GetCustomersQuery request, 
+        GetCustomersQuery request,
         CancellationToken cancellationToken)
     {
         var customers = await context.Customers

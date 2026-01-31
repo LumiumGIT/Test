@@ -17,7 +17,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.LastName).HasColumnName("last_name");
         builder.Property(e => e.IsActive).HasColumnName("is_active");
         builder.Property(e => e.CreatedAt).HasColumnName("created_at");
-            
+
         builder.HasIndex(e => e.Email);
     }
 }

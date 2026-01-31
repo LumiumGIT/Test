@@ -9,7 +9,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     public void Configure(EntityTypeBuilder<Customer> builder)
     {
         builder.ToTable("customers");
-        
+
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.TenantId).HasColumnName("tenant_id");
         builder.Property(e => e.Name).HasColumnName("name");
@@ -19,7 +19,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(e => e.IsActive).HasColumnName("is_active");
         builder.Property(e => e.CreatedAt).HasColumnName("created_at");
         builder.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-            
+
         builder.HasIndex(e => e.Email);
         builder.HasIndex(e => e.TenantId);
     }

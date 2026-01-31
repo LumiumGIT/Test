@@ -8,7 +8,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Domain.Entities.Tena
     public void Configure(EntityTypeBuilder<Domain.Entities.Tenant> builder)
     {
         builder.ToTable("tenants");
-            
+
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.Identifier).HasColumnName("identifier");
         builder.Property(e => e.Name).HasColumnName("name");

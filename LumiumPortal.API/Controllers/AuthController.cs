@@ -1,8 +1,10 @@
 using Dapper;
 using Domain.Entities;
 using Lumium.Application.Common.Interfaces;
+using Lumium.Contracts;
 using Lumium.Infrastructure.MultiTenancy;
 using Lumium.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +25,7 @@ public class AuthController(
     {
         // 1. Nađi tenant
         var tenant = await masterContext.Tenants
-            .FirstOrDefaultAsync(t => 
+            .FirstOrDefaultAsync(t =>
                 t.Identifier == request.TenantIdentifier && t.IsActive);
 
         if (tenant == null)
@@ -33,12 +35,12 @@ public class AuthController(
 
         // 2. Setuj tenant context (pre kreiranja ApplicationDbContext-a!)
         ((TenantContext)tenantContext).SetTenant(
-            tenant.Id.ToString(), 
+            tenant.Id.ToString(),
             tenant.SchemaName);
 
         // 3. ⭐ Dapper - Najčistije rešenje
         await using var connection = appContext.Database.GetDbConnection();
-    
+
         if (connection.State != System.Data.ConnectionState.Open)
         {
             await connection.OpenAsync();
@@ -65,8 +67,8 @@ public class AuthController(
 
         // 5. Generiši JWT token
         var token = jwtService.GenerateToken(
-            user.Id, 
-            user.Email, 
+            user.Id,
+            user.Email,
             user.TenantId);
 
         return Ok(new
@@ -82,6 +84,29 @@ public class AuthController(
             }
         });
     }
-}
 
-public record LoginRequest(string Email, string TenantIdentifier, string Password);
+    [HttpPost("validate-company")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ValidateCompany([FromBody] ValidateCompanyRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.CompanyName))
+        {
+            return BadRequest(new { message = "Company name is required" });
+        }
+
+        var tenant = await masterContext.Tenants
+            .Where(t => t.IsActive)
+            .FirstOrDefaultAsync(t => EF.Functions.ILike(t.Name, request.CompanyName));
+
+        if (tenant == null)
+        {
+            return NotFound(new { message = "Company not found" });
+        }
+
+        return Ok(new
+        {
+            identifier = tenant.Identifier,
+            name = tenant.Name
+        });
+    }
+}

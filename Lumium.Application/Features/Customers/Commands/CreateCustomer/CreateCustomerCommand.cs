@@ -19,13 +19,13 @@ public class CreateCustomerCommandHandler(
     : IRequestHandler<CreateCustomerCommand, CustomerDto>
 {
     public async Task<CustomerDto> Handle(
-        CreateCustomerCommand request, 
+        CreateCustomerCommand request,
         CancellationToken cancellationToken)
     {
         var customer = new Customer
         {
             Id = Guid.NewGuid(),
-            TenantId = tenantContext.TenantId!,  // ← Automatski iz tenant context
+            TenantId = tenantContext.TenantId!, // ← Automatski iz tenant context
             Name = request.Name,
             Email = request.Email,
             Phone = request.Phone,

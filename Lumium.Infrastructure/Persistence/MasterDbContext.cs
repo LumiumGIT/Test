@@ -7,13 +7,13 @@ namespace Lumium.Infrastructure.Persistence;
 public class MasterDbContext(DbContextOptions<MasterDbContext> options) : DbContext(options)
 {
     public DbSet<Tenant> Tenants { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ApplyConfigurations(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
-    
+
     private void ApplyConfigurations(ModelBuilder modelBuilder)
     {
         var configurationTypes = ReflectionHelper

@@ -5,7 +5,7 @@ namespace Lumium.Infrastructure.Helpers;
 public static class ReflectionHelper
 {
     public static IEnumerable<Type> GetAllTypesImplementingOpenGenericType(
-        Type openGenericType, 
+        Type openGenericType,
         Assembly assembly)
     {
         return from type in assembly.GetTypes()
