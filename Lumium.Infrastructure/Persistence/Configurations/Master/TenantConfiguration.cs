@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Lumium.Infrastructure.Persistence.Configurations.Master;
 
-public class TenantConfiguration : IEntityTypeConfiguration<Domain.Entities.Tenant>
+public class TenantConfiguration : IEntityTypeConfiguration<Domain.Entities.Admin.Tenant>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Tenant> builder)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Admin.Tenant> builder)
     {
         builder.ToTable("tenants");
 

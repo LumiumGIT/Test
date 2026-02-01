@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Domain.Entities.Portal;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Application.Features.Customers.DTOs;
 using MediatR;

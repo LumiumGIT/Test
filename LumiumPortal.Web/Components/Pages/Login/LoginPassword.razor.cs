@@ -63,7 +63,7 @@ public partial class LoginPassword : ComponentBase
 
             if (response == null)
             {
-                _errorMessage = "Pogresan email ili sifra";
+                _errorMessage = "Pogresan email ili lozinka";
                 return;
             }
 
@@ -71,7 +71,7 @@ public partial class LoginPassword : ComponentBase
             await AuthService.SaveTokenAsync(response.Token);
 
             // Navigate to dashboard
-            Navigation.NavigateTo("/home");
+            Navigation.NavigateTo("/dashboard");
         }
         catch (Exception ex)
         {
@@ -81,6 +81,7 @@ public partial class LoginPassword : ComponentBase
         finally
         {
             _isLoading = false;
+            StateHasChanged();
         }
     }
 }

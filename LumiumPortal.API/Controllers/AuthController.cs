@@ -1,5 +1,5 @@
 using Dapper;
-using Domain.Entities;
+using Domain.Entities.Portal;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Contracts;
 using Lumium.Infrastructure.MultiTenancy;
@@ -109,4 +109,50 @@ public class AuthController(
             name = tenant.Name
         });
     }
+
+    #region Admin
+
+    [HttpPost("admin/login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> AdminLogin([FromBody] AdminLoginRequest request)
+    {
+        // Query super_users tabelu
+        var superUser = await masterContext.SuperUsers
+            .FirstOrDefaultAsync(su => su.Email == request.Email && su.IsActive);
+
+        if (superUser == null)
+        {
+            return Unauthorized(new { message = "Nevalidni pristupni podaci" });
+        }
+
+        // Verify password
+        if (!passwordHasher.VerifyPassword(request.Password, superUser.PasswordHash))
+        {
+            return Unauthorized(new { message = "Nevalidni pristupni podaci" });
+        }
+
+        // Update last login
+        superUser.LastLoginAt = DateTime.UtcNow;
+        await masterContext.SaveChangesAsync();
+
+        // Generate JWT token
+        var token = jwtService.GenerateToken(
+            superUser.Id, 
+            superUser.Email, 
+            "MASTER");
+
+        return Ok(new
+        {
+            token,
+            user = new 
+            { 
+                superUser.Id, 
+                superUser.Email, 
+                superUser.FirstName, 
+                superUser.LastName
+            }
+        });
+    }
+
+    #endregion
 }

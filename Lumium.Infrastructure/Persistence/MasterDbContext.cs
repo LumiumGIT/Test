@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Domain.Entities.Admin;
 using Lumium.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +6,8 @@ namespace Lumium.Infrastructure.Persistence;
 
 public class MasterDbContext(DbContextOptions<MasterDbContext> options) : DbContext(options)
 {
-    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<Tenant> Tenants { get; set; } = null!;
+    public DbSet<SuperUser> SuperUsers { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

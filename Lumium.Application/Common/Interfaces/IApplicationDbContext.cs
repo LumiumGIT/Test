@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Domain.Entities.Portal;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Common.Interfaces;

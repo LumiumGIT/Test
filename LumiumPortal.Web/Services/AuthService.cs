@@ -1,10 +1,11 @@
 using System.Text.Json;
 using Lumium.Contracts;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
 namespace LumiumPortal.Web.Services;
 
-public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime)
+public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime, AuthenticationStateProvider authStateProvider)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -27,6 +28,7 @@ public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime)
     public async Task SaveTokenAsync(string token)
     {
         await jsRuntime.InvokeVoidAsync("localStorage.setItem", "jwt_token", token);
+        ((CustomAuthenticationStateProvider)authStateProvider).NotifyUserAuthentication(token);
     }
 
     public async Task<string?> GetTokenAsync()
@@ -37,6 +39,7 @@ public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime)
     public async Task RemoveTokenAsync()
     {
         await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "jwt_token");
+        ((CustomAuthenticationStateProvider)authStateProvider).NotifyUserLogout();
     }
 
     public async Task SaveLastCompanyAsync(string identifier, string name)

@@ -1,7 +1,7 @@
 using System.Data;
 using System.Linq.Expressions;
 using Domain.Common;
-using Domain.Entities;
+using Domain.Entities.Portal;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
