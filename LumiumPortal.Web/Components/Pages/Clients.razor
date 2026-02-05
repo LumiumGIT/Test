@@ -1,0 +1,392 @@
+@page "/clients"
+@using Lumium.Application.Features.Clients.DTOs
+
+<ProtectedPage>
+    <MudText Typo="Typo.h3" GutterBottom="true">Klijenti</MudText>
+    <MudText Class="mb-4" Color="Color.Default">Upravljajte računima i odnosima sa klijentima</MudText>
+
+    <MudPaper Class="mb-4 pa-4" Elevation="1">
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+            <MudTextField @bind-Value="_searchQuery"
+                          Placeholder="Pretraži klijente..."
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="flex-grow-1" />
+            <MudButton Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.FilterList"
+                       OnClick="@(() => _showFilters = !_showFilters)">
+                Filteri
+                @if (_legalFormFilter != "all" || _riskFilter != "all")
+                {
+                    <MudChip T="string" Size="Size.Small" Color="Color.Primary" Class="ml-2">
+                        @GetActiveFiltersCount()
+                    </MudChip>
+                }
+            </MudButton>
+
+            <MudButton Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.Download">
+                Izvoz
+            </MudButton>
+
+            <MudSpacer />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Disabled="true">
+                Dodaj klijenta
+            </MudButton>
+        </MudStack>
+
+        @if (_showFilters)
+        {
+            <MudDivider Class="my-4" />
+            <MudGrid>
+                <MudItem xs="12" sm="4">
+                    <MudSelect @bind-Value="_legalFormFilter"
+                               Label="Pravni oblik"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense">
+                        <MudSelectItem Value="@("all")">Svi oblici</MudSelectItem>
+                        <MudSelectItem Value="@("Udruženje građana - Nevladina organizacija")">Udruženje građana - Nevladina organizacija</MudSelectItem>
+                        <MudSelectItem Value="@("Preduzetnik")">Preduzetnik</MudSelectItem>
+                        <MudSelectItem Value="@("Državni organ")">Državni organ</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudSelect @bind-Value="_riskFilter"
+                               Label="Nivo rizika"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense">
+                        <MudSelectItem Value="@("all")">Svi nivoi rizika</MudSelectItem>
+                        <MudSelectItem Value="@("NIZAK")">Nizak</MudSelectItem>
+                        <MudSelectItem Value="@("SREDNJI")">Srednji</MudSelectItem>
+                        <MudSelectItem Value="@("VISOK")">Visok</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="4" Class="d-flex align-end">
+                    <MudButton Variant="Variant.Text"
+                               OnClick="ClearFilters">
+                        Obriši filtere
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        }
+    </MudPaper>
+
+    @* Bulk Actions Toolbar *@
+    @if (_selectedClients.Any())
+    {
+        <MudPaper Class="mb-4 pa-4" Elevation="1" Style="background-color: #E3F2FD;">
+            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.body1" Color="Color.Primary">
+                    <strong>@_selectedClients.Count</strong> klijent(a) selektovano
+                </MudText>
+                <MudSpacer />
+                <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
+                <MudButton Variant="Variant.Outlined" Size="Size.Small">Dodeli zaposlenog</MudButton>
+                <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error">Obriši selektovane</MudButton>
+            </MudStack>
+        </MudPaper>
+    }
+
+    @* Data Grid *@
+    <MudPaper Elevation="1">
+        <MudDataGrid T="ClientDto"
+                     Items="@GetFilteredClients()"
+                     Hover="true"
+                     Dense="true"
+                     ReadOnly="true"
+                     RowsPerPage="10"
+                     Filterable="false"
+                     Hideable="false"
+                     ColumnResizeMode="ResizeMode.Column"
+                     Bordered="true">
+            <Columns>
+    @* Checkbox Column *@
+    <TemplateColumn Sortable="false">
+        <HeaderTemplate>
+            <MudCheckBox T="bool"
+                         Value="@IsAllSelected()"
+                         ValueChanged="@((bool val) => ToggleSelectAll())"
+                         Color="Color.Primary" />
+        </HeaderTemplate>
+        <CellTemplate>
+            <MudCheckBox T="bool"
+                         Value="@_selectedClients.Contains(context.Item.Id)"
+                         ValueChanged="@((bool val) => ToggleSelectClient(context.Item.Id))"
+                         Color="Color.Primary" />
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Client Name *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudText Typo="Typo.body2" Style="white-space: nowrap;">Naziv klijenta</MudText>
+        </HeaderTemplate>
+        <CellTemplate>
+            <div style="min-width: 250px; max-width: 300px; word-wrap: break-word;">
+                <MudLink Href="@($"/clients/{context.Item.Id}")" Color="Color.Primary">
+                    <strong>@context.Item.Name</strong>
+                </MudLink>
+            </div>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Legal Form *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudTooltip Text="Pravni tip klijenta">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Pravni tip</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            <div style="min-width: 250px; max-width: 300px; word-wrap: break-word;">
+            <MudText Typo="Typo.body2" Style="font-size: 0.875rem;">@context.Item.LegalForm</MudText>
+            </div>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Tax Number *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudTooltip Text="Matični broj">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Mat. broj</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            <MudText Typo="Typo.body2">@context.Item.TaxNumber</MudText>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Tax Identification Number *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudTooltip Text="Poreski identifikacioni broj">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">PIB</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            <MudText Typo="Typo.body2">@context.Item.TaxIdentificationNumber</MudText>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* PDV *@
+    <TemplateColumn Title="PDV" Sortable="true">
+        <CellTemplate>
+            <MudText Typo="Typo.body2">@(context.Item.IsPdv ? "DA" : "NE")</MudText>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Responsible Person *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudTooltip Text="Zaduženo lice">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Zaduženo lice</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            <MudText Typo="Typo.body2">@context.Item.ResponsiblePerson</MudText>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Tax Representative *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudTooltip Text="Zamena u odsustvu">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Zamena</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            <MudText Typo="Typo.body2">@context.Item.BackupPerson</MudText>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Address *@
+    <PropertyColumn Property="x => x.Address" Title="Adresa" />
+
+    @* Phone Number *@
+    <TemplateColumn Sortable="true">
+        <HeaderTemplate>
+            <MudTooltip Text="Broj telefona">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Telefon</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            <MudText Typo="Typo.body2">@context.Item.PhoneNumber</MudText>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Director *@
+    <PropertyColumn Property="x => x.Director" Title="Direktor" />
+
+    @* Email *@
+    <PropertyColumn Property="x => x.Email" Title="Email" />
+
+    @* Eko Taksa *@
+    <TemplateColumn Sortable="false">
+        <HeaderTemplate>
+            <MudTooltip Text="Eko taksa">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Eko</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            @if (context.Item.EcoTax)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Stvarni Vlasnici *@
+    <TemplateColumn Sortable="false">
+        <HeaderTemplate>
+            <MudTooltip Text="Stvarni vlasnici">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Vlasnici</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            @if (context.Item.BeneficialOwners)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* CROSO *@
+    <TemplateColumn Title="CROSO" Sortable="false">
+        <CellTemplate>
+            @if (context.Item.Croso)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* PEP *@
+    <TemplateColumn Title="PEP" Sortable="false">
+        <CellTemplate>
+            @if (context.Item.Pep)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Wings Sablon *@
+    <TemplateColumn Sortable="false">
+        <HeaderTemplate>
+            <MudTooltip Text="Wings šablon">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Wings</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            @if (context.Item.WingsTemplate)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Aktivan *@
+    <TemplateColumn Sortable="false">
+        <HeaderTemplate>
+            <MudTooltip Text="Aktivan">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Aktivan</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            @if (context.Item.IsActive)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Deljamnost *@
+    <TemplateColumn Sortable="false">
+        <HeaderTemplate>
+            <MudTooltip Text="Deljamnost">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Deljam.</MudText>
+            </MudTooltip>
+        </HeaderTemplate>
+        <CellTemplate>
+            @if (context.Item.BusinessActivity)
+            {
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Država *@
+    <PropertyColumn Property="x => x.Country" Title="Država" />
+
+    @* Risk Level *@
+    <TemplateColumn Title="Rizik" Sortable="true">
+        <CellTemplate>
+            <MudChip Size="Size.Small"
+                     Color="@GetRiskColor(context.Item.RiskLevel)"
+                     Variant="Variant.Filled">
+                @context.Item.RiskLevel
+            </MudChip>
+        </CellTemplate>
+    </TemplateColumn>
+
+    @* Actions *@
+    <TemplateColumn Title="Akcije" Sortable="false">
+        <CellTemplate>
+            <MudStack Row="true" Spacing="1" Justify="Justify.FlexEnd">
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                               Size="Size.Small"
+                               OnClick="@(() => ViewClient(context.Item.Id))"
+                               Title="Pregledaj" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Size="Size.Small"
+                               Disabled="true"
+                               Title="Izmeni" />
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomRight">
+                    <MudMenuItem Icon="@Icons.Material.Filled.Description">Dokumenti</MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.Shield">Sertifikati</MudMenuItem>
+                </MudMenu>
+            </MudStack>
+        </CellTemplate>
+    </TemplateColumn>
+</Columns>
+
+            <PagerContent>
+                <MudDataGridPager T="ClientDto" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</ProtectedPage>

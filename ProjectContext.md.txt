@@ -1,0 +1,289 @@
+# LUMIUM PROJECT CONTEXT
+
+## 🎯 PROJEKAT
+**Tip:** B2B Multi-Tenant SaaS  
+**Tim:** 3 developera  
+**Stack:** .NET 10, Blazor Server, PostgreSQL, MudBlazor  
+**Faza:** MVP - Auth završen, CRUD za tenante u toku  
+
+---
+
+## 📂 SOLUTION STRUKTURA
+```
+Lumium/
+├── Lumium.Domain/              # Entities: Tenant, User, Customer, SuperUser
+├── Lumium.Application/         # CQRS: Commands, Queries, DTOs (MediatR)
+├── Lumium.Infrastructure/      # DbContext, Services, Interceptors, Configurations
+├── LumiumPortal.API/          # Shared REST API (tenant users + super admins)
+├── LumiumPortal.Web/          # Tenant Blazor UI (localhost:5001)
+└── LumiumAdmin.Web/           # Super Admin Blazor UI (localhost:5002)
+```
+
+**Projekti u Solution:**
+- **Domain:** Pure POCO entities, no dependencies
+- **Application:** Business logic, CQRS, interfaces
+- **Infrastructure:** EF Core, external services, persistence
+- **API:** Controllers, middleware, Swagger
+- **Web (2x):** Blazor Server frontends
+
+---
+
+## 🗄️ MULTI-TENANCY
+
+**Model:** Schema-per-tenant (PostgreSQL)
+
+**Baze:**
+- `public` schema: `tenants`, `super_users` (master data)
+- `tenant_{identifier}` schemas: `users`, `customers`, ... (tenant data)
+
+**Tenant Resolution:**
+1. User unese: "Acme Corp"
+2. API: `SELECT identifier FROM tenants WHERE name = 'Acme Corp'`
+3. JWT sa `tenant_id` claim-om
+4. `TenantConnectionInterceptor` → `SET search_path TO tenant_acme`
+
+**Key Components:**
+- `ITenantContext` interface (current tenant holder)
+- `TenantConnectionInterceptor` (schema switching)
+- Global Query Filters (defense-in-depth)
+- Entity Configurations: `Master/` i `Tenant/` namespace-based
+
+---
+
+## 🔐 AUTENTIFIKACIJA
+
+**Dva Sistema:**
+
+**1. Tenant Users (LumiumPortal.Web):**
+- Two-step: Company name → Email/Password
+- Token: `jwt_token` (localStorage)
+- Endpoint: `POST /api/auth/login`
+- Provider: `CustomAuthenticationStateProvider`
+
+**2. Super Admins (LumiumAdmin.Web):**
+- Direct: Email/Password
+- Token: `admin_jwt_token` (localStorage)
+- Endpoint: `POST /api/auth/admin/login`
+- Provider: `AdminAuthenticationStateProvider`
+
+**JWT Structure:**
+```json
+{
+  "sub": "user-guid",
+  "email": "user@example.com",
+  "tenant_id": "tenant-acme" // ili "MASTER" za super-admine
+}
+```
+
+**Nema Roles:** Discriminacija samo po `tenant_id` (MASTER = admin, ostalo = tenant user)
+
+**Future:** Role-based permissions kroz `user_roles`, `roles`, `permissions` tabele (database-driven, ne u JWT-u)
+
+---
+
+## 🎨 BLAZOR FRONTEND
+
+**Shared Setup:**
+- **Render Mode:** InteractiveServer, **prerender: false** (globalno u `App.razor`)
+- **Razlog:** localStorage access problem tokom SSR prerendering-a
+- **UI Library:** MudBlazor 7.x
+- **Jezik:** Srpski (UI messages, validacije)
+
+**Auth Pattern:**
+```razor
+@page "/customers"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+<ProtectedPage>
+    <!-- @context.User dostupan -->
+</ProtectedPage>
+```
+
+**ProtectedPage komponenta:**
+- Wrapper sa `<AuthorizeView>`
+- Čeka auth state pre renderovanja
+- Prikazuje spinner u `<Authorizing>` bloku
+- Prosleđuje `@context` child content-u
+
+**Routes.razor:**
+- `<AuthorizeRouteView>` sa globalnim `<NotAuthorized>` fallback-om
+- `RedirectToLogin` komponenta za redirect
+
+**Ključno:** Kombinacija `AuthorizeRouteView` (globalni guard) + `<ProtectedPage>` (čeka auth state) = rešava refresh problem
+
+---
+
+## 🏗️ ARHITEKTONSKI PATERNI
+
+**CQRS:** MediatR
+- Commands: Create, Update, Delete (return DTO)
+- Queries: GetById, GetAll (return DTO)
+- Handlers: `Application/Features/{Entity}/{Commands|Queries}/`
+
+**Clean Architecture Layers:**
+- Domain → Application → Infrastructure → API/Web
+- Dependency flow: Outer → Inner
+- Interfaces u Application, implementacije u Infrastructure
+
+**EF Core:**
+- `MasterDbContext` (public schema): tenants, super_users
+- `ApplicationDbContext` (tenant schemas): users, customers, ...
+- Dynamic schema switching: `TenantConnectionInterceptor`
+- Global Query Filters za tenant isolation
+- No Repository pattern (DbContext sufficient)
+
+**Validation:**
+- FluentValidation u Application layer
+- Pipeline behavior: `ValidationBehavior<TRequest, TResponse>`
+
+---
+
+## 🔧 TEHNOLOŠKE ODLUKE
+
+| Komponenta | Tehnologija | Razlog |
+|-----------|------------|--------|
+| Backend | .NET 8 | Tim expertise, async/await |
+| Frontend | Blazor Server | C# full-stack, no JS |
+| UI | MudBlazor | Free, Material Design, dobar support |
+| DB | PostgreSQL | Schema support, scalable |
+| ORM | EF Core | Dynamic schema switching |
+| Auth | Custom JWT | Multi-tenant flexibility, no ASP.NET Identity |
+| Patterns | CQRS, Clean Arch | Maintainability, testability |
+
+**Izbegnuto:**
+- ASP.NET Core Identity (kompleksno za multi-tenant)
+- Repository pattern (over-engineering)
+- Roles u JWT (database-driven umesto)
+
+---
+
+## 📊 DATABASE SCHEMA
+
+**Master (public):**
+- `tenants`: id, name, identifier, schema_name, connection_string, is_active
+- `super_users`: id, email, password_hash, first_name, last_name, is_active, last_login_at
+
+**Tenant Schemas:**
+- `users`: id, tenant_id, email, password_hash, first_name, last_name, is_active
+- `customers`: id, tenant_id, name, email, phone, created_at, updated_at
+- Svi entiteti imaju `tenant_id` (defense-in-depth)
+
+**Conventions:**
+- PascalCase u C# → snake_case u DB (EF konvencija)
+- UUID primary keys
+- Audit fields: created_at, updated_at (za tenant entities)
+
+---
+
+## 🚀 TRENUTNO STANJE
+
+**✅ Završeno:**
+- Multi-tenant infrastructure (schema-per-tenant)
+- JWT auth (tenant + super admin)
+- LumiumPortal.Web (tenant login flow)
+- LumiumAdmin.Web (admin login flow)
+- ProtectedPage pattern (auth wrapper)
+- Refresh problem resolved (prerender: false + AuthorizeView)
+
+**⏳ Sledeće:**
+- Pravljenje Clients page-a i cele logike oko njega
+- Role-based permissions (database-driven)
+- Audit logging
+
+---
+
+## 🐛 POZNATI PROBLEMI I REŠENJA
+
+**Problem:** Refresh na protected page → redirect na login  
+**Uzrok:** Prerendering + localStorage unavailable during SSR  
+**Rešenje:** `prerender: false` u App.razor + `<ProtectedPage>` wrapper  
+
+**Problem:** AuthorizeRouteView sam ne čeka auth state  
+**Uzrok:** Brzina provere (async nije dovoljno spor)  
+**Rešenje:** `<AuthorizeView>` u ProtectedPage čeka auth state eksplicitno  
+
+**Problem:** Casting AuthenticationStateProvider fail  
+**Uzrok:** DI registracija ili namespace conflict  
+**Rešenje:** Pattern matching ili direktan inject concrete type  
+
+---
+
+## 📝 CODING CONVENTIONS
+
+**Backend:**
+- Async/await svuda
+- Primary constructors (C# 12)
+- Record types za DTOs i requests
+- FluentValidation validators
+
+**Frontend:**
+- Code-behind pattern (.razor.cs)
+- MudBlazor komponente
+- Serbian language (UI, messages)
+- `@attribute [Authorize]` za protected pages
+- `<ProtectedPage>` wrapper obavezan
+
+**Naming:**
+- Entities: PascalCase singular (Customer, Tenant)
+- DTOs: PascalCase + "Dto" suffix
+- Commands: Verb + EntityName + "Command" (CreateCustomerCommand)
+- Queries: Get + EntityName + Query (GetCustomersQuery)
+
+---
+
+## 🔑 KLJUČNI FAJLOVI
+
+**Auth:**
+- `LumiumPortal.API/Controllers/AuthController.cs`
+- `Lumium.Infrastructure/Services/JwtService.cs`
+- `LumiumPortal.Web/Services/CustomAuthenticationStateProvider.cs`
+- `LumiumAdmin.Web/Services/AdminAuthenticationStateProvider.cs`
+
+**Multi-Tenancy:**
+- `Lumium.Infrastructure/Persistence/Interceptors/TenantConnectionInterceptor.cs`
+- `Lumium.Infrastructure/MultiTenancy/TenantContext.cs`
+- `Lumium.Infrastructure/Persistence/MasterDbContext.cs`
+- `Lumium.Infrastructure/Persistence/ApplicationDbContext.cs`
+
+**Frontend:**
+- `LumiumPortal.Web/Components/ProtectedPage.razor`
+- `LumiumPortal.Web/Components/App.razor` (prerender: false)
+- `LumiumPortal.Web/Components/Routes.razor` (AuthorizeRouteView)
+
+---
+
+## 🎯 SLEDEĆI KORACI
+
+1. Pravljenje Clients page-a i cele logike oko njega
+2. Pravljenje drugih modula za LumiumPortal
+3. Dodavanje tenanta u LumiumAdmin
+4. Role-based permissions setup
+5. Audit logging infrastructure
+
+---
+
+## 💡 DESIGN PRINCIPLES
+
+- **KISS:** Jednostavnost preko over-engineering-a
+- **YAGNI:** Ne dodavati features dok nisu potrebni
+- **Clean Code:** Readable, maintainable, testable
+- **Security First:** Tenant isolation na više nivoa
+- **Team Focus:** 3 developera, balance quality vs speed
+
+---
+
+*Poslednje ažuriranje: 2026-02-01*
+*Faza: MVP Development*
+```
+
+## **Kako Claude Koristi:**
+
+Kada otvoriš novi chat:
+```
+"Claude, pročitaj PROJECT_CONTEXT.md fajl u mom projektu i upoznaj se sa strukturom."
+```
+
+Ili još bolje, uploaduj fajl direktno u chat:
+```
+[Upload PROJECT_CONTEXT.md]
+"Claude, ovo je moj projekat context. Nastavljamo sa CRUD za tenante u admin portalu."

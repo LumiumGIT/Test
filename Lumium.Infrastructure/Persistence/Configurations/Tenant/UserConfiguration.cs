@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration : TenantEntityConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("users");
         builder.Property(e => e.Id).HasColumnName("id");

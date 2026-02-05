@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
 
-public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
+public class CustomerConfiguration : TenantEntityConfiguration<Customer>
 {
-    public void Configure(EntityTypeBuilder<Customer> builder)
+    public override void Configure(EntityTypeBuilder<Customer> builder)
     {
+        base.Configure(builder);
+        
         builder.ToTable("customers");
 
-        builder.Property(e => e.Id).HasColumnName("id");
-        builder.Property(e => e.TenantId).HasColumnName("tenant_id");
         builder.Property(e => e.Name).HasColumnName("name");
         builder.Property(e => e.Email).HasColumnName("email");
         builder.Property(e => e.Phone).HasColumnName("phone");

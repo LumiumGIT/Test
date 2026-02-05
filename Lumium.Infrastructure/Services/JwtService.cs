@@ -9,7 +9,7 @@ namespace Lumium.Infrastructure.Services;
 
 public class JwtService(IConfiguration configuration) : IJwtService
 {
-    public string GenerateToken(Guid userId, string email, string tenantId)
+    public string GenerateToken(Guid userId, string email, string tenantId, string schemaName, string firstName, string lastName)
     {
         var secretKey = configuration["Jwt:SecretKey"]!;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -19,7 +19,10 @@ public class JwtService(IConfiguration configuration) : IJwtService
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, email),
+            new Claim(JwtRegisteredClaimNames.GivenName, firstName),
+            new Claim(JwtRegisteredClaimNames.FamilyName, lastName), 
             new Claim("tenant_id", tenantId),
+            new Claim("schema_name", schemaName), 
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

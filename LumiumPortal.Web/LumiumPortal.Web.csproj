@@ -9,11 +9,16 @@
 
     <ItemGroup>
         <PackageReference Include="Blazored.LocalStorage" Version="4.3.0"/>
-        <PackageReference Include="EntityFramework" Version="6.5.1"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1"/>
+        <PackageReference Include="MediatR" Version="$(MediatRVersion)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFCoreVersion)"/>
         <PackageReference Include="MudBlazor" Version="8.15.0"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlVersion)"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Lumium.Application\Lumium.Application.csproj"/>
+        <ProjectReference Include="..\Lumium.Infrastructure\Lumium.Infrastructure.csproj"/>
         <ProjectReference Include="..\Lumium.Contracts\Lumium.Contracts.csproj"/>
     </ItemGroup>
 

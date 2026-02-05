@@ -2,6 +2,7 @@ using System.Text;
 using Dapper;
 using Lumium.Application;
 using Lumium.Application.Common.Interfaces;
+using Lumium.Infrastructure;
 using Lumium.Infrastructure.Interceptors;
 using Lumium.Infrastructure.Middleware;
 using Lumium.Infrastructure.MultiTenancy;
@@ -18,7 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
+
 builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddDbContext<MasterDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MasterDatabase")));
@@ -31,12 +34,6 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
     options.UseNpgsql(connectionString)
         .AddInterceptors(interceptor);
 });
-
-builder.Services.AddScoped<TenantConnectionInterceptor>();
-builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-builder.Services.AddScoped<ITenantContext, TenantContext>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

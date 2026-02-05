@@ -1,18 +1,23 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JsRuntime
 
-<MudThemeProvider/>
+<MudThemeProvider Theme="@_customTheme" IsDarkMode="@_isDarkMode" @ref="@_mudThemeProvider"/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Large" Class="mr-2"/>
-        <MudText Typo="Typo.h6">Lumium Portal</MudText>
-        <MudSpacer/>
-    </MudAppBar>
+    <TopBar OnDrawerToggle="ToggleDrawer" OnThemeToggle="ToggleTheme" IsDarkMode="@_isDarkMode"/>
+
+    <MudDrawer @bind-Open="_drawerOpen" 
+               ClipMode="DrawerClipMode.Always" 
+               Elevation="2">
+        <NavMenu />
+    </MudDrawer>
 
     <MudMainContent>
-        @Body
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>

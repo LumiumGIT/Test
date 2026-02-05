@@ -69,7 +69,10 @@ public class AuthController(
         var token = jwtService.GenerateToken(
             user.Id,
             user.Email,
-            user.TenantId);
+            user.TenantId,
+            tenant.SchemaName,
+            user.FirstName,
+            user.LastName  );
 
         return Ok(new
         {
@@ -139,7 +142,10 @@ public class AuthController(
         var token = jwtService.GenerateToken(
             superUser.Id, 
             superUser.Email, 
-            "MASTER");
+            "MASTER",
+            "public",
+            superUser.FirstName,
+            superUser.LastName  );
 
         return Ok(new
         {

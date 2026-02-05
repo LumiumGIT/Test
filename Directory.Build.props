@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <EFCoreVersion>10.0.0</EFCoreVersion>
+    <NpgsqlVersion>10.0.0</NpgsqlVersion>
+    <JwtBearerVersion>10.0.2</JwtBearerVersion>
+    <MediatRVersion>14.0.0</MediatRVersion>
+  </PropertyGroup>
+</Project>
