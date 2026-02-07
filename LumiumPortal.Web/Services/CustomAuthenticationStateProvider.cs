@@ -1,5 +1,3 @@
-// LumiumPortal.Web/Services/CustomAuthenticationStateProvider.cs
-
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Lumium.Application.Common.Interfaces;
@@ -82,17 +80,16 @@ public class CustomAuthenticationStateProvider(
 
     private void ResolveTenantFromClaims(IEnumerable<Claim> claims)
     {
-        var tenantId = claims.FirstOrDefault(c => c.Type == "tenant_id")?.Value;
-        var schemaName = claims.FirstOrDefault(c => c.Type == "schema_name")?.Value;
+        var enumerable = claims.ToList();
+        
+        var tenantIdClaim = enumerable.FirstOrDefault(c => c.Type == "tenant_id")?.Value;
+        var schemaName = enumerable.FirstOrDefault(c => c.Type == "schema_name")?.Value;
 
-        if (!string.IsNullOrEmpty(tenantId) && !string.IsNullOrEmpty(schemaName))
+        if (!string.IsNullOrEmpty(tenantIdClaim) && 
+            Guid.TryParse(tenantIdClaim, out var tenantId) &&
+            !string.IsNullOrEmpty(schemaName))
         {
             ((TenantContext)tenantContext).SetTenant(tenantId, schemaName);
-            Console.WriteLine($"[DEBUG] Tenant resolved: {tenantId}, schema: {schemaName}");
-        }
-        else
-        {
-            Console.WriteLine($"[DEBUG] Tenant claims missing - tenant_id: {tenantId}, schema_name: {schemaName}");
         }
     }
 }

@@ -1,0 +1,196 @@
+@using Domain.Enums
+@using Lumium.Application.Common.Extensions
+@inject IMediator Mediator
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Small" Class="mr-2" />
+                        <strong>Osnovni podaci</strong>
+                    </MudText>
+                    <MudDivider />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.Name"
+                                  Label="Naziv klijenta"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.LegalForm"
+                                  Label="Pravni tip"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.TaxNumber"
+                                  Label="Matični broj"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.TaxIdentificationNumber"
+                                  Label="PIB"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudSwitch @bind-Value="_model.IsPdv"
+                               Label="PDV"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
+                        <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" Class="mr-2" />
+                        <strong>Odgovorna lica</strong>
+                    </MudText>
+                    <MudDivider />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.ResponsiblePerson"
+                                  Label="Zaduženo lice"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.BackupPerson"
+                                  Label="Zamena u odsustvu"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
+                        <MudIcon Icon="@Icons.Material.Filled.ContactMail" Size="Size.Small" Class="mr-2" />
+                        <strong>Kontakt informacije</strong>
+                    </MudText>
+                    <MudDivider />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.Address"
+                                  Label="Adresa"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.PhoneNumber"
+                                  Label="Telefon"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Director"
+                                  Label="Direktor"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Email"
+                                  Label="Email"
+                                  InputType="InputType.Email"
+                                  Required="true"
+                                  RequiredError="Ovo polje je obavezno!" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="_model.Country"
+                                  Label="Država"
+                                  Required="true" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Class="mr-2" />
+                        <strong>Dodatne opcije</strong>
+                    </MudText>
+                    <MudDivider />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.EcoTax"
+                               Label="Eko taksa"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.BeneficialOwners"
+                               Label="Stvarni vlasnici"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.Croso"
+                               Label="CROSO"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.Pep"
+                               Label="PEP"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.WingsTemplate"
+                               Label="Wings šablon"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.IsActive"
+                               Label="Aktivan"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="6" md="3">
+                    <MudSwitch @bind-Value="_model.BusinessActivity"
+                               Label="Oblast rada"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Small" Class="mr-2" />
+                        <strong>Procena rizika</strong>
+                    </MudText>
+                    <MudDivider />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudSelect @bind-Value="_model.RiskLevel" Label="Nivo rizika" Required="true">
+                        @foreach (var level in Enum.GetValues<RiskLevel>())
+                        {
+                            <MudSelectItem Value="@level">@level.GetDescription()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text">Otkaži</MudButton>
+        <MudButton OnClick="@HandleSubmit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="_isSubmitting">
+            @(_isSubmitting ? "Čuvanje..." : "Sačuvaj")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

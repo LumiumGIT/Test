@@ -1,4 +1,6 @@
 @page "/clients"
+@using Domain.Enums
+@using Lumium.Application.Common.Extensions
 @using Lumium.Application.Features.Clients.DTOs
 
 <ProtectedPage>
@@ -14,11 +16,12 @@
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
                           Class="flex-grow-1" />
+    
             <MudButton Variant="Variant.Outlined"
                        StartIcon="@Icons.Material.Filled.FilterList"
                        OnClick="@(() => _showFilters = !_showFilters)">
                 Filteri
-                @if (_legalFormFilter != "all" || _riskFilter != "all")
+                @if (_legalFormFilter != "all" || _riskFilter.HasValue)
                 {
                     <MudChip T="string" Size="Size.Small" Color="Color.Primary" Class="ml-2">
                         @GetActiveFiltersCount()
@@ -33,10 +36,10 @@
 
             <MudSpacer />
 
-            <MudButton Variant="Variant.Filled"
+            <MudButton OnClick="@OpenAddClientDialog" 
+                       Variant="Variant.Filled"
                        Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.Add"
-                       Disabled="true">
+                       StartIcon="@Icons.Material.Filled.Add">
                 Dodaj klijenta
             </MudButton>
         </MudStack>
@@ -61,10 +64,11 @@
                                Label="Nivo rizika"
                                Variant="Variant.Outlined"
                                Margin="Margin.Dense">
-                        <MudSelectItem Value="@("all")">Svi nivoi rizika</MudSelectItem>
-                        <MudSelectItem Value="@("NIZAK")">Nizak</MudSelectItem>
-                        <MudSelectItem Value="@("SREDNJI")">Srednji</MudSelectItem>
-                        <MudSelectItem Value="@("VISOK")">Visok</MudSelectItem>
+                        <MudSelectItem Value="@((RiskLevel?)null)">Svi nivoi rizika</MudSelectItem>
+                        @foreach (var level in Enum.GetValues<RiskLevel>())
+                        {
+                            <MudSelectItem Value="@((RiskLevel?)level)">@level.GetDescription()</MudSelectItem>
+                        }
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="4" Class="d-flex align-end">
@@ -139,7 +143,7 @@
     @* Legal Form *@
     <TemplateColumn Sortable="true">
         <HeaderTemplate>
-            <MudTooltip Text="Pravni tip klijenta">
+            <MudTooltip Text="Pravni tip">
                 <MudText Typo="Typo.body2" Style="white-space: nowrap;">Pravni tip</MudText>
             </MudTooltip>
         </HeaderTemplate>
@@ -330,11 +334,11 @@
         </CellTemplate>
     </TemplateColumn>
 
-    @* Deljamnost *@
+    @* Oblast rada *@
     <TemplateColumn Sortable="false">
         <HeaderTemplate>
-            <MudTooltip Text="Deljamnost">
-                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Deljam.</MudText>
+            <MudTooltip Text="Oblast rada">
+                <MudText Typo="Typo.body2" Style="white-space: nowrap;">Oblast rada</MudText>
             </MudTooltip>
         </HeaderTemplate>
         <CellTemplate>
@@ -358,7 +362,7 @@
             <MudChip Size="Size.Small"
                      Color="@GetRiskColor(context.Item.RiskLevel)"
                      Variant="Variant.Filled">
-                @context.Item.RiskLevel
+                @context.Item.RiskLevel.GetDescription()
             </MudChip>
         </CellTemplate>
     </TemplateColumn>

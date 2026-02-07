@@ -1,23 +1,25 @@
+using Domain.Enums;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace LumiumPortal.Web.Components.Pages;
+namespace LumiumPortal.Web.Components.Pages.Clients;
 
 public partial class Clients : ComponentBase
 {
-    private List<ClientDto> _clients = new();
-    private bool _isLoading = true;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+    
+    private List<ClientDto> _clients = [];
     
     // Filters
     private string _searchQuery = "";
     private string _legalFormFilter = "all";
-    private string _riskFilter = "all";
-    private bool _showFilters = false;
+    private RiskLevel? _riskFilter;
+    private bool _showFilters;
     
     // Selection
-    private HashSet<Guid> _selectedClients = new();
+    private HashSet<Guid> _selectedClients = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,17 +30,12 @@ public partial class Clients : ComponentBase
     {
         try
         {
-            _isLoading = true;
             _clients = await Mediator.Send(new GetClientsQuery());
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
             Console.WriteLine($"Error loading clients: {ex}");
-        }
-        finally
-        {
-            _isLoading = false;
         }
     }
 
@@ -52,23 +49,45 @@ public partial class Clients : ComponentBase
                                 c.TaxNumber.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase);
 
             var matchesLegalForm = _legalFormFilter == "all" || c.LegalForm == _legalFormFilter;
-            var matchesRisk = _riskFilter == "all" || c.RiskLevel == _riskFilter;
+        
+            var matchesRisk = !_riskFilter.HasValue || c.RiskLevel == _riskFilter.Value;
 
             return matchesSearch && matchesLegalForm && matchesRisk;
         });
+    }
+    
+    private async Task OpenAddClientDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true,
+            CloseOnEscapeKey = true
+        };
+
+        var dialog = await DialogService.ShowAsync<AddClientDialog>("Dodaj klijenta", options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            await LoadClients();
+        }
     }
 
     private void ClearFilters()
     {
         _legalFormFilter = "all";
-        _riskFilter = "all";
+        _riskFilter = null;
     }
 
     private int GetActiveFiltersCount()
     {
         int count = 0;
+        
         if (_legalFormFilter != "all") count++;
-        if (_riskFilter != "all") count++;
+        if (_riskFilter.HasValue) count++;
+        
         return count;
     }
 
@@ -113,11 +132,11 @@ public partial class Clients : ComponentBase
     }
 
     // Helper methods for styling
-    private Color GetRiskColor(string risk) => risk switch
+    private Color GetRiskColor(RiskLevel risk) => risk switch
     {
-        "NIZAK" => Color.Success,
-        "SREDNJI" => Color.Warning,
-        "VISOK" => Color.Error,
+        RiskLevel.Low => Color.Success,
+        RiskLevel.Medium => Color.Warning,
+        RiskLevel.High => Color.Error,
         _ => Color.Default
     };
 }

@@ -1,13 +1,10 @@
 using System.Text;
 using Dapper;
 using Lumium.Application;
-using Lumium.Application.Common.Interfaces;
 using Lumium.Infrastructure;
 using Lumium.Infrastructure.Interceptors;
 using Lumium.Infrastructure.Middleware;
-using Lumium.Infrastructure.MultiTenancy;
 using Lumium.Infrastructure.Persistence;
-using Lumium.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

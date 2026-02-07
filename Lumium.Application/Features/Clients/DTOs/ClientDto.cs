@@ -1,3 +1,5 @@
+using Domain.Enums;
+
 namespace Lumium.Application.Features.Clients.DTOs;
 
 public class ClientDto
@@ -26,7 +28,7 @@ public class ClientDto
     public bool BusinessActivity { get; set; }
     
     public string Country { get; set; } = string.Empty;
-    public string RiskLevel { get; set; } = string.Empty;
+    public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
     
     public DateTime CreatedAt { get; set; }
 }

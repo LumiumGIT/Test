@@ -10,6 +10,7 @@ public abstract class TenantEntityConfiguration<T> : IEntityTypeConfiguration<T>
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {
         builder.HasKey(e => e.Id);
+        
         builder.Property(e => e.Id)
             .HasColumnName("id")
             .ValueGeneratedNever();
@@ -20,6 +21,7 @@ public abstract class TenantEntityConfiguration<T> : IEntityTypeConfiguration<T>
 
         builder.Property(e => e.CreatedAt)
             .HasColumnName("created_at")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
 
         builder.Property(e => e.UpdatedAt)

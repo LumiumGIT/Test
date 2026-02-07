@@ -13,95 +13,64 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
         builder.ToTable("clients");
 
         builder.Property(c => c.Name)
-            .HasColumnName("name")
-            .HasMaxLength(200)
-            .IsRequired();
+            .HasColumnName("name");
 
         builder.Property(c => c.LegalForm)
-            .HasColumnName("legal_form")
-            .HasMaxLength(100)
-            .IsRequired();
+            .HasColumnName("legal_form");
 
         builder.Property(c => c.TaxNumber)
-            .HasColumnName("tax_number")
-            .HasMaxLength(50)
-            .IsRequired();
+            .HasColumnName("tax_number");
 
         builder.Property(c => c.TaxIdentificationNumber)
-            .HasColumnName("tax_identification_number")
-            .HasMaxLength(50)
-            .IsRequired();
+            .HasColumnName("tax_identification_number");
 
         builder.Property(c => c.IsPdv)
-            .HasColumnName("is_pdv")
-            .IsRequired();
+            .HasColumnName("is_pdv");
 
         builder.Property(c => c.ResponsiblePerson)
-            .HasColumnName("responsible_person")
-            .HasMaxLength(100)
-            .IsRequired();
+            .HasColumnName("responsible_person");
 
         builder.Property(c => c.BackupPerson)
-            .HasColumnName("backup_person")
-            .HasMaxLength(100)
-            .IsRequired();
+            .HasColumnName("backup_person");
 
         builder.Property(c => c.Address)
-            .HasColumnName("address")
-            .HasMaxLength(300)
-            .IsRequired();
+            .HasColumnName("address");
 
         builder.Property(c => c.PhoneNumber)
-            .HasColumnName("phone_number")
-            .HasMaxLength(50)
-            .IsRequired();
+            .HasColumnName("phone_number");
 
         builder.Property(c => c.Director)
-            .HasColumnName("director")
-            .HasMaxLength(200)
-            .IsRequired();
+            .HasColumnName("director");
 
         builder.Property(c => c.Email)
-            .HasColumnName("email")
-            .HasMaxLength(200)
-            .IsRequired();
+            .HasColumnName("email");
 
         builder.Property(c => c.EcoTax)
-            .HasColumnName("eco_tax")
-            .IsRequired();
+            .HasColumnName("eco_tax");
 
         builder.Property(c => c.BeneficialOwners)
-            .HasColumnName("beneficial_owners")
-            .IsRequired();
+            .HasColumnName("beneficial_owners");
 
         builder.Property(c => c.Croso)
-            .HasColumnName("croso")
-            .IsRequired();
+            .HasColumnName("croso");
 
         builder.Property(c => c.Pep)
-            .HasColumnName("pep")
-            .IsRequired();
+            .HasColumnName("pep");
 
         builder.Property(c => c.WingsTemplate)
-            .HasColumnName("wings_template")
-            .IsRequired();
+            .HasColumnName("wings_template");
 
         builder.Property(c => c.IsActive)
-            .HasColumnName("is_active")
-            .IsRequired();
+            .HasColumnName("is_active");
 
         builder.Property(c => c.BusinessActivity)
-            .HasColumnName("business_activity")
-            .IsRequired();
+            .HasColumnName("business_activity");
 
         builder.Property(c => c.Country)
-            .HasColumnName("country")
-            .HasMaxLength(100)
-            .IsRequired();
+            .HasColumnName("country");
 
         builder.Property(c => c.RiskLevel)
             .HasColumnName("risk_level")
-            .HasMaxLength(50)
-            .IsRequired();
+            .HasConversion<int>();
     }
 }

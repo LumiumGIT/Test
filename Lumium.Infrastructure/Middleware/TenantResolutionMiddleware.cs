@@ -13,21 +13,26 @@ public class TenantResolutionMiddleware(RequestDelegate next)
         ITenantContext tenantContext,
         MasterDbContext masterDb)
     {
-        string? tenantId = null;
+        Guid? tenantId = null;
 
         // 1. JWT Claim (sadrži tenant ID kao GUID)
         if (context.User.Identity?.IsAuthenticated == true)
         {
-            tenantId = context.User.FindFirst("tenant_id")?.Value;
+            var claimValue = context.User.FindFirst("tenant_id")?.Value;
+            
+            if (!string.IsNullOrEmpty(claimValue) && Guid.TryParse(claimValue, out var parsedId))
+            {
+                tenantId = parsedId;
+            }
         }
 
         // 2. Subdomain (sadrži identifier kao string)
-        if (string.IsNullOrEmpty(tenantId))
+        if (!tenantId.HasValue)
         {
             var host = context.Request.Host.Host;
             var parts = host.Split('.');
 
-            if (parts.Length > 2) // subdomain.lumium.com
+            if (parts.Length > 2)
             {
                 var subdomain = parts[0];
                 var tenant = await masterDb.Tenants
@@ -35,42 +40,43 @@ public class TenantResolutionMiddleware(RequestDelegate next)
 
                 if (tenant != null)
                 {
-                    tenantId = tenant.Id.ToString();
+                    tenantId = tenant.Id;
                 }
             }
         }
 
         // 3. X-Tenant-Id Header (može biti identifier ili id)
-        if (string.IsNullOrEmpty(tenantId))
+        if (!tenantId.HasValue)
         {
             if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var headerValue))
             {
-                var headerTenant = headerValue.ToString();
-
-                // Probaj kao identifier prvo, pa kao ID
-                var tenant = await masterDb.Tenants
-                    .FirstOrDefaultAsync(t =>
-                        (t.Identifier == headerTenant || t.Id.ToString() == headerTenant)
-                        && t.IsActive);
-
-                if (tenant != null)
+                if (Guid.TryParse(headerValue.ToString(), out var parsedId))
                 {
-                    tenantId = tenant.Id.ToString();
+                    tenantId = parsedId;
+                }
+                else
+                {
+                    // Ako nije GUID, probaj kao identifier
+                    var tenant = await masterDb.Tenants
+                        .FirstOrDefaultAsync(t => t.Identifier == headerValue.ToString() && t.IsActive);
+                
+                    if (tenant != null)
+                    {
+                        tenantId = tenant.Id;
+                    }
                 }
             }
         }
 
         // 4. Resolve tenant po ID-u
-        if (!string.IsNullOrEmpty(tenantId))
+        if (tenantId.HasValue)
         {
-            if (Guid.TryParse(tenantId, out var tenantGuid))
-            {
-                var tenant = await masterDb.Tenants
-                    .FirstOrDefaultAsync(t => t.Id == tenantGuid && t.IsActive);
+            var tenant = await masterDb.Tenants
+                .FirstOrDefaultAsync(t => t.Id == tenantId.Value && t.IsActive);
 
-                ((TenantContext)tenantContext).SetTenant(
-                    tenant.Id.ToString(),
-                    tenant.SchemaName);
+            if (tenant != null)
+            {
+                ((TenantContext)tenantContext).SetTenant(tenant.Id, tenant.SchemaName);
             }
         }
 

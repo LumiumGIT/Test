@@ -4,13 +4,16 @@ namespace Lumium.Infrastructure.MultiTenancy;
 
 public class TenantContext : ITenantContext
 {
-    public string? TenantId { get; private set; }
-    public string? SchemaName { get; private set; }
-    public bool IsResolved => !string.IsNullOrEmpty(TenantId);
+    private Guid? _tenantId;
+    private string? _schemaName;
+    
+    public Guid TenantId => _tenantId ?? throw new InvalidOperationException("Tenant nije setovan");
+    public string? SchemaName => _schemaName ?? throw new InvalidOperationException("Tenant nije setovan");
+    public bool IsResolved => _tenantId.HasValue;
 
-    public void SetTenant(string tenantId, string schemaName)
+    public void SetTenant(Guid? tenantId, string schemaName)
     {
-        TenantId = tenantId;
-        SchemaName = schemaName;
+        _tenantId = tenantId;
+        _schemaName = schemaName;
     }
 }

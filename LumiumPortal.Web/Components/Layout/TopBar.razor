@@ -16,12 +16,10 @@
     
     <AuthorizeView>
         <Authorized>
-            @* Ime i prezime korisnika *@
             <MudText Typo="Typo.body1" Class="mr-4">
                 @GetUserFullName(context.User)
             </MudText>
 
-            @* Logout dugme *@
             <MudButton Variant="Variant.Outlined" 
                        Color="Color.Inherit" 
                        StartIcon="@Icons.Material.Filled.Logout"
@@ -29,5 +27,13 @@
                 Odjavi se
             </MudButton>
         </Authorized>
+        <NotAuthorized>
+            <MudButton Variant="Variant.Outlined" 
+                       Color="Color.Inherit" 
+                       StartIcon="@Icons.Material.Filled.Login"
+                       OnClick="@HandleLogin">
+                Prijavi se
+            </MudButton>
+        </NotAuthorized>
     </AuthorizeView>
 </MudAppBar>

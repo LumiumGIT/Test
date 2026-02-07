@@ -1,5 +1,3 @@
-using Dapper;
-using Domain.Entities.Portal;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Contracts;
 using Lumium.Infrastructure.MultiTenancy;
@@ -33,46 +31,36 @@ public class AuthController(
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // 2. Setuj tenant context (pre kreiranja ApplicationDbContext-a!)
-        ((TenantContext)tenantContext).SetTenant(
-            tenant.Id.ToString(),
-            tenant.SchemaName);
+        // 2. Setuj tenant context
+        ((TenantContext)tenantContext).SetTenant(tenant.Id, tenant.SchemaName);
 
-        // 3. ⭐ Dapper - Najčistije rešenje
-        await using var connection = appContext.Database.GetDbConnection();
+        // 3. Setuj search_path
+        await appContext.SetSearchPathAsync(tenant.SchemaName);
 
-        if (connection.State != System.Data.ConnectionState.Open)
-        {
-            await connection.OpenAsync();
-        }
-
-        // Setuj search_path
-        await connection.ExecuteAsync($"SET search_path TO {tenant.SchemaName}");
-
-        // Query user sa Dapper-om
-        var user = await connection.QuerySingleOrDefaultAsync<User>(
-            "SELECT * FROM users WHERE email = @Email AND is_active = true",
-            new { Email = request.Email });
+        // 4. Query user preko EF Core
+        var user = await appContext.Users
+            .Where(u => u.Email == request.Email && u.IsActive)
+            .FirstOrDefaultAsync();
 
         if (user == null)
         {
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // 4. Verify password
+        // 5. Verify password
         if (!passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // 5. Generiši JWT token
+        // 6. Generiši JWT token
         var token = jwtService.GenerateToken(
             user.Id,
             user.Email,
-            user.TenantId,
+            user.TenantId.ToString(),
             tenant.SchemaName,
             user.FirstName,
-            user.LastName  );
+            user.LastName);
 
         return Ok(new
         {
@@ -119,7 +107,6 @@ public class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> AdminLogin([FromBody] AdminLoginRequest request)
     {
-        // Query super_users tabelu
         var superUser = await masterContext.SuperUsers
             .FirstOrDefaultAsync(su => su.Email == request.Email && su.IsActive);
 
@@ -128,33 +115,30 @@ public class AuthController(
             return Unauthorized(new { message = "Nevalidni pristupni podaci" });
         }
 
-        // Verify password
         if (!passwordHasher.VerifyPassword(request.Password, superUser.PasswordHash))
         {
             return Unauthorized(new { message = "Nevalidni pristupni podaci" });
         }
 
-        // Update last login
         superUser.LastLoginAt = DateTime.UtcNow;
         await masterContext.SaveChangesAsync();
 
-        // Generate JWT token
         var token = jwtService.GenerateToken(
-            superUser.Id, 
-            superUser.Email, 
-            "MASTER",
+            superUser.Id,
+            superUser.Email,
+            Guid.Empty.ToString(),
             "public",
             superUser.FirstName,
-            superUser.LastName  );
+            superUser.LastName);
 
         return Ok(new
         {
             token,
-            user = new 
-            { 
-                superUser.Id, 
-                superUser.Email, 
-                superUser.FirstName, 
+            user = new
+            {
+                superUser.Id,
+                superUser.Email,
+                superUser.FirstName,
                 superUser.LastName
             }
         });

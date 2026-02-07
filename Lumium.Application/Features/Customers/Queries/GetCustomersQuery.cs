@@ -7,7 +7,7 @@ namespace Lumium.Application.Features.Customers.Queries;
 
 public class GetCustomersQuery : IRequest<List<CustomerDto>>;
 
-public class GetCustomersQueryHandler(IApplicationDbContext context, ITenantContext tenantContext)
+public class GetCustomersQueryHandler(IApplicationDbContext context)
     : IRequestHandler<GetCustomersQuery, List<CustomerDto>>
 {
     public async Task<List<CustomerDto>> Handle(

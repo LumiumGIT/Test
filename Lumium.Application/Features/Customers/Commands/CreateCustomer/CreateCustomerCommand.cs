@@ -25,7 +25,6 @@ public class CreateCustomerCommandHandler(
         var customer = new Customer
         {
             Id = Guid.NewGuid(),
-            TenantId = tenantContext.TenantId!, // ← Automatski iz tenant context
             Name = request.Name,
             Email = request.Email,
             Phone = request.Phone,

@@ -33,4 +33,9 @@ public partial class TopBar : ComponentBase
         await AuthStateProvider.Logout();
         Navigation.NavigateTo("/login", forceLoad: true);
     }
+    
+    private void HandleLogin()
+    {
+        Navigation.NavigateTo("/login");
+    }
 }

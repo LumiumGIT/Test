@@ -18,7 +18,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public string GetTenantId()
     {
-        return tenantContext.TenantId ?? "public";
+        return tenantContext.TenantId.ToString();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -95,9 +95,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         foreach (var entry in ChangeTracker.Entries<TenantEntity>())
         {
-            if (entry.State == EntityState.Added && string.IsNullOrEmpty(entry.Entity.TenantId))
+            if (entry.State == EntityState.Added && entry.Entity.TenantId == Guid.Empty)
             {
-                entry.Entity.TenantId = tenantContext.TenantId!;
+                if (tenantContext.TenantId == Guid.Empty)
+                {
+                    throw new InvalidOperationException("TenantId nije setovan u tenant context-u");
+                }
+                
+                entry.Entity.TenantId = tenantContext.TenantId;
             }
         }
 

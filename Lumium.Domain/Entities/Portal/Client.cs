@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Enums;
 
 namespace Domain.Entities.Portal;
 
@@ -32,5 +33,5 @@ public class Client : TenantEntity
     
     // Additional
     public string Country { get; set; } = string.Empty;
-    public string RiskLevel { get; set; } = string.Empty;
+    public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
 }
