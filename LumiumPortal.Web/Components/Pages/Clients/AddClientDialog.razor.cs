@@ -1,6 +1,7 @@
 using Domain.Enums;
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
+using LumiumPortal.Web.Components.Pages.Clients.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,6 +12,8 @@ public partial class AddClientDialog : ComponentBase
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
     private ClientDto _model = new();
+    private MudForm? _form;
+    private CreateClientDtoValidator _validator = new();
     private bool _isSubmitting;
 
     protected override void OnInitialized()
@@ -25,20 +28,29 @@ public partial class AddClientDialog : ComponentBase
 
     private async Task HandleSubmit()
     {
+        await _form!.Validate();
+
+        if (!_form.IsValid)
+        {
+            Snackbar.Add("Molimo popunite sva obavezna polja", Severity.Warning);
+            return;
+        }
+        
         try
         {
             _isSubmitting = true;
 
-            var success = await Mediator.Send(new CreateClientCommand(_model));
+            var command = new CreateClientCommand(_model);
+            var result = await Mediator.Send(command);
 
-            if (success)
+            if (result.IsSuccess)
             {
-                Snackbar.Add($"Klijent '{_model.Name}' je uspešno dodat!", Severity.Success);
+                Snackbar.Add(result.Message, Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
-                Snackbar.Add("Greška pri dodavanju klijenta.", Severity.Error);
+                Snackbar.Add(result.Message, Severity.Error);
             }
         }
         catch (Exception ex)

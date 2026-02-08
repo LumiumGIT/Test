@@ -92,7 +92,7 @@
                 <MudSpacer />
                 <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
                 <MudButton Variant="Variant.Outlined" Size="Size.Small">Dodeli zaposlenog</MudButton>
-                <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error">Obriši selektovane</MudButton>
+                <MudButton OnClick="@DeleteSelectedClients"  Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error">Obriši selektovane</MudButton>
             </MudStack>
         </MudPaper>
     }

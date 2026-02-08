@@ -1,6 +1,8 @@
 using Domain.Enums;
+using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
+using LumiumPortal.Web.Extensions;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -72,6 +74,41 @@ public partial class Clients : ComponentBase
         if (result is { Canceled: false })
         {
             await LoadClients();
+        }
+    }
+    
+    private async Task DeleteSelectedClients()
+    {
+        if (_selectedClients.Count == 0)
+        {
+            Snackbar.Add("Nema selektovanih klijenata", Severity.Warning);
+            return;
+        }
+
+        var confirmed = await DialogService.ShowDeleteConfirmAsync("klijenta", _selectedClients.Count);
+
+        if (!confirmed) return;
+
+        try
+        {
+            var command = new DeleteClientsCommand(_selectedClients);
+            var result = await Mediator.Send(command);
+
+            if (result.IsSuccess)
+            {
+                Snackbar.Add(result.Message, Severity.Success);
+            
+                _selectedClients.Clear();
+                await LoadClients();
+            }
+            else
+            {
+                Snackbar.Add(result.Message, Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
         }
     }
 

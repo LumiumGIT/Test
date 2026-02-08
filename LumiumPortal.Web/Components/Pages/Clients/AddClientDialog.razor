@@ -5,7 +5,7 @@
 
 <MudDialog>
     <DialogContent>
-        <EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+        <MudForm @ref="_form" Model="@_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
             <MudGrid>
                 <MudItem xs="12">
                     <MudText Typo="Typo.subtitle1" Class="mb-2 mt-2">
@@ -18,29 +18,29 @@
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="_model.Name"
                                   Label="Naziv klijenta"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.Name)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="_model.LegalForm"
                                   Label="Pravni tip"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.LegalForm)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="_model.TaxNumber"
                                   Label="Matični broj"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.TaxNumber)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="_model.TaxIdentificationNumber"
                                   Label="PIB"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.TaxIdentificationNumber)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="4">
@@ -60,15 +60,15 @@
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="_model.ResponsiblePerson"
                                   Label="Zaduženo lice"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.ResponsiblePerson)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="_model.BackupPerson"
                                   Label="Zamena u odsustvu"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.BackupPerson)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12">
@@ -82,36 +82,37 @@
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="_model.Address"
                                   Label="Adresa"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.Address)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="_model.PhoneNumber"
                                   Label="Telefon"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.PhoneNumber)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="_model.Director"
                                   Label="Direktor"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.Director)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="_model.Email"
                                   Label="Email"
                                   InputType="InputType.Email"
-                                  Required="true"
-                                  RequiredError="Ovo polje je obavezno!" />
+                                  For="@(() => _model.Email)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12" md="4">
                     <MudTextField @bind-Value="_model.Country"
                                   Label="Država"
-                                  Required="true" />
+                                  For="@(() => _model.Country)"
+                                  Immediate="true" />
                 </MudItem>
 
                 <MudItem xs="12">
@@ -173,7 +174,9 @@
                 </MudItem>
 
                 <MudItem xs="12" md="6">
-                    <MudSelect @bind-Value="_model.RiskLevel" Label="Nivo rizika" Required="true">
+                    <MudSelect @bind-Value="_model.RiskLevel"
+                               Label="Nivo rizika"
+                               For="@(() => _model.RiskLevel)">
                         @foreach (var level in Enum.GetValues<RiskLevel>())
                         {
                             <MudSelectItem Value="@level">@level.GetDescription()</MudSelectItem>
@@ -181,7 +184,7 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-        </EditForm>
+        </MudForm>
     </DialogContent>
 
     <DialogActions>
