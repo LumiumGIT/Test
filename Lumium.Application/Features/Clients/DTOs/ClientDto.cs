@@ -6,7 +6,7 @@ public class ClientDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string LegalForm { get; set; } = string.Empty;
+    public LegalForm LegalForm { get; set; } = LegalForm.Entrepreneur;
     public string TaxNumber { get; set; } = string.Empty;
     public string TaxIdentificationNumber { get; set; } = string.Empty;
     public bool IsPdv { get; set; }

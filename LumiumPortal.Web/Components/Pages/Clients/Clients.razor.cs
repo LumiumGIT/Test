@@ -16,12 +16,12 @@ public partial class Clients : ComponentBase
     
     // Filters
     private string _searchQuery = "";
-    private string _legalFormFilter = "all";
+    private LegalForm? _legalFormFilter;
     private RiskLevel? _riskFilter;
     private bool _showFilters;
     
     // Selection
-    private HashSet<Guid> _selectedClients = [];
+    private readonly HashSet<Guid> _selectedClients = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,7 +50,7 @@ public partial class Clients : ComponentBase
                                 c.Email.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
                                 c.TaxNumber.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase);
 
-            var matchesLegalForm = _legalFormFilter == "all" || c.LegalForm == _legalFormFilter;
+            var matchesLegalForm = !_legalFormFilter.HasValue || c.LegalForm == _legalFormFilter.Value;
         
             var matchesRisk = !_riskFilter.HasValue || c.RiskLevel == _riskFilter.Value;
 
@@ -114,16 +114,23 @@ public partial class Clients : ComponentBase
 
     private void ClearFilters()
     {
-        _legalFormFilter = "all";
+        _legalFormFilter = null;
         _riskFilter = null;
     }
 
     private int GetActiveFiltersCount()
     {
-        int count = 0;
-        
-        if (_legalFormFilter != "all") count++;
-        if (_riskFilter.HasValue) count++;
+        var count = 0;
+
+        if (_legalFormFilter.HasValue)
+        {
+            count++;
+        }
+
+        if (_riskFilter.HasValue)
+        {
+            count++;
+        }
         
         return count;
     }

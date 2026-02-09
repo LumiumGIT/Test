@@ -21,7 +21,7 @@
                        StartIcon="@Icons.Material.Filled.FilterList"
                        OnClick="@(() => _showFilters = !_showFilters)">
                 Filteri
-                @if (_legalFormFilter != "all" || _riskFilter.HasValue)
+                @if (_legalFormFilter.HasValue || _riskFilter.HasValue)
                 {
                     <MudChip T="string" Size="Size.Small" Color="Color.Primary" Class="ml-2">
                         @GetActiveFiltersCount()
@@ -50,13 +50,14 @@
             <MudGrid>
                 <MudItem xs="12" sm="4">
                     <MudSelect @bind-Value="_legalFormFilter"
-                               Label="Pravni oblik"
+                               Label="Pravni tip klijenta"
                                Variant="Variant.Outlined"
                                Margin="Margin.Dense">
-                        <MudSelectItem Value="@("all")">Svi oblici</MudSelectItem>
-                        <MudSelectItem Value="@("Udruženje građana - Nevladina organizacija")">Udruženje građana - Nevladina organizacija</MudSelectItem>
-                        <MudSelectItem Value="@("Preduzetnik")">Preduzetnik</MudSelectItem>
-                        <MudSelectItem Value="@("Državni organ")">Državni organ</MudSelectItem>
+                        <MudSelectItem Value="@((LegalForm?)null)">Svi pravni tipovi</MudSelectItem>
+                        @foreach (var form in Enum.GetValues<LegalForm>())
+                        {
+                            <MudSelectItem Value="@((LegalForm?)form)">@form.GetDescription()</MudSelectItem>
+                        }
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="4">
@@ -73,7 +74,7 @@
                 </MudItem>
                 <MudItem xs="12" sm="4" Class="d-flex align-end">
                     <MudButton Variant="Variant.Text"
-                               OnClick="ClearFilters">
+                               OnClick="@ClearFilters">
                         Obriši filtere
                     </MudButton>
                 </MudItem>
@@ -149,7 +150,7 @@
         </HeaderTemplate>
         <CellTemplate>
             <div style="min-width: 250px; max-width: 300px; word-wrap: break-word;">
-            <MudText Typo="Typo.body2" Style="font-size: 0.875rem;">@context.Item.LegalForm</MudText>
+            <MudText Typo="Typo.body2" Style="font-size: 0.875rem;">@context.Item.LegalForm.GetDescription()</MudText>
             </div>
         </CellTemplate>
     </TemplateColumn>

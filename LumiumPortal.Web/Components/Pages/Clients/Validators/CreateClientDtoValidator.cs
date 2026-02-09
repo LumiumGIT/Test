@@ -5,41 +5,43 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Validators;
 
 public class CreateClientDtoValidator : AbstractValidator<ClientDto>
 {
+    private const string RequiredFieldMessage = "Ovo polje je obavezno!";
+    
     public CreateClientDtoValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.LegalForm)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.TaxNumber)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.TaxIdentificationNumber)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.ResponsiblePerson)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.BackupPerson)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.Address)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.Director)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!")
+            .NotEmpty().WithMessage(RequiredFieldMessage)
             .EmailAddress().WithMessage("Email adresa nije validna");
 
         RuleFor(x => x.Country)
-            .NotEmpty().WithMessage("Ovo polje je obavezno!");
+            .NotEmpty().WithMessage(RequiredFieldMessage);
     }
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

@@ -16,7 +16,8 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
             .HasColumnName("name");
 
         builder.Property(c => c.LegalForm)
-            .HasColumnName("legal_form");
+            .HasColumnName("legal_form")
+            .HasConversion<int>();
 
         builder.Property(c => c.TaxNumber)
             .HasColumnName("tax_number");
