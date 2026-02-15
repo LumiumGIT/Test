@@ -3,6 +3,8 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+out-api
+out-web
 
 # IntelliJ IDEA / Rider project files
 .idea/

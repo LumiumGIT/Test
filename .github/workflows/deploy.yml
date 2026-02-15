@@ -1,0 +1,45 @@
+name: Deploy (API + Web)
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Publish API
+        run: dotnet publish ./LumiumPortal.API/LumiumPortal.API.csproj -c Release -o out-api
+
+      - name: Publish Web
+        run: dotnet publish ./LumiumPortal.Web/LumiumPortal.Web.csproj -c Release -o out-web
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy API (rsync)
+        run: |
+          rsync -az --delete -e "ssh -o StrictHostKeyChecking=no" ./out-api/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/lumium-api/app/
+
+      - name: Deploy Web (rsync)
+        run: |
+          rsync -az --delete -e "ssh -o StrictHostKeyChecking=no" ./out-web/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/lumium-web/app/
+
+      - name: Restart services
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "sudo systemctl restart lumium-api && sudo systemctl restart lumium-web && sudo systemctl status lumium-web --no-pager"
