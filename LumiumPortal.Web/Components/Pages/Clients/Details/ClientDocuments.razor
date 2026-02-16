@@ -1,0 +1,65 @@
+@using Lumium.Application.Common.Extensions
+
+<MudStack Spacing="3">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.body2" Color="Color.Default">
+            @Documents.Count ukupno dokumenata
+        </MudText>
+        <MudButton StartIcon="@Icons.Material.Filled.Upload" 
+                   Size="Size.Small" 
+                   Variant="Variant.Filled" 
+                   Color="Color.Primary"
+                   OnClick="@OnUploadDocument">
+            Otpremi dokument
+        </MudButton>
+    </MudStack>
+    
+    <MudTable Items="@Documents" 
+              Hover="true" 
+              Breakpoint="Breakpoint.Sm" 
+              Elevation="0"
+              Dense="true">
+        <HeaderContent>
+            <MudTh>Naziv dokumenta</MudTh>
+            <MudTh>Kategorija</MudTh>
+            <MudTh>Otpremio</MudTh>
+            <MudTh>Datum</MudTh>
+            <MudTh>Veličina</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Naziv">
+                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                    <MudIcon Icon="@Icons.Material.Filled.Description" Size="Size.Small" Color="Color.Default" />
+                    <MudText Typo="Typo.body2"><strong>@context.Name</strong></MudText>
+                </MudStack>
+            </MudTd>
+            <MudTd DataLabel="Kategorija">
+                <MudChip T="string" Size="Size.Small" Variant="Variant.Filled" Color="Color.Default">
+                    @context.Category.GetDescription()
+                </MudChip>
+            </MudTd>
+            <MudTd DataLabel="Otpremio">
+                <MudText Typo="Typo.body2">@context.UploadedBy</MudText>
+            </MudTd>
+            <MudTd DataLabel="Datum">
+                <MudText Typo="Typo.body2">@context.UploadDate.ToString("dd.MM.yyyy")</MudText>
+            </MudTd>
+            <MudTd DataLabel="Veličina">
+                <MudText Typo="Typo.body2" Color="Color.Default">@context.Size</MudText>
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Download" 
+                               Size="Size.Small" 
+                               Color="Color.Primary"
+                               OnClick="@(() => OnDownloadDocument.InvokeAsync(context.Id))"
+                               aria-label="Preuzmi" />
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center" Class="py-6">
+                Nema otpremljenih dokumenata
+            </MudText>
+        </NoRecordsContent>
+    </MudTable>
+</MudStack>

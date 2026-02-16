@@ -12,9 +12,6 @@ public class CreateClientDtoValidator : AbstractValidator<ClientDto>
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage(RequiredFieldMessage);
 
-        RuleFor(x => x.LegalForm)
-            .NotEmpty().WithMessage(RequiredFieldMessage);
-
         RuleFor(x => x.TaxNumber)
             .NotEmpty().WithMessage(RequiredFieldMessage);
 

@@ -16,9 +16,6 @@ public partial class Clients : ComponentBase
     
     // Filters
     private string _searchQuery = "";
-    private LegalForm? _legalFormFilter;
-    private RiskLevel? _riskFilter;
-    private bool _showFilters;
     
     // Selection
     private readonly HashSet<Guid> _selectedClients = [];
@@ -50,11 +47,7 @@ public partial class Clients : ComponentBase
                                 c.Email.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
                                 c.TaxNumber.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase);
 
-            var matchesLegalForm = !_legalFormFilter.HasValue || c.LegalForm == _legalFormFilter.Value;
-        
-            var matchesRisk = !_riskFilter.HasValue || c.RiskLevel == _riskFilter.Value;
-
-            return matchesSearch && matchesLegalForm && matchesRisk;
+            return matchesSearch;
         });
     }
     
@@ -110,29 +103,6 @@ public partial class Clients : ComponentBase
         {
             Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
         }
-    }
-
-    private void ClearFilters()
-    {
-        _legalFormFilter = null;
-        _riskFilter = null;
-    }
-
-    private int GetActiveFiltersCount()
-    {
-        var count = 0;
-
-        if (_legalFormFilter.HasValue)
-        {
-            count++;
-        }
-
-        if (_riskFilter.HasValue)
-        {
-            count++;
-        }
-        
-        return count;
     }
 
     // Selection methods

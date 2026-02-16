@@ -1,0 +1,55 @@
+@using Lumium.Application.Common.Extensions
+<MudStack Spacing="3">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.body2" Color="Color.Default">
+            @Certificates.Count ukupno sertifikata
+        </MudText>
+        <MudButton StartIcon="@Icons.Material.Filled.Add" 
+                   Size="Size.Small" 
+                   Variant="Variant.Filled" 
+                   Color="Color.Primary"
+                   OnClick="@OnAddCertificate">
+            Dodaj sertifikat
+        </MudButton>
+    </MudStack>
+    
+    @if (Certificates.Any())
+    {
+        <MudStack Spacing="2">
+            @foreach (var cert in Certificates)
+            {
+                <MudPaper Elevation="1" Class="pa-4">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+                        <MudStack Row="true" Spacing="3">
+                            <MudAvatar Color="Color.Primary" Variant="Variant.Outlined">
+                                <MudIcon Icon="@Icons.Material.Filled.VerifiedUser" />
+                            </MudAvatar>
+                            <div>
+                                <MudText Typo="Typo.body1"><strong>@cert.Name</strong></MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Default" Class="mt-1">
+                                    Izdao: @cert.IssuedBy
+                                </MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Default">
+                                    Ističe: @cert.ExpiryDate.ToString("dd.MM.yyyy")
+                                </MudText>
+                            </div>
+                        </MudStack>
+                        <MudChip T="string" Size="Size.Small" 
+                                 Color="@GetCertificateStatusColor(cert.Status)"
+                                 Variant="Variant.Filled">
+                            @cert.Status.GetDescription()
+                        </MudChip>
+                    </MudStack>
+                </MudPaper>
+            }
+        </MudStack>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-6" Style="background-color: var(--mud-palette-background-grey);">
+            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">
+                Nema sertifikata
+            </MudText>
+        </MudPaper>
+    }
+</MudStack>

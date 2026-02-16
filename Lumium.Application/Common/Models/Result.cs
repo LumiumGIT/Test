@@ -13,14 +13,14 @@ public class Result
     {
         IsSuccess = isSuccess;
         Message = message;
-        Errors = errors ?? new List<string>();
+        Errors = errors ?? [];
     }
 
     public static Result Success(string message = "Operacija uspešno izvršena")
         => new(true, message);
 
     public static Result Failure(string error)
-        => new(false, error, new List<string> { error });
+        => new(false, error, [error]);
 
     public static Result Failure(List<string> errors)
         => new(false, "Operacija nije uspela", errors);
@@ -47,7 +47,7 @@ public class Result<T> : Result
         => new(true, message, data);
 
     public new static Result<T> Failure(string error)
-        => new(false, error, default, new List<string> { error });
+        => new(false, error, default, [error]);
 
     public new static Result<T> Failure(List<string> errors)
         => new(false, "Operacija nije uspela", default, errors);

@@ -1,0 +1,43 @@
+@typeparam TItem
+@typeparam TEnum where TEnum : struct, Enum
+@using Lumium.Application.Common.Extensions
+
+@if (_isInitialized)
+{
+    <MudIconButton OnClick="@OpenFilter" Icon="@_currentIcon" Size="@Size.Small" />
+    <MudOverlay Visible="@_isOpen" OnClick="@CloseFilter" />
+    <MudPopover Open="@_isOpen" 
+                AnchorOrigin="Origin.BottomCenter" 
+                TransformOrigin="Origin.TopCenter"
+                Style="@($"width:{PopoverWidth}px")">
+        <MudStack Spacing="0">
+            <MudCheckBox T="bool" 
+                         Label="Select All" 
+                         Size="@Size.Small" 
+                         Value="@_selectAll" 
+                         ValueChanged="@HandleSelectAll" />
+            <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
+                @foreach (var enumValue in Enum.GetValues<TEnum>())
+                {
+                    <MudCheckBox T="bool" 
+                                 Label="@enumValue.GetDescription()" 
+                                 Size="@Size.Small" 
+                                 Value="@(_selectedValues.Contains(enumValue))"
+                                 ValueChanged="@((isChecked) => HandleValueChanged(isChecked, enumValue))" />
+                }
+            </MudStack>
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Class="px-2 py-2">
+                <MudButton OnClick="@HandleClear" Size="Size.Small">Ocisti</MudButton>
+                <MudButton Color="@Color.Primary" OnClick="@HandleApply" Size="Size.Small">Filtriraj</MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPopover>
+}
+else
+{
+    <MudIconButton Icon="@Icons.Material.Outlined.FilterAlt" Size="@Size.Small" Disabled="true" />
+}
+
+@code {
+    
+}

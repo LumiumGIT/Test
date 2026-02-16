@@ -1,0 +1,53 @@
+@using Lumium.Application.Features.Clients.DTOs
+
+<MudStack Spacing="4">
+    @* Company Information *@
+    <div>
+        <MudText Typo="Typo.h6" Class="mb-3">Informacije o kompaniji</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Industrija</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.Industry</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Veličina kompanije</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.CompanySize</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Matični broj</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.TaxNumber</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">PIB</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.TaxIdentificationNumber</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Mesečna naknada</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.MonthlyFee.ToString("N0") RSD</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Datum registracije</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.CreatedAt.ToString("dd.MM.yyyy")</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Kontakt za fakturisanje</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.BillingContact</strong></MudText>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Default">Direktor</MudText>
+                <MudText Typo="Typo.body2"><strong>@Client.Director</strong></MudText>
+            </MudItem>
+        </MudGrid>
+    </div>
+
+    @* Address *@
+    <div>
+        <MudText Typo="Typo.h6" Class="mb-3">Adresa</MudText>
+        <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-background-grey);">
+            <MudStack Row="true" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.LocationOn" Color="Color.Default" />
+                <MudText Typo="Typo.body2">@Client.Address, @Client.Country</MudText>
+            </MudStack>
+        </MudPaper>
+    </div>
+</MudStack>

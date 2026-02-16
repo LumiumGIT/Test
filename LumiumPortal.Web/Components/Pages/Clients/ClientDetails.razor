@@ -1,0 +1,188 @@
+@page "/clients/{ClientId:guid}"
+@using Domain.Enums
+@using Lumium.Application.Common.Extensions
+@using Lumium.Application.Features.Clients.DTOs
+@using LumiumPortal.Web.Components.Pages.Clients.Details
+@inject NavigationManager Navigation
+
+<PageTitle>Detalji klijenta - @_client?.Name</PageTitle>
+
+@if (_isLoading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
+}
+else if (_client == null)
+{
+    <MudAlert Severity="Severity.Error">Klijent nije pronađen</MudAlert>
+}
+else
+{
+    <MudStack Spacing="4">
+        @* Back button *@
+        <MudButton StartIcon="@Icons.Material.Filled.ArrowBack"
+                   Variant="Variant.Text"
+                   Color="Color.Default"
+                   OnClick="@(() => Navigation.NavigateTo("/clients"))">
+            Nazad na listu klijenata
+        </MudButton>
+
+        @* Header Card *@
+        <MudPaper Elevation="2" Class="pa-6">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+                <MudStack Row="true" Spacing="4">
+                    <MudAvatar Color="Color.Primary" Size="Size.Large" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Large"/>
+                    </MudAvatar>
+                    <div>
+                        <MudText Typo="Typo.h4">@_client.Name</MudText>
+                        <MudStack Row="true" Spacing="2" Class="mt-2">
+                            <MudChip T="string" Size="Size.Small"
+                                     Color="@(_client.IsActive ? Color.Success : Color.Default)">
+                                @(_client.IsActive ? "Aktivan" : "Neaktivan")
+                            </MudChip>
+                            <MudChip T="string" Size="Size.Small"
+                                     Color="Color.Info"
+                                     Variant="Variant.Outlined">
+                                Rizik: @_client.RiskLevel.GetDescription()
+                            </MudChip>
+                        </MudStack>
+                    </div>
+                </MudStack>
+                <MudStack Row="true" Spacing="2">
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                               Variant="Variant.Outlined">
+                        Izmeni
+                    </MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Download"
+                               Variant="Variant.Outlined">
+                        Izvoz
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+
+            @* Quick Info Grid *@
+            <MudDivider Class="my-4"/>
+            <MudGrid>
+                <MudItem xs="12" md="6" lg="3">
+                    <MudStack Row="true" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Default"/>
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Default">Kontakt osoba</MudText>
+                            <MudText Typo="Typo.body2"><strong>@_client.ResponsiblePerson</strong></MudText>
+                        </div>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="6" lg="3">
+                    <MudStack Row="true" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default"/>
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Default">Email</MudText>
+                            <MudText Typo="Typo.body2"><strong>@_client.Email</strong></MudText>
+                        </div>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="6" lg="3">
+                    <MudStack Row="true" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Phone" Color="Color.Default"/>
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Default">Telefon</MudText>
+                            <MudText Typo="Typo.body2"><strong>@_client.PhoneNumber</strong></MudText>
+                        </div>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="6" lg="3">
+                    <MudStack Row="true" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.PersonOutline" Color="Color.Default"/>
+                        <div>
+                            <MudText Typo="Typo.caption" Color="Color.Default">Dodeljen</MudText>
+                            <MudText Typo="Typo.body2"><strong>@_client.AssignedTo</strong></MudText>
+                        </div>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        @* Stats Cards *@
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.Description"
+                                 Color="Color.Primary"
+                                 Size="Size.Large"/>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_client.Contracts.Count</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">Aktivnih ugovora</MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.VerifiedUser"
+                                 Color="Color.Success"
+                                 Size="Size.Large"/>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_client.Certificates.Count</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">Važećih sertifikata
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.Folder"
+                                 Color="Color.Info"
+                                 Size="Size.Large"/>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_client.Documents.Count</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">Dokumenata</MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.AttachMoney"
+                                 Color="Color.Warning"
+                                 Size="Size.Large"/>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_totalContractValue.ToString("N0")</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">RSD ukupna vrednost
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <MudPaper Elevation="2">
+            <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" 
+                     PanelClass="pa-6" Color="Color.Primary">
+        
+                @* Overview Tab *@
+                <MudTabPanel Text="Pregled" Icon="@Icons.Material.Filled.Business">
+                    <ClientOverview Client="@_client" />
+                </MudTabPanel>
+
+                @* Contracts Tab *@
+                <MudTabPanel Text="Ugovori" Icon="@Icons.Material.Filled.Description">
+                    <ClientContracts Contracts="@_client.Contracts" 
+                                     OnAddContract="@HandleAddContract" />
+                </MudTabPanel>
+
+                @* Certificates Tab *@
+                <MudTabPanel Text="Sertifikati" Icon="@Icons.Material.Filled.VerifiedUser">
+                    <ClientCertificates Certificates="@_client.Certificates" 
+                                        OnAddCertificate="@HandleAddCertificate" />
+                </MudTabPanel>
+
+                @* Documents Tab *@
+                <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
+                    <ClientDocuments Documents="@_client.Documents" 
+                                     OnUploadDocument="@HandleUploadDocument"
+                                     OnDownloadDocument="@HandleDownloadDocument" />
+                </MudTabPanel>
+            </MudTabs>
+        </MudPaper>
+    </MudStack>
+}

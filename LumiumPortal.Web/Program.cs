@@ -1,9 +1,12 @@
 using Lumium.Application;
 using Lumium.Infrastructure;   
 using LumiumPortal.Web.Components;
+using LumiumPortal.Web.Localization;
 using LumiumPortal.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using MudBlazor;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
+builder.Services.AddTransient<ILocalizationInterceptor, SrpskiLocalizationInterceptor>();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);

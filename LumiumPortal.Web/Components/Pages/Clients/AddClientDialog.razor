@@ -23,10 +23,14 @@
                 </MudItem>
 
                 <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="_model.LegalForm"
-                                  Label="Pravni tip"
-                                  For="@(() => _model.LegalForm)"
-                                  Immediate="true" />
+                    <MudSelect @bind-Value="_model.LegalForm"
+                               Label="Pravni tip"
+                               For="@(() => _model.LegalForm)">
+                        @foreach (var form in Enum.GetValues<LegalForm>())
+                        {
+                            <MudSelectItem Value="@form">@form.GetDescription()</MudSelectItem>
+                        }
+                    </MudSelect>
                 </MudItem>
 
                 <MudItem xs="12" md="4">
