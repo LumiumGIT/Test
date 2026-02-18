@@ -1,6 +1,7 @@
 using Lumium.Contracts;
 using LumiumPortal.Web.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Login;
@@ -82,6 +83,14 @@ public partial class LoginPassword : ComponentBase
         {
             _isLoading = false;
             StateHasChanged();
+        }
+    }
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && _isValid && !_isLoading)
+        {
+            await HandleLogin();
         }
     }
 }
