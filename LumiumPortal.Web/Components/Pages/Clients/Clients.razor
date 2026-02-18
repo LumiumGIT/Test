@@ -1,367 +1,356 @@
 @page "/clients"
+@inherits SecureComponentBase
 @using Domain.Enums
 @using Lumium.Application.Common.Extensions
 @using Lumium.Application.Features.Clients.DTOs
 @using LumiumPortal.Web.Components.Shared
-@using Boolean = Domain.Enums.Boolean
 
-<ProtectedPage>
-    <MudText Typo="Typo.h3" GutterBottom="true">Klijenti</MudText>
-    <MudText Class="mb-4" Color="Color.Default">Upravljajte računima i odnosima sa klijentima</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">Klijenti</MudText>
+<MudText Class="mb-4" Color="Color.Default">Upravljajte računima i odnosima sa klijentima</MudText>
 
-    <MudPaper Class="mb-4 pa-4" Elevation="1">
-        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddClientDialog" 
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.Add">
-                Dodaj klijenta
+<MudPaper Class="mb-4 pa-4" Elevation="1">
+    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <MudButton OnClick="@OpenAddClientDialog"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add">
+            Dodaj klijenta
+        </MudButton>
+
+        <MudStack Row="true" Spacing="2">
+            <MudButton Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.Download">
+                Izvoz
             </MudButton>
+        </MudStack>
+    </MudStack>
+</MudPaper>
 
-            <MudStack Row="true" Spacing="2">
-                <MudButton Variant="Variant.Outlined"
-                           StartIcon="@Icons.Material.Filled.Download">
-                    Izvoz
-                </MudButton>
-            </MudStack>
+@* Bulk Actions Toolbar *@
+@if (_selectedClients.Any())
+{
+    <MudPaper Class="mb-4 pa-4" Elevation="1" Style="background-color: #E3F2FD;">
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <strong>@_selectedClients.Count</strong> klijent(a) selektovano
+            </MudText>
+            <MudSpacer/>
+            <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
+            <MudButton Variant="Variant.Outlined" Size="Size.Small">Dodeli zaposlenog</MudButton>
+            <MudButton OnClick="@DeleteSelectedClients" Variant="Variant.Outlined" Size="Size.Small"
+                       Color="Color.Error">Obriši selektovane
+            </MudButton>
         </MudStack>
     </MudPaper>
+}
 
-    @* Bulk Actions Toolbar *@
-    @if (_selectedClients.Any())
-    {
-        <MudPaper Class="mb-4 pa-4" Elevation="1" Style="background-color: #E3F2FD;">
-            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-                <MudText Typo="Typo.body1" Color="Color.Primary">
-                    <strong>@_selectedClients.Count</strong> klijent(a) selektovano
-                </MudText>
-                <MudSpacer />
-                <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
-                <MudButton Variant="Variant.Outlined" Size="Size.Small">Dodeli zaposlenog</MudButton>
-                <MudButton OnClick="@DeleteSelectedClients" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error">Obriši selektovane</MudButton>
-            </MudStack>
-        </MudPaper>
-    }
+@* Data Grid *@
+<MudPaper Elevation="1">
+    <MudDataGrid T="ClientDto"
+                 Items="@_clients"
+                 Class="clients-grid"
+                 Hover="true"
+                 Dense="true"
+                 ReadOnly="true"
+                 RowsPerPage="10"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 FilterMode="@DataGridFilterMode.ColumnFilterRow"
+                 FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
+                 Hideable="false"
+                 Bordered="true">
+        <Columns>
 
-    @* Data Grid *@
-    <MudPaper Elevation="1">
-        <MudDataGrid T="ClientDto"
-                     Items="@_clients"
-                     Class="clients-grid"
-                     Hover="true"
-                     Dense="true"
-                     ReadOnly="true"
-                     RowsPerPage="10"
-                     Filterable="true"
-                     SortMode="SortMode.Multiple"
-                     FilterMode="@DataGridFilterMode.ColumnFilterRow"
-                     FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
-                     Hideable="false"
-                     Bordered="true">
-            <Columns>
-                
-                @* Checkbox Column *@
-                <TemplateColumn Sortable="false" Filterable="false">
-                    <HeaderTemplate>
-                        <MudCheckBox T="bool"
-                                     Value="@IsAllSelected()"
-                                     ValueChanged="@((bool val) => ToggleSelectAll())"
-                                     Color="Color.Primary"/>
-                    </HeaderTemplate>
-                    <CellTemplate>
-                        <MudCheckBox T="bool"
-                                     Value="@_selectedClients.Contains(context.Item.Id)"
-                                     ValueChanged="@((bool val) => ToggleSelectClient(context.Item.Id))"
-                                     Color="Color.Primary"/>
-                    </CellTemplate>
-                </TemplateColumn>
+            @* Checkbox Column *@
+            <TemplateColumn Sortable="false" Filterable="false">
+                <HeaderTemplate>
+                    <MudCheckBox T="bool"
+                                 Value="@IsAllSelected()"
+                                 ValueChanged="@((bool val) => ToggleSelectAll())"
+                                 Color="Color.Primary"/>
+                </HeaderTemplate>
+                <CellTemplate>
+                    <MudCheckBox T="bool"
+                                 Value="@_selectedClients.Contains(context.Item.Id)"
+                                 ValueChanged="@((bool val) => ToggleSelectClient(context.Item.Id))"
+                                 Color="Color.Primary"/>
+                </CellTemplate>
+            </TemplateColumn>
 
-                @* Naziv klijenta *@
-                <PropertyColumn Property="x => x.Name"
-                                Title="Naziv klijenta"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;">
-                    <CellTemplate>
-                        <MudLink Href="@($"/clients/{context.Item.Id}")"
-                                 Typo="Typo.body2"
-                                 Color="Color.Primary">
-                            @context.Item.Name
-                        </MudLink>
-                    </CellTemplate>
-                </PropertyColumn>
+            @* Naziv klijenta *@
+            <PropertyColumn Property="x => x.Name"
+                            Title="Naziv klijenta"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;">
+                <CellTemplate>
+                    <MudLink Href="@($"/clients/{context.Item.Id}")"
+                             Typo="Typo.body2"
+                             Color="Color.Primary">
+                        @context.Item.Name
+                    </MudLink>
+                </CellTemplate>
+            </PropertyColumn>
 
-                @* Legal Form *@
-                <PropertyColumn Property="x => x.LegalForm.GetDescription()"
-                                Title="Pravni tip"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;">
-                    <FilterTemplate>
-                        <EnumColumnFilter TItem="ClientDto"
-                                          TEnum="LegalForm"
+            @* Legal Form *@
+            <PropertyColumn Property="x => x.LegalForm.GetDescription()"
+                            Title="Pravni tip"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;">
+                <FilterTemplate>
+                    <EnumColumnFilter TItem="ClientDto"
+                                      TEnum="LegalForm"
+                                      Context="@context"
+                                      ValueSelector="@(client => client.LegalForm)" PopoverWidth="250"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            @* Tax Number *@
+            <PropertyColumn Property="x => x.TaxNumber"
+                            Title="Matični broj"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
+
+            @* PIB *@
+            <PropertyColumn Property="x => x.TaxIdentificationNumber"
+                            Title="PIB"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
+
+            @* PDV *@
+            <PropertyColumn Property="x => x.IsPdv"
+                            Title="PDV"
+                            HeaderStyle="white-space: nowrap; min-width: 50px; max-width: 50px; width: 50px;">
+                <CellTemplate>
+                    <MudText Typo="Typo.body2">@(context.Item.IsPdv ? "Da" : "Ne")</MudText>
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
                                           Context="@context"
-                                          ValueSelector="@(client => client.LegalForm)" PopoverWidth="250"/>
-                    </FilterTemplate>
-                </PropertyColumn>
+                                          ValueSelector="@(client => client.IsPdv ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
 
-                @* Tax Number *@
-                <PropertyColumn Property="x => x.TaxNumber"
-                                Title="Matični broj"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
+            @* Zaduženo lice *@
+            <PropertyColumn Property="x => x.ResponsiblePerson"
+                            Title="Zaduženo lice"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
 
-                @* PIB *@
-                <PropertyColumn Property="x => x.TaxIdentificationNumber"
-                                Title="PIB"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
+            @* Zamena *@
+            <PropertyColumn Property="x => x.BackupPerson"
+                            Title="Zamena"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
 
-                @* PDV *@
-                <PropertyColumn Property="x => x.IsPdv"
-                                Title="PDV"
-                                HeaderStyle="white-space: nowrap; min-width: 50px; max-width: 50px; width: 50px;">
-                    <CellTemplate>
-                        <MudText Typo="Typo.body2">@(context.Item.IsPdv ? "Da" : "Ne")</MudText>
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.IsPdv ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
+            @* Adresa *@
+            <PropertyColumn Property="x => x.Address"
+                            Title="Adresa"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
 
-                @* Zaduženo lice *@
-                <PropertyColumn Property="x => x.ResponsiblePerson"
-                                Title="Zaduženo lice"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
+            @* Telefon *@
+            <PropertyColumn Property="x => x.PhoneNumber"
+                            Title="Telefon"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
 
-                @* Zamena *@
-                <PropertyColumn Property="x => x.BackupPerson"
-                                Title="Zamena"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
+            @* Direktor *@
+            <PropertyColumn Property="x => x.Director"
+                            Title="Direktor"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
 
-                @* Adresa *@
-                <PropertyColumn Property="x => x.Address"
-                                Title="Adresa"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
+            @* Email *@
+            <PropertyColumn Property="x => x.Email"
+                            Title="Email"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
 
-                @* Telefon *@
-                <PropertyColumn Property="x => x.PhoneNumber"
-                                Title="Telefon"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
-
-                @* Direktor *@
-                <PropertyColumn Property="x => x.Director"
-                                Title="Direktor"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
-
-                @* Email *@
-                <PropertyColumn Property="x => x.Email"
-                                Title="Email"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
-
-                @* Boolean kolone - manje su *@
-                <PropertyColumn Property="x => x.EcoTax"
-                                Title="Eko taksa"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.EcoTax)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.EcoTax ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                <PropertyColumn Property="x => x.BeneficialOwners"
-                                Title="Vlasnici"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.BeneficialOwners)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.BeneficialOwners ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                <PropertyColumn Property="x => x.Croso"
-                                Title="CROSO"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.Croso)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.Croso ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                <PropertyColumn Property="x => x.Pep"
-                                Title="PEP"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.Pep)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.Pep ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                <PropertyColumn Property="x => x.WingsTemplate"
-                                Title="Wings"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.WingsTemplate)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.WingsTemplate ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                <PropertyColumn Property="x => x.IsActive"
-                                Title="Aktivan"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.IsActive)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.IsActive ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                <PropertyColumn Property="x => x.BusinessActivity"
-                                Title="Oblast rada"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
-                    <CellTemplate>
-                        @if (context.Item.BusinessActivity)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.BusinessActivity ? "Da" : "Ne")" />
-                    </FilterTemplate>
-                </PropertyColumn>
-
-                @* Država *@
-                <PropertyColumn Property="x => x.Country"
-                                Title="Država"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
-
-                @* Rizik *@
-                <PropertyColumn Property="x => x.RiskLevel"
-                                Title="Rizik"
-                                HeaderStyle="white-space: nowrap; min-width: 120px;"
-                                CellStyle="min-width: 120px;">
-                    <CellTemplate>
-                        <MudChip Size="Size.Small"
-                                 Color="@GetRiskColor(context.Item.RiskLevel)"
-                                 Variant="Variant.Filled">
-                            @context.Item.RiskLevel.GetDescription()
-                        </MudChip>
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <EnumColumnFilter TItem="ClientDto"
-                                          TEnum="RiskLevel"
+            @* Boolean kolone - manje su *@
+            <PropertyColumn Property="x => x.EcoTax"
+                            Title="Eko taksa"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.EcoTax)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
                                           Context="@context"
-                                          ValueSelector="@(client => client.RiskLevel)"/>
-                    </FilterTemplate>
-                </PropertyColumn>
+                                          ValueSelector="@(client => client.EcoTax ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
 
-                @* Akcije *@
-                <TemplateColumn Title="Akcije"
-                                Sortable="false"
-                                Filterable="false"
-                                HeaderStyle="white-space: nowrap; min-width: 120px;"
-                                CellStyle="min-width: 120px;">
-                    <CellTemplate>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexEnd">
-                            <MudIconButton Icon="@Icons.Material.Filled.Visibility"
-                                           Size="Size.Small"
-                                           OnClick="@(() => ViewClient(context.Item.Id))"
-                                           Title="Pregledaj"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Size="Size.Small"
-                                           Disabled="true"
-                                           Title="Izmeni"/>
-                            <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomRight">
-                                <MudMenuItem Icon="@Icons.Material.Filled.Description">Dokumenti</MudMenuItem>
-                                <MudMenuItem Icon="@Icons.Material.Filled.Shield">Sertifikati</MudMenuItem>
-                            </MudMenu>
-                        </MudStack>
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
+            <PropertyColumn Property="x => x.BeneficialOwners"
+                            Title="Vlasnici"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.BeneficialOwners)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.BeneficialOwners ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
 
-            <PagerContent>
-                <MudDataGridPager T="ClientDto" 
-                                  InfoFormat="{first_item}-{last_item} od {all_items}"
-                                  RowsPerPageString="Redova po stranici:" />
-            </PagerContent>
-        </MudDataGrid>
-    </MudPaper>
-</ProtectedPage>
+            <PropertyColumn Property="x => x.Croso"
+                            Title="CROSO"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.Croso)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.Croso ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            <PropertyColumn Property="x => x.Pep"
+                            Title="PEP"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.Pep)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.Pep ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            <PropertyColumn Property="x => x.WingsTemplate"
+                            Title="Wings"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.WingsTemplate)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.WingsTemplate ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            <PropertyColumn Property="x => x.IsActive"
+                            Title="Aktivan"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.IsActive)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.IsActive ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            <PropertyColumn Property="x => x.BusinessActivity"
+                            Title="Oblast rada"
+                            HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                <CellTemplate>
+                    @if (context.Item.BusinessActivity)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
+                    }
+                </CellTemplate>
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="ClientDto"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.BusinessActivity ? "Da" : "Ne")"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            @* Država *@
+            <PropertyColumn Property="x => x.Country"
+                            Title="Država"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;"/>
+
+            @* Rizik *@
+            <PropertyColumn Property="x => x.RiskLevel"
+                            Title="Rizik"
+                            HeaderStyle="white-space: nowrap; min-width: 120px;"
+                            CellStyle="min-width: 120px;">
+                <CellTemplate>
+                    <MudChip Size="Size.Small"
+                             Color="@GetRiskColor(context.Item.RiskLevel)"
+                             Variant="Variant.Filled">
+                        @context.Item.RiskLevel.GetDescription()
+                    </MudChip>
+                </CellTemplate>
+                <FilterTemplate>
+                    <EnumColumnFilter TItem="ClientDto"
+                                      TEnum="RiskLevel"
+                                      Context="@context"
+                                      ValueSelector="@(client => client.RiskLevel)"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            @* Izmeni *@
+            <TemplateColumn Title="Izmeni"
+                            Sortable="false"
+                            Filterable="false"
+                            HeaderStyle="white-space: nowrap; min-width: 120px;"
+                            CellStyle="min-width: 120px;">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   Disabled="true"/>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="ClientDto"
+                              InfoFormat="{first_item}-{last_item} od {all_items}"
+                              RowsPerPageString="Redova po stranici:"/>
+        </PagerContent>
+    </MudDataGrid>
+</MudPaper>

@@ -1,28 +1,27 @@
 @page "/dashboard"
+@inherits SecureComponentBase
 
-<ProtectedPage>
-    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
-        <MudText Typo="Typo.h3" GutterBottom="true">Dashboard</MudText>
-        <MudText Typo="Typo.body1" Class="mb-6">Dobrodošli na Dashboard</MudText>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+    <MudText Typo="Typo.h3" GutterBottom="true">Dashboard</MudText>
+    <MudText Typo="Typo.body1" Class="mb-6">Dobrodošli na Dashboard</MudText>
 
-        <MudGrid>
-            <MudItem xs="12" sm="6" md="3">
-                <MudCard>
-                    <MudCardContent>
-                        <MudText Typo="Typo.h6">Kupci</MudText>
-                        <MudText Typo="Typo.h3">0</MudText>
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Kupci</MudText>
+                    <MudText Typo="Typo.h3">0</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
 
-            <MudItem xs="12" sm="6" md="3">
-                <MudCard>
-                    <MudCardContent>
-                        <MudText Typo="Typo.h6">Narudžbine</MudText>
-                        <MudText Typo="Typo.h3">0</MudText>
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-    </MudContainer>
-</ProtectedPage>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Narudžbine</MudText>
+                    <MudText Typo="Typo.h3">0</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

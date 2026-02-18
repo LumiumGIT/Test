@@ -8,7 +8,7 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Clients;
 
-public partial class Clients : ComponentBase
+public partial class Clients : SecureComponentBase 
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
     
@@ -20,7 +20,7 @@ public partial class Clients : ComponentBase
     // Selection
     private readonly HashSet<Guid> _selectedClients = [];
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnSecureInitializedAsync()
     {
         await LoadClients();
     }

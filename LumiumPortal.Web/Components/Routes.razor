@@ -5,8 +5,14 @@
     <Router AppAssembly="typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+                <Authorizing>
+                    @* ✅ KRITIČNO - mora biti prazan ili sa loading *@
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                        <p>Učitavam...</p>
+                    </div>
+                </Authorizing>
                 <NotAuthorized>
-                    <RedirectToLogin />
+                    <RedirectToLogin/>
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="routeData" Selector="h1" />

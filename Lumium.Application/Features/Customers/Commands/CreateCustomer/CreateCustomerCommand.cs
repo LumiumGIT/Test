@@ -14,8 +14,7 @@ public class CreateCustomerCommand : IRequest<CustomerDto>
 }
 
 public class CreateCustomerCommandHandler(
-    IApplicationDbContext context,
-    ITenantContext tenantContext)
+    IApplicationDbContext context)
     : IRequestHandler<CreateCustomerCommand, CustomerDto>
 {
     public async Task<CustomerDto> Handle(
