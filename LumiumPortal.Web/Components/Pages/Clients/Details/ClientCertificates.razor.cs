@@ -1,5 +1,5 @@
 using Domain.Enums;
-using Lumium.Application.Features.Clients.DTOs;
+using Lumium.Application.Features.Certificates.DTOs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

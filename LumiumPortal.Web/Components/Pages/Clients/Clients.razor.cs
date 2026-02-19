@@ -14,10 +14,8 @@ public partial class Clients : SecureComponentBase
     
     private List<ClientDto> _clients = [];
     
-    // Filters
     private string _searchQuery = "";
     
-    // Selection
     private readonly HashSet<Guid> _selectedClients = [];
 
     protected override async Task OnSecureInitializedAsync()

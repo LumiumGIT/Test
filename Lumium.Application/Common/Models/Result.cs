@@ -42,7 +42,6 @@ public class Result<T> : Result
         Data = data;
     }
 
-    // ✅ Factory metode za Result<T>
     public static Result<T> Success(T data, string message = "Operacija uspešno izvršena")
         => new(true, message, data);
 

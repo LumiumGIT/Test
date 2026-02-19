@@ -13,7 +13,7 @@ public partial class AddClientDialog : ComponentBase
 
     private ClientDto _model = new();
     private MudForm? _form;
-    private CreateClientDtoValidator _validator = new();
+    private readonly CreateClientDtoValidator _validator = new();
     private bool _isSubmitting;
 
     protected override void OnInitialized()

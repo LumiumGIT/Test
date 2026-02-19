@@ -68,3 +68,20 @@ h1:focus {
 .clients-grid .mud-table-cell > * {
     justify-content: center !important;
 }
+
+:root {
+    /* Light theme */
+    --certificate-critical: #f97316;      /* Bright Orange */
+    --certificate-critical-hover: #fff7ed;
+
+    --certificate-warning: #fbbf24;       /* Bright Yellow */
+    --certificate-warning-hover: #fffbeb;
+}
+
+[data-theme="dark"] {
+    --certificate-critical: #ff6b35;      /* Još svetlija narandžasta */
+    --certificate-critical-hover: #7c2d12;
+
+    --certificate-warning: #fef08a;       /* Još svetlija žuta */
+    --certificate-warning-hover: #78350f;
+}

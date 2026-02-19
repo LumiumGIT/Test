@@ -81,20 +81,18 @@ public partial class ClientDetails : ComponentBase
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Poreski sertifikat",
+                    CertificateName = "Poreski sertifikat",
                     IssueDate = new DateTime(2026, 1, 30),
                     ExpiryDate = new DateTime(2027, 1, 30),
-                    Status = CertificateStatus.Valid,
                     IssuedBy = "Poreska uprava"
                 },
 
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Poslovna dozvola",
+                    CertificateName = "Poslovna dozvola",
                     IssueDate = new DateTime(2025, 12, 15),
                     ExpiryDate = new DateTime(2026, 12, 15),
-                    Status = CertificateStatus.Valid,
                     IssuedBy = "Gradska uprava"
                 }
             ],

@@ -34,4 +34,7 @@ public class Client : TenantEntity
     // Additional
     public string Country { get; set; } = string.Empty;
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
+    
+    // Navigation
+    public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
 }

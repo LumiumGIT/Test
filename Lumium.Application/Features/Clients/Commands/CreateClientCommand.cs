@@ -32,7 +32,7 @@ public class CreateClientCommandHandler(IApplicationDbContext context, IMapper m
 
             return savedCount == 0
                 ? Result.Failure("Klijent nije sačuvan u bazi")
-                : Result.Success($"Klijent '{request.ClientDto.Name}' je uspešno kreiran");
+                : Result.Success($"Klijent '{newClient.Name}' je uspešno kreiran");
         }
         catch (Exception ex)
         {

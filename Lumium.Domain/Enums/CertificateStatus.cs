@@ -10,6 +10,9 @@ public enum CertificateStatus
     [Description("Ističe uskoro")]
     ExpiringSoon = 1,
     
+    [Description("Samo što nije istekao")]
+    AboutToExpire = 2,
+    
     [Description("Istekao")]
-    Expired = 2
+    Expired = 3
 }

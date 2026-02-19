@@ -1,0 +1,248 @@
+@page "/certificates"
+@inherits SecureComponentBase
+@using Domain.Enums
+@using Lumium.Application.Features.Certificates.DTOs
+@using LumiumPortal.Web.Components.Shared
+
+<MudText Typo="Typo.h3" GutterBottom="true">Sertifikati</MudText>
+<MudText Class="mb-4" Color="Color.Default">Pratite rokove važenja sertifikata i upravljajte obnovama</MudText>
+
+@* Stats Cards *@
+<MudGrid Class="mb-4">
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Istekli
+                    </MudText>
+                    <MudText Typo="Typo.h4" Color="Color.Error">@ExpiredCount</MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2"
+                          Style="background-color: var(--mud-palette-error-hover); border-radius: 4px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" Size="Size.Medium"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Kritično (≤7d)
+                    </MudText>
+                    <MudText Typo="Typo.h4" Style="color: #f97316;">@AboutToExpire</MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2" Style="background-color: #fff7ed; border-radius: 4px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Warning" Style="color: #f97316;" Size="Size.Medium"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Upozorenje (≤30d)
+                    </MudText>
+                    <MudText Typo="Typo.h4" Style="color: #d97706;">@ExpiringSoonCount</MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2" Style="background-color: #fffbeb; border-radius: 4px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Schedule" Style="color: #d97706;" Size="Size.Medium"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Validni
+                    </MudText>
+                    <MudText Typo="Typo.h4" Color="Color.Success">@ValidCount</MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2"
+                          Style="background-color: var(--mud-palette-success-hover); border-radius: 4px;">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@* Toolbar *@
+<MudPaper Class="mb-4 pa-4" Elevation="1">
+    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <MudButton OnClick="@OpenAddCertificateDialog"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add">
+            Dodaj sertifikat
+        </MudButton>
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Download">
+            Izvoz
+        </MudButton>
+    </MudStack>
+</MudPaper>
+
+@* Data Grid *@
+<MudPaper Elevation="1">
+    <MudDataGrid T="CertificateDto"
+                 Items="@_certificates"
+                 Class="certificates-grid"
+                 Hover="true"
+                 Dense="true"
+                 ReadOnly="true"
+                 RowsPerPage="10"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 FilterMode="@DataGridFilterMode.ColumnFilterRow"
+                 FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
+                 Hideable="false"
+                 Bordered="true"
+                 RowStyleFunc="@GetRowStyle">
+        <Columns>
+
+            @* Status *@
+            <TemplateColumn Title="Status"
+                            Sortable="false"
+                            Filterable="false"
+                            HeaderStyle="white-space: nowrap; min-width: 80px; max-width: 80px; width: 80px;"
+                            CellStyle="min-width: 80px; max-width: 80px; width: 80px;">
+                <CellTemplate>
+                    <MudTooltip Text="@GetStatusText(context.Item.Status)">
+                        <MudIcon Icon="@Icons.Material.Filled.Circle"
+                                 Style="@($"color: {GetStatusColor(context.Item.Status)}; font-size: 14px;")"/>
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+
+            @* Naziv sertifikata *@
+            <PropertyColumn Property="x => x.CertificateName"
+                            Title="Naziv sertifikata"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;">
+                <CellTemplate>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Shield"
+                                 Size="Size.Small"
+                                 Style="color: var(--mud-palette-text-secondary);"/>
+                        <MudText Typo="Typo.body2">@context.Item.CertificateName</MudText>
+                    </MudStack>
+                </CellTemplate>
+            </PropertyColumn>
+
+            @* Klijent *@
+            <PropertyColumn Property="x => x.ClientName"
+                            Title="Klijent"
+                            HeaderStyle="white-space: nowrap; min-width: 200px;"
+                            CellStyle="min-width: 200px;">
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="CertificateDto"
+                                          Context="@context"
+                                          ValueSelector="@(c => c.ClientName)"
+                                          PopoverWidth="250"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            @* Broj sertifikata *@
+            <PropertyColumn Property="x => x.CertificateNumber"
+                            Title="Broj sertifikata"
+                            HeaderStyle="white-space: nowrap; min-width: 180px;"
+                            CellStyle="min-width: 180px;"/>
+
+            @* Izdao *@
+            <PropertyColumn Property="x => x.IssuedBy"
+                            Title="Izdao"
+                            HeaderStyle="white-space: nowrap; min-width: 180px;"
+                            CellStyle="min-width: 180px;">
+                <FilterTemplate>
+                    <ComboBoxColumnFilter T="CertificateDto"
+                                          Context="@context"
+                                          ValueSelector="@(c => c.IssuedBy)"
+                                          PopoverWidth="200"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            @* Datum izdavanja *@
+            <PropertyColumn Property="x => x.IssueDate"
+                            Title="Datum izdavanja"
+                            Filterable="false"
+                            HeaderStyle="white-space: nowrap; min-width: 160px;"
+                            CellStyle="min-width: 160px;">
+                <CellTemplate>
+                    <MudText Typo="Typo.body2">@context.Item.IssueDate.ToString("dd.MM.yyyy")</MudText>
+                </CellTemplate>
+            </PropertyColumn>
+
+            @* Datum isteka *@
+            <PropertyColumn Property="x => x.ExpiryDate"
+                            Title="Datum isteka"
+                            Filterable="false"
+                            HeaderStyle="white-space: nowrap; min-width: 160px;"
+                            CellStyle="min-width: 160px;">
+                <CellTemplate>
+                    <MudText Typo="Typo.body2">@context.Item.ExpiryDate.ToString("dd.MM.yyyy")</MudText>
+                </CellTemplate>
+            </PropertyColumn>
+
+            @* Preostalo dana *@
+            <PropertyColumn Property="x => x.DaysUntilExpiry"
+                            Title="Preostalo"
+                            HeaderStyle="white-space: nowrap; min-width: 140px;"
+                            CellStyle="min-width: 140px;">
+                <CellTemplate>
+                    <MudChip Size="Size.Small"
+                             Variant="Variant.Outlined"
+                             Style="@GetDaysChipStyle(context.Item.Status)">
+                        @GetDaysText(context.Item.DaysUntilExpiry)
+                    </MudChip>
+                </CellTemplate>
+                <FilterTemplate>
+                    <EnumColumnFilter TItem="CertificateDto"
+                                      TEnum="CertificateStatus"
+                                      Context="@context"
+                                      ValueSelector="@(c => c.Status)"/>
+                </FilterTemplate>
+            </PropertyColumn>
+
+            @* Akcije *@
+            <TemplateColumn Title="Akcije"
+                            Sortable="false"
+                            Filterable="false"
+                            HeaderStyle="white-space: nowrap; min-width: 100px;"
+                            CellStyle="min-width: 100px;">
+                <CellTemplate>
+                    <MudStack Row="true" Spacing="1" Justify="Justify.FlexEnd">
+                        <MudIconButton Icon="@Icons.Material.Filled.Autorenew"
+                                       Size="Size.Small"
+                                       Disabled="true"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
+                                       Disabled="true"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Disabled="true"/>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="CertificateDto"
+                              InfoFormat="{first_item}-{last_item} od {all_items}"
+                              RowsPerPageString="Redova po stranici:"/>
+        </PagerContent>
+    </MudDataGrid>
+</MudPaper>

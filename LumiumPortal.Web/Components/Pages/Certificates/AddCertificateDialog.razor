@@ -1,0 +1,72 @@
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" Model="@_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudSelect @bind-Value="_model.ClientId"
+                               Label="Klijent"
+                               For="@(() => _model.ClientId)"
+                               Immediate="true">
+                        @foreach (var client in Clients)
+                        {
+                            <MudSelectItem Value="@client.Id">@client.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.CertificateName"
+                                  Label="Naziv sertifikata"
+                                  For="@(() => _model.CertificateName)"
+                                  Immediate="true"/>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="_model.CertificateNumber"
+                                  Label="Broj sertifikata"
+                                  For="@(() => _model.CertificateNumber)"
+                                  Immediate="true"/>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudDatePicker @bind-Date="_issueDate"
+                                   Label="Datum izdavanja"
+                                   DateFormat="dd.MM.yyyy"
+                                   MaxDate="DateTime.Today"/>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudDatePicker @bind-Date="_expiryDate"
+                                   Label="Datum isteka"
+                                   DateFormat="dd.MM.yyyy"
+                                   MinDate="_issueDate"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.IssuedBy"
+                                  Label="Izdavalac"
+                                  For="@(() => _model.IssuedBy)"
+                                  Immediate="true"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Notes"
+                                  Label="Napomene"
+                                  Lines="3"
+                                  For="@(() => _model.Notes)"
+                                  Immediate="true"/>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text">Otkaži</MudButton>
+        <MudButton OnClick="@HandleSubmit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="_isSubmitting">
+            @(_isSubmitting ? "Čuvanje..." : "Sačuvaj")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
