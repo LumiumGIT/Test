@@ -8,7 +8,8 @@ namespace Lumium.Application.Features.Clients.Queries;
 
 public class GetClientsQuery : IRequest<List<ClientDto>>;
 
-public class GetClientsQueryHandler(IApplicationDbContextFactory contextFactory) : IRequestHandler<GetClientsQuery, List<ClientDto>>
+public class GetClientsQueryHandler(IApplicationDbContextFactory contextFactory)
+    : IRequestHandler<GetClientsQuery, List<ClientDto>>
 {
     public async Task<List<ClientDto>> Handle(GetClientsQuery request, CancellationToken cancellationToken)
     {

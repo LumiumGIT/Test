@@ -21,7 +21,6 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        // 1. Nađi tenant
         var tenant = await masterContext.Tenants
             .FirstOrDefaultAsync(t =>
                 t.Identifier == request.TenantIdentifier && t.IsActive);
@@ -31,13 +30,10 @@ public class AuthController(
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // 2. Setuj tenant context
         ((TenantContext)tenantContext).SetTenant(tenant.Id, tenant.SchemaName);
 
-        // 3. Setuj search_path
         await appContext.SetSearchPathAsync(tenant.SchemaName);
 
-        // 4. Query user preko EF Core
         var user = await appContext.Users
             .Where(u => u.Email == request.Email && u.IsActive)
             .FirstOrDefaultAsync();
@@ -47,13 +43,11 @@ public class AuthController(
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // 5. Verify password
         if (!passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
-        // 6. Generiši JWT token
         var token = jwtService.GenerateToken(
             user.Id,
             user.Email,

@@ -1,7 +1,5 @@
 using System.Reflection;
 using FluentValidation;
-using Lumium.Application.Common.Behaviors;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lumium.Application;

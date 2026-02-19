@@ -2,7 +2,6 @@ using System.Text;
 using Dapper;
 using Lumium.Application;
 using Lumium.Infrastructure;
-using Lumium.Infrastructure.Interceptors;
 using Lumium.Infrastructure.Middleware;
 using Lumium.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,15 +21,6 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddDbContext<MasterDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MasterDatabase")));
-
-builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("ApplicationDatabase");
-    var interceptor = serviceProvider.GetRequiredService<TenantConnectionInterceptor>();
-
-    options.UseNpgsql(connectionString)
-        .AddInterceptors(interceptor);
-});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

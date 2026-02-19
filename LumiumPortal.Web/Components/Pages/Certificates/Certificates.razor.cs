@@ -1,8 +1,6 @@
 using Domain.Enums;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
-using Lumium.Application.Features.Clients.DTOs;
-using Lumium.Application.Features.Clients.Queries;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -36,24 +34,6 @@ public partial class Certificates : SecureComponentBase
     
     private async Task OpenAddCertificateDialog()
     {
-        List<ClientDto> clients;
-    
-        try
-        {
-            clients = await Mediator.Send(new GetClientsQuery());
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
-            Console.WriteLine($"[ERROR] Load clients failed: {ex}");
-            return;
-        }
-        
-        var parameters = new DialogParameters
-        {
-            { "Clients", clients }
-        };
-        
         var options = new DialogOptions
         {
             MaxWidth = MaxWidth.Medium,
@@ -62,7 +42,7 @@ public partial class Certificates : SecureComponentBase
             CloseOnEscapeKey = true
         };
 
-        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", parameters, options);
+        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", options);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })

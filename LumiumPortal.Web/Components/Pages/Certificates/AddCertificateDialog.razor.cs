@@ -12,8 +12,7 @@ public partial class AddCertificateDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
     
-    [Parameter] public List<ClientDto> Clients { get; set; } = [];
-
+    private List<ClientDto> _clients = [];
     private CertificateDto _model = new();
     private MudForm? _form;
     private readonly CreateCertificateDtoValidator _validator = new();
@@ -22,7 +21,7 @@ public partial class AddCertificateDialog : ComponentBase
     private DateTime? _issueDate = DateTime.Today;
     private DateTime? _expiryDate = DateTime.Today.AddYears(1);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _model = new CertificateDto
         {
@@ -31,7 +30,20 @@ public partial class AddCertificateDialog : ComponentBase
             ExpiryDate = DateTime.Today.AddYears(1)
         };
         
-        base.OnInitialized();
+        await LoadClients();
+    }
+    
+    private async Task LoadClients()
+    {
+        try
+        {
+            _clients = await Mediator.Send(new GetClientsQuery());
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
+            Console.WriteLine($"[ERROR] Load clients failed: {ex}");
+        }
     }
 
     protected override void OnParametersSet()

@@ -7,7 +7,7 @@
                                Label="Klijent"
                                For="@(() => _model.ClientId)"
                                Immediate="true">
-                        @foreach (var client in Clients)
+                        @foreach (var client in _clients)
                         {
                             <MudSelectItem Value="@client.Id">@client.Name</MudSelectItem>
                         }
