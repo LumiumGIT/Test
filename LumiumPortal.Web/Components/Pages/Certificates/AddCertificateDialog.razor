@@ -5,11 +5,12 @@
                 <MudItem xs="12">
                     <MudSelect @bind-Value="_model.ClientId"
                                Label="Klijent"
+                               T="Guid?"
                                For="@(() => _model.ClientId)"
                                Immediate="true">
                         @foreach (var client in _clients)
                         {
-                            <MudSelectItem Value="@client.Id">@client.Name</MudSelectItem>
+                            <MudSelectItem Value="@((Guid?)client.Id)">@client.Name</MudSelectItem>
                         }
                     </MudSelect>
                 </MudItem>
@@ -52,7 +53,6 @@
                 <MudItem xs="12">
                     <MudTextField @bind-Value="_model.Notes"
                                   Label="Napomene"
-                                  Lines="3"
                                   For="@(() => _model.Notes)"
                                   Immediate="true"/>
                 </MudItem>

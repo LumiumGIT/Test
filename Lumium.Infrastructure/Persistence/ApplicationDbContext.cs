@@ -13,7 +13,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : DbContext(options), IApplicationDbContext
 {
     public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Customer> Customers { get; set; } = null!;
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Certificate> Certificates { get; set; } = null!;
 

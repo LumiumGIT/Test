@@ -11,6 +11,7 @@ public partial class Certificates : SecureComponentBase
     [Inject] private IDialogService DialogService { get; set; } = null!;
     
     private List<CertificateDto> _certificates = [];
+    private bool _isLoading = true;
 
     private int ExpiredCount => _certificates.Count(c => c.Status == CertificateStatus.Expired);
     private int AboutToExpire => _certificates.Count(c => c.Status == CertificateStatus.AboutToExpire);
@@ -19,17 +20,14 @@ public partial class Certificates : SecureComponentBase
 
     protected override async Task OnSecureInitializedAsync()
     {
+        _isLoading = true;
         await LoadCertificates();
+        _isLoading = false;
     }
 
     private async Task LoadCertificates()
     {
-        var result = await Mediator.Send(new GetCertificatesQuery());
-
-        if (result is { IsSuccess: true, Data: not null })
-        {
-            _certificates = result.Data;
-        }
+        _certificates = await Mediator.Send(new GetCertificatesQuery());
     }
     
     private async Task OpenAddCertificateDialog()

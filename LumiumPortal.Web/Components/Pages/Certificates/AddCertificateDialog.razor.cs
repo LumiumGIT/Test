@@ -1,6 +1,5 @@
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
-using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
 using LumiumPortal.Web.Components.Pages.Certificates.Validators;
 using Microsoft.AspNetCore.Components;
@@ -12,8 +11,8 @@ public partial class AddCertificateDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
     
-    private List<ClientDto> _clients = [];
-    private CertificateDto _model = new();
+    private List<(Guid Id, string Name)> _clients = [];
+    private CreateCertificateDto _model = new();
     private MudForm? _form;
     private readonly CreateCertificateDtoValidator _validator = new();
     private bool _isSubmitting;
@@ -23,9 +22,9 @@ public partial class AddCertificateDialog : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        _model = new CertificateDto
+        _model = new CreateCertificateDto
         {
-            ClientId = Guid.Empty,
+            ClientId = null,
             IssueDate = DateTime.Today,
             ExpiryDate = DateTime.Today.AddYears(1)
         };
@@ -37,7 +36,7 @@ public partial class AddCertificateDialog : ComponentBase
     {
         try
         {
-            _clients = await Mediator.Send(new GetClientsQuery());
+            _clients = await Mediator.Send(new GetClientIdsQuery());
         }
         catch (Exception ex)
         {

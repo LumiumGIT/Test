@@ -6,18 +6,18 @@ namespace LumiumPortal.Web.Components.Layout;
 public partial class MainLayout()
 {
     private MudThemeProvider? _mudThemeProvider;
-    private bool _isDarkMode;
+    private bool _isDarkMode = true;
     private bool _drawerOpen = true;
 
     private readonly MudTheme _customTheme = new()
     {
         PaletteLight = new PaletteLight
         {
-            Primary = "#00BCD4",        // tirkizna, jaka, ali ne previše svetla
+            Primary = Colors.Blue.Darken3,
             Secondary = "#0097A7",      // dublja nijansa cyan za kontrast
             Background = "#ECEFF1",     // hladna siva, ne bela
             Surface = "#FFFFFF",        // za kartice i komponente
-            AppbarBackground = "#00ACC1", // tamniji cyan za AppBar
+            AppbarBackground = Colors.Blue.Darken3, // tamniji cyan za AppBar
             DrawerBackground = "#CFD8DC",  // sivo-plava nijansa za meni
             TextPrimary = "#0D0D0D",    // gotovo crna
             TextSecondary = "#37474F",  // tamnosiva s blagim plavim tonom
@@ -40,6 +40,7 @@ public partial class MainLayout()
         if (firstRender)
         {
             var stored = await JsRuntime.InvokeAsync<string?>("localStorage.getItem", "lumium-theme-dark");
+            
             if (stored is null)
             {
                 if (_mudThemeProvider is not null)
