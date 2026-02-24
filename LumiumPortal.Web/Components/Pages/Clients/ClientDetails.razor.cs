@@ -84,7 +84,7 @@ public partial class ClientDetails : ComponentBase
                     CertificateName = "Poreski sertifikat",
                     IssueDate = new DateTime(2026, 1, 30),
                     ExpiryDate = new DateTime(2027, 1, 30),
-                    IssuedBy = "Poreska uprava"
+                    RegulatoryBodyName = "Poreska uprava"
                 },
 
                 new()
@@ -93,7 +93,7 @@ public partial class ClientDetails : ComponentBase
                     CertificateName = "Poslovna dozvola",
                     IssueDate = new DateTime(2025, 12, 15),
                     ExpiryDate = new DateTime(2026, 12, 15),
-                    IssuedBy = "Gradska uprava"
+                    RegulatoryBodyName = "Gradska uprava"
                 }
             ],
             

@@ -12,7 +12,7 @@ namespace LumiumPortal.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController(
     MasterDbContext masterContext,
-    ApplicationDbContext appContext,
+    IApplicationDbContext appContext,
     IJwtService jwtService,
     IPasswordHasher passwordHasher,
     ITenantContext tenantContext)

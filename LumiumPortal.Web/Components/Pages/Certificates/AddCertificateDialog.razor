@@ -7,7 +7,8 @@
                                Label="Klijent"
                                T="Guid?"
                                For="@(() => _model.ClientId)"
-                               Immediate="true">
+                               Immediate="true"
+                               Placeholder="Izaberite klijenta">
                         @foreach (var client in _clients)
                         {
                             <MudSelectItem Value="@((Guid?)client.Id)">@client.Name</MudSelectItem>
@@ -42,12 +43,20 @@
                                    DateFormat="dd.MM.yyyy"
                                    MinDate="_issueDate"/>
                 </MudItem>
-
+                
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="_model.IssuedBy"
-                                  Label="Izdavalac"
-                                  For="@(() => _model.IssuedBy)"
-                                  Immediate="true"/>
+                    <MudSelect @bind-Value="_model.RegulatoryBodyId"
+                               Label="Regulatorno telo"
+                               T="int?"
+                               For="@(() => _model.RegulatoryBodyId)"
+                               Immediate="true"
+                               Clearable="true"
+                               Placeholder="Izaberite regulatorno telo">
+                        @foreach (var body in _regulatoryBodies)
+                        {
+                            <MudSelectItem T="int?" Value="@((int?)body.Id)">@body.Name</MudSelectItem>
+                        }
+                    </MudSelect>
                 </MudItem>
 
                 <MudItem xs="12">

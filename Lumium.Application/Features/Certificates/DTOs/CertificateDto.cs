@@ -11,7 +11,8 @@ public class CertificateDto
     public string CertificateNumber { get; set; } = string.Empty;
     public DateTime IssueDate { get; set; }
     public DateTime ExpiryDate { get; set; }
-    public string IssuedBy { get; set; } = string.Empty;
+    public int RegulatoryBodyId { get; set; }
+    public string RegulatoryBodyName { get; set; } = string.Empty; 
     public string? Notes { get; set; }
     public CertificateStatus Status => DaysUntilExpiry < 0
         ? CertificateStatus.Expired

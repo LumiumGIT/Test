@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Features.Clients.Commands;
 
-public class DeleteClientsCommand(HashSet<Guid> clientIds) : IRequest<Result<int>>
-{
-    public HashSet<Guid> ClientIds { get; } = clientIds;
-}
-
+public record DeleteClientsCommand(HashSet<Guid> ClientIds) : IRequest<Result<int>>;
 public class DeleteClientsCommandHandler(IApplicationDbContextFactory contextFactory)
     : IRequestHandler<DeleteClientsCommand, Result<int>>
 {

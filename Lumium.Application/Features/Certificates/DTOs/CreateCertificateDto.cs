@@ -7,6 +7,6 @@ public class CreateCertificateDto
     public string CertificateNumber { get; set; } = string.Empty;
     public DateTime IssueDate { get; set; } = DateTime.Today;
     public DateTime ExpiryDate { get; set; } = DateTime.Today.AddYears(1);
-    public string IssuedBy { get; set; } = string.Empty;
+    public int? RegulatoryBodyId { get; set; }
     public string? Notes { get; set; }
 }

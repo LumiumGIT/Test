@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Features.Clients.Queries;
 
-public class GetClientIdsQuery : IRequest<List<(Guid Id, string Name)>>;
+public record GetClientIdsQuery : IRequest<List<(Guid Id, string Name)>>;
 
 public class GetClientIdsQueryHandler(IApplicationDbContextFactory contextFactory)
     : IRequestHandler<GetClientIdsQuery, List<(Guid Id, string Name)>>

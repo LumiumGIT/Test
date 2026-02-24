@@ -12,9 +12,13 @@ namespace Lumium.Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ITenantContext tenantContext)
     : DbContext(options), IApplicationDbContext
 {
+    // Tenant-specific
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Certificate> Certificates { get; set; } = null!;
+    
+    // Shared lookup (public schema)
+    public DbSet<RegulatoryBody> RegulatoryBodies { get; set; } = null!;
 
     public string GetTenantId()
     {

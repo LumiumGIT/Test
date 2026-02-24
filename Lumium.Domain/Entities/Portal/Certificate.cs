@@ -9,7 +9,7 @@ public class Certificate : TenantEntity
     public string CertificateNumber { get; set; } = string.Empty;
     public DateTime IssueDate { get; set; }
     public DateTime ExpiryDate { get; set; }
-    public string IssuedBy { get; set; } = string.Empty;
+    public int RegulatoryBodyId { get; set; }
     public string? Notes { get; set; }
     
     // Navigation

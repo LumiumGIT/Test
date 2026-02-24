@@ -8,10 +8,7 @@ using MediatR;
 
 namespace Lumium.Application.Features.Clients.Commands;
 
-public class CreateClientCommand(ClientDto clientDto) : IRequest<Result>
-{
-    public ClientDto ClientDto { get; } = clientDto;
-}
+public record CreateClientCommand(ClientDto ClientDto) : IRequest<Result>;
 
 public class CreateClientCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateClientCommand, Result>

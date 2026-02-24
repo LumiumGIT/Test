@@ -1,6 +1,8 @@
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Clients.Queries;
+using Lumium.Application.Features.RegulatoryBodies.DTOs;
+using Lumium.Application.Features.RegulatoryBodies.Queries;
 using LumiumPortal.Web.Components.Pages.Certificates.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -12,6 +14,7 @@ public partial class AddCertificateDialog : ComponentBase
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
     
     private List<(Guid Id, string Name)> _clients = [];
+    private List<RegulatoryBodyDto> _regulatoryBodies = [];
     private CreateCertificateDto _model = new();
     private MudForm? _form;
     private readonly CreateCertificateDtoValidator _validator = new();
@@ -24,11 +27,11 @@ public partial class AddCertificateDialog : ComponentBase
     {
         _model = new CreateCertificateDto
         {
-            ClientId = null,
             IssueDate = DateTime.Today,
             ExpiryDate = DateTime.Today.AddYears(1)
         };
         
+        await LoadRegulatoryBodies();
         await LoadClients();
     }
     
@@ -42,6 +45,19 @@ public partial class AddCertificateDialog : ComponentBase
         {
             Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
             Console.WriteLine($"[ERROR] Load clients failed: {ex}");
+        }
+    }
+    
+    private async Task LoadRegulatoryBodies()
+    {
+        try
+        {
+            _regulatoryBodies = await Mediator.Send(new GetRegulatoryBodiesQuery());
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška pri učitavanju regulatornih tela: {ex.Message}", Severity.Error);
+            Console.WriteLine($"[ERROR] Load regulatory bodies failed: {ex}");
         }
     }
 

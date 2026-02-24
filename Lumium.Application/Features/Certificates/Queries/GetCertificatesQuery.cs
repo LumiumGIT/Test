@@ -7,21 +7,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Features.Certificates.Queries;
 
-public class GetCertificatesQuery : IRequest<List<CertificateDto>>;
+public record GetCertificatesQuery : IRequest<List<CertificateDto>>;
 
 public class GetCertificatesQueryHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<GetCertificatesQuery, List<CertificateDto>>
 {
     public async Task<List<CertificateDto>> Handle(GetCertificatesQuery request, CancellationToken cancellationToken)
     {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+         return await contextFactory.ExecuteInContextAsync(async context =>
         {
             var certificates = await context.Certificates
                 .Include(c => c.Client)
                 .OrderBy(c => c.ExpiryDate)
                 .ToListAsync(cancellationToken);
+            
+            var regulatoryBodies = await context.RegulatoryBodies
+                .ToDictionaryAsync(r => r.Id, r => r.Name, cancellationToken);
+            
+            var certificateDtOs = mapper.Map<List<CertificateDto>>(certificates);
 
-            return mapper.Map<List<CertificateDto>>(certificates);
+            foreach (var certificateDto in certificateDtOs)
+            {
+                certificateDto.RegulatoryBodyName = regulatoryBodies[certificateDto.RegulatoryBodyId];
+            }
+
+            return certificateDtOs;
         }, cancellationToken);
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Features.Clients.Queries;
 
-public class GetClientsQuery : IRequest<List<ClientDto>>;
+public record GetClientsQuery : IRequest<List<ClientDto>>;
 
 public class GetClientsQueryHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<GetClientsQuery, List<ClientDto>>

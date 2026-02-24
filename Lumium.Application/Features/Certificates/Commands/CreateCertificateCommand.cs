@@ -8,11 +8,7 @@ using MediatR;
 
 namespace Lumium.Application.Features.Certificates.Commands;
 
-public class CreateCertificateCommand(CreateCertificateDto certificateDto) : IRequest<Result>
-{
-    public CreateCertificateDto CertificateDto { get; } = certificateDto;
-}
-
+public record CreateCertificateCommand(CreateCertificateDto CertificateDto) : IRequest<Result>;
 public class CreateCertificateCommandHandler(
     IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateCertificateCommand, Result>

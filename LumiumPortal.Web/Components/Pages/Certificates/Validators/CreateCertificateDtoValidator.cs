@@ -26,7 +26,7 @@ public class CreateCertificateDtoValidator : AbstractValidator<CreateCertificate
             .NotEmpty().WithMessage(RequiredFieldMessage)
             .GreaterThan(x => x.IssueDate).WithMessage("Datum isteka mora biti nakon datuma izdavanja");
 
-        RuleFor(x => x.IssuedBy)
+        RuleFor(x => x.RegulatoryBodyId)
             .NotEmpty().WithMessage(RequiredFieldMessage);
     }
 

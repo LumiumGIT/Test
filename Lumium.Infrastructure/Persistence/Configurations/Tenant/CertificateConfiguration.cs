@@ -17,7 +17,7 @@ public class CertificateConfiguration : TenantEntityConfiguration<Certificate>
         builder.Property(c => c.CertificateNumber).HasColumnName("certificate_number");
         builder.Property(c => c.IssueDate).HasColumnName("issue_date");
         builder.Property(c => c.ExpiryDate).HasColumnName("expiry_date");
-        builder.Property(c => c.IssuedBy).HasColumnName("issued_by");
+        builder.Property(c => c.RegulatoryBodyId).HasColumnName("regulatory_body_id");
         builder.Property(c => c.Notes).HasColumnName("notes");
 
         // Relationships

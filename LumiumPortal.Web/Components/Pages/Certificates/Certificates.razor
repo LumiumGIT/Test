@@ -95,10 +95,6 @@ else
                        StartIcon="@Icons.Material.Filled.Add">
                 Dodaj sertifikat
             </MudButton>
-            <MudButton Variant="Variant.Outlined"
-                       StartIcon="@Icons.Material.Filled.Download">
-                Izvoz
-            </MudButton>
         </MudStack>
     </MudPaper>
 
@@ -169,14 +165,14 @@ else
                                 CellStyle="min-width: 180px;"/>
 
                 @* Izdao *@
-                <PropertyColumn Property="x => x.IssuedBy"
+                <PropertyColumn Property="x => x.RegulatoryBodyName"
                                 Title="Izdao"
                                 HeaderStyle="white-space: nowrap; min-width: 180px;"
                                 CellStyle="min-width: 180px;">
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="CertificateDto"
                                               Context="@context"
-                                              ValueSelector="@(c => c.IssuedBy)"
+                                              ValueSelector="@(c => c.RegulatoryBodyName)"
                                               PopoverWidth="200"/>
                     </FilterTemplate>
                 </PropertyColumn>
