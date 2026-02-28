@@ -20,13 +20,13 @@ else
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                                 Style="text-transform: uppercase; font-weight: 500;">
                             Istekli
                         </MudText>
                         <MudText Typo="Typo.h4" Color="Color.Error">@ExpiredCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2"
-                              Style="background-color: var(--mud-palette-error-hover); border-radius: 4px;">
+                              Style="border-radius: 4px;">
                         <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" Size="Size.Medium"/>
                     </MudPaper>
                 </MudStack>
@@ -38,7 +38,7 @@ else
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                                 Style="text-transform: uppercase; font-weight: 500;">
                             Kritično (≤ 30d)
                         </MudText>
                         <MudText Typo="Typo.h4" Style="color: #f97316;">@AboutToExpire</MudText>
@@ -55,7 +55,7 @@ else
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                                 Style="text-transform: uppercase; font-weight: 500;">
                             Upozorenje (≤ 45d)
                         </MudText>
                         <MudText Typo="Typo.h4" Style="color: #d97706;">@ExpiringSoonCount</MudText>
@@ -72,13 +72,13 @@ else
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                                 Style="text-transform: uppercase; font-weight: 500;">
                             Važeći
                         </MudText>
                         <MudText Typo="Typo.h4" Color="Color.Success">@ValidCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2"
-                              Style="background-color: var(--mud-palette-success-hover); border-radius: 4px;">
+                              Style="border-radius: 4px;">
                         <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"/>
                     </MudPaper>
                 </MudStack>
@@ -138,8 +138,7 @@ else
                     <CellTemplate>
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                             <MudIcon Icon="@Icons.Material.Filled.Shield"
-                                     Size="Size.Small"
-                                     Style="color: var(--mud-palette-text-secondary);"/>
+                                     Size="Size.Small"/>
                             <MudText Typo="Typo.body2">@context.Item.CertificateName</MudText>
                         </MudStack>
                     </CellTemplate>
@@ -235,7 +234,7 @@ else
                                            Disabled="true"/>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                            Size="Size.Small"
-                                           Disabled="true"/>
+                                           OnClick="@(() => OpenDeleteDialog(context.Item))" />
                         </MudStack>
                     </CellTemplate>
                 </TemplateColumn>

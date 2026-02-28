@@ -1,6 +1,8 @@
 using Domain.Enums;
+using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
+using LumiumPortal.Web.Components.Shared;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -46,6 +48,46 @@ public partial class Certificates : SecureComponentBase
         if (result is { Canceled: false })
         {
             await LoadCertificates();
+        }
+    }
+    
+    private async Task OpenDeleteDialog(CertificateDto certificate)
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(ConfirmDialog.Message), $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?" },
+            { nameof(ConfirmDialog.ConfirmText), "Obriši" },
+            { nameof(ConfirmDialog.ConfirmColor), Color.Error }
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDialog>("Potvrda brisanja", parameters, options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            await DeleteCertificate(certificate.Id);
+        }
+    }
+    
+    private async Task DeleteCertificate(Guid id)
+    {
+        var result = await Mediator.Send(new DeleteCertificateCommand(id));
+
+        if (result.IsSuccess)
+        {
+            Snackbar.Add(result.Message, Severity.Success);
+            await LoadCertificates();
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
         }
     }
 
