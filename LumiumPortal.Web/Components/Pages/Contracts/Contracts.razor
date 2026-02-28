@@ -21,12 +21,29 @@ else
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption"
                                  Style="text-transform: uppercase; font-weight: 500;">
-                            Aktivni
+                            Otkazani
                         </MudText>
-                        <MudText Typo="Typo.h4" Color="Color.Success">@ActiveCount</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Error">@CancelledCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
-                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"/>
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Medium"/>
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption"
+                                 Style="text-transform: uppercase; font-weight: 500;">
+                            Završeni
+                        </MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Info">@CompletedCount</MudText>
+                    </MudStack>
+                    <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
+                        <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Info" Size="Size.Medium"/>
                     </MudPaper>
                 </MudStack>
             </MudPaper>
@@ -55,29 +72,12 @@ else
                     <MudStack Spacing="1">
                         <MudText Typo="Typo.caption"
                                  Style="text-transform: uppercase; font-weight: 500;">
-                            Završeni
+                            Aktivni
                         </MudText>
-                        <MudText Typo="Typo.h4" Color="Color.Info">@CompletedCount</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Success">@ActiveCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
-                        <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Info" Size="Size.Medium"/>
-                    </MudPaper>
-                </MudStack>
-            </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Elevation="1" Class="pa-4">
-                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                    <MudStack Spacing="1">
-                        <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500;">
-                            Otkazani
-                        </MudText>
-                        <MudText Typo="Typo.h4" Color="Color.Error">@CancelledCount</MudText>
-                    </MudStack>
-                    <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
-                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Medium"/>
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"/>
                     </MudPaper>
                 </MudStack>
             </MudPaper>
@@ -100,18 +100,41 @@ else
     <MudPaper Class="pa-4">
         <MudDataGrid T="ContractDto"
                      Items="@_contracts"
-                     Filterable="true"
-                     FilterMode="DataGridFilterMode.ColumnFilterRow"
+                     Class="contracts-grid"
                      Hover="true"
-                     Dense="true">
+                     Dense="true"
+                     ReadOnly="true"
+                     RowsPerPage="10"
+                     Filterable="true"
+                     SortMode="SortMode.Multiple"
+                     FilterMode="@DataGridFilterMode.ColumnFilterRow"
+                     FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
+                     Hideable="false"
+                     Bordered="true">
             <Columns>
-                <PropertyColumn Property="c => c.ClientName" Title="Klijent"/>
+                <PropertyColumn Property="c => c.ClientName" 
+                                Title="Klijent"
+                                HeaderStyle="white-space: nowrap; min-width: 200px;"
+                                CellStyle="min-width: 200px;">
+                    <FilterTemplate>
+                        <ComboBoxColumnFilter T="ContractDto"
+                                              Context="@context"
+                                              ValueSelector="@(c => c.ClientName)"
+                                              PopoverWidth="250"/>
+                    </FilterTemplate>
+                </PropertyColumn>
 
-                <PropertyColumn Property="c => c.ContractNumber" Title="Broj ugovora"/>
+                <PropertyColumn Property="c => c.ContractNumber" 
+                                Title="Broj ugovora"
+                                HeaderStyle="white-space: nowrap; min-width: 200px;"
+                                CellStyle="min-width: 200px;" />
 
-                <PropertyColumn Property="c => c.MonthlyFee" Title="Mesečna obaveza">
+                <PropertyColumn Property="c => c.MonthlyFee" 
+                                Title="Mesečna obaveza"
+                                HeaderStyle="white-space: nowrap; min-width: 220px;"
+                                CellStyle="min-width: 220px;" >
                     <CellTemplate>
-                        @context.Item.MonthlyFee.ToString("C2")
+                        €@context.Item.MonthlyFee.ToString("N2")
                     </CellTemplate>
                 </PropertyColumn>
 
@@ -121,12 +144,26 @@ else
                             @GetStatusText(context.Item.Status)
                         </MudChip>
                     </CellTemplate>
+                    <FilterTemplate>
+                        <EnumColumnFilter TItem="ContractDto"
+                                          TEnum="ContractStatus"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.Status)"
+                                          PopoverWidth="200"/>
+                    </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="c => c.Type" Title="Tip">
                     <CellTemplate>
                         @GetTypeText(context.Item.Type)
                     </CellTemplate>
+                    <FilterTemplate>
+                        <EnumColumnFilter TItem="ContractDto"
+                                          TEnum="ContractType"
+                                          Context="@context"
+                                          ValueSelector="@(client => client.Type)"
+                                          PopoverWidth="200"/>
+                    </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="c => c.StartDate" Title="Datum početka">
@@ -164,6 +201,12 @@ else
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
+            
+            <PagerContent>
+                <MudDataGridPager T="ContractDto"
+                                  InfoFormat="{first_item}-{last_item} od {all_items}"
+                                  RowsPerPageString="Redova po stranici:"/>
+            </PagerContent>
         </MudDataGrid>
     </MudPaper>
 }
