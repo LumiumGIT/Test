@@ -1,4 +1,5 @@
 using Domain.Enums;
+using Domain.Enums.Certificates;
 
 namespace Lumium.Application.Features.Certificates.DTOs;
 

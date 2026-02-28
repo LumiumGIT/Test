@@ -1,4 +1,5 @@
 using Domain.Enums;
+using Domain.Enums.Certificates;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;

@@ -1,0 +1,118 @@
+@using Domain.Enums.Contracts
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" Model="_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudSelect @bind-Value="_model.ClientId"
+                               Label="Klijent"
+                               T="Guid?"
+                               For="@(() => _model.ClientId)"
+                               Immediate="true"
+                               Required="true">
+                        @foreach (var client in _clients)
+                        {
+                            <MudSelectItem T="Guid" Value="@client.Id">@client.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.ContractNumber"
+                                  Label="Broj ugovora"
+                                  For="@(() => _model.ContractNumber)"
+                                  Immediate="true"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudNumericField T="decimal"
+                                     @bind-Value="_model.MonthlyFee"
+                                     Label="Mesečna obaveza"
+                                     For="@(() => _model.MonthlyFee)"
+                                     Immediate="true"
+                                     Format="C2"
+                                     Min="0"
+                                     Required="true"/>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect @bind-Value="_model.Status"
+                               Label="Status"
+                               T="ContractStatus"
+                               For="@(() => _model.Status)"
+                               Immediate="true">
+                        <MudSelectItem T="ContractStatus" Value="ContractStatus.Active">Aktivan</MudSelectItem>
+                        <MudSelectItem T="ContractStatus" Value="ContractStatus.Pending">Na čekanju</MudSelectItem>
+                        <MudSelectItem T="ContractStatus" Value="ContractStatus.Completed">Završen</MudSelectItem>
+                        <MudSelectItem T="ContractStatus" Value="ContractStatus.Cancelled">Otkazan</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect @bind-Value="_model.Type"
+                               Label="Tip ugovora"
+                               T="ContractType"
+                               For="@(() => _model.Type)"
+                               Immediate="true">
+                        <MudSelectItem T="ContractType" Value="ContractType.Recurring">Ponavljajući</MudSelectItem>
+                        <MudSelectItem T="ContractType" Value="ContractType.OneTime">Jednokratni</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudRadioGroup @bind-Value="_model.Duration" T="ContractDuration">
+                        <MudRadio T="ContractDuration" Value="ContractDuration.Fixed" Color="Color.Primary">
+                            Vremenski određen
+                        </MudRadio>
+                        <MudRadio T="ContractDuration" Value="ContractDuration.Indefinite" Color="Color.Primary">
+                            Na neodređeno
+                        </MudRadio>
+                    </MudRadioGroup>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker @bind-Date="_startDate"
+                                   Label="Datum početka"
+                                   Required="true"
+                                   DateFormat="dd.MM.yyyy"/>
+                </MudItem>
+
+                @if (_model.Duration == ContractDuration.Fixed)
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker @bind-Date="_endDate"
+                                       Label="Datum završetka"
+                                       Required="true"
+                                       DateFormat="dd.MM.yyyy"
+                                       MinDate="_startDate"/>
+                    </MudItem>
+                }
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Notes"
+                                  Label="Komentar"
+                                  For="@(() => _model.Notes)"
+                                  Lines="3"
+                                  Immediate="true"/>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Otkaži</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="HandleSubmit"
+                   Disabled="@_isSubmitting">
+            @if (_isSubmitting)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Čuvam...</MudText>
+            }
+            else
+            {
+                <MudText>Sačuvaj</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

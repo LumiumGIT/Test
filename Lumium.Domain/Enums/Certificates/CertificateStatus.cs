@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Domain.Enums;
+namespace Domain.Enums.Certificates;
 
 public enum CertificateStatus
 {

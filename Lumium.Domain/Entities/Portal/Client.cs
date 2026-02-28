@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.Enums;
+using Domain.Enums.Clients;
 
 namespace Domain.Entities.Portal;
 

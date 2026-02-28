@@ -20,10 +20,6 @@ public class CertificateConfiguration : TenantEntityConfiguration<Certificate>
         builder.Property(c => c.RegulatoryBodyId).HasColumnName("regulatory_body_id");
         builder.Property(c => c.Notes).HasColumnName("notes");
 
-        // Relationships
-        builder.HasOne(c => c.Client)
-            .WithMany(cl => cl.Certificates)
-            .HasForeignKey(c => c.ClientId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(c => c.Client).WithMany(cl => cl.Certificates).HasForeignKey(c => c.ClientId);
     }
 }

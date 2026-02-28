@@ -1,4 +1,5 @@
 using Domain.Enums;
+using Domain.Enums.Clients;
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;

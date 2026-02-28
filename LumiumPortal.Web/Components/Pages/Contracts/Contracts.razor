@@ -1,0 +1,169 @@
+@page "/contracts"
+@using Domain.Enums.Contracts
+@using Lumium.Application.Features.Contracts.DTOs
+@using LumiumPortal.Web.Components.Shared
+@inherits SecureComponentBase
+
+@if (_isLoading)
+{
+    <LoadingIndicator/>
+}
+else
+{
+    <MudText Typo="Typo.h3" GutterBottom="true">Ugovori</MudText>
+    <MudText Class="mb-4" Color="Color.Default">Upravljajte ugovorima sa klijentima i pratite mesečne obaveze</MudText>
+
+    @* Stats Cards *@
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption"
+                                 Style="text-transform: uppercase; font-weight: 500;">
+                            Aktivni
+                        </MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Success">@ActiveCount</MudText>
+                    </MudStack>
+                    <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Medium"/>
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption"
+                                 Style="text-transform: uppercase; font-weight: 500;">
+                            Na čekanju
+                        </MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Warning">@PendingCount</MudText>
+                    </MudStack>
+                    <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
+                        <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Warning" Size="Size.Medium"/>
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption"
+                                 Style="text-transform: uppercase; font-weight: 500;">
+                            Završeni
+                        </MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Info">@CompletedCount</MudText>
+                    </MudStack>
+                    <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
+                        <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Info" Size="Size.Medium"/>
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.caption"
+                                 Style="text-transform: uppercase; font-weight: 500;">
+                            Otkazani
+                        </MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Error">@CancelledCount</MudText>
+                    </MudStack>
+                    <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
+                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Medium"/>
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @* Toolbar *@
+    <MudPaper Class="mb-4 pa-4" Elevation="1">
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudButton OnClick="@OpenAddContractDialog"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add">
+                Dodaj ugovor
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+
+    @* DataGrid *@
+    <MudPaper Class="pa-4">
+        <MudDataGrid T="ContractDto"
+                     Items="@_contracts"
+                     Filterable="true"
+                     FilterMode="DataGridFilterMode.ColumnFilterRow"
+                     Hover="true"
+                     Dense="true">
+            <Columns>
+                <PropertyColumn Property="c => c.ClientName" Title="Klijent"/>
+
+                <PropertyColumn Property="c => c.ContractNumber" Title="Broj ugovora"/>
+
+                <PropertyColumn Property="c => c.MonthlyFee" Title="Mesečna obaveza">
+                    <CellTemplate>
+                        @context.Item.MonthlyFee.ToString("C2")
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <PropertyColumn Property="c => c.Status" Title="Status">
+                    <CellTemplate>
+                        <MudChip Color="@GetStatusColor(context.Item.Status)" Size="Size.Small">
+                            @GetStatusText(context.Item.Status)
+                        </MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <PropertyColumn Property="c => c.Type" Title="Tip">
+                    <CellTemplate>
+                        @GetTypeText(context.Item.Type)
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <PropertyColumn Property="c => c.StartDate" Title="Datum početka">
+                    <CellTemplate>
+                        @context.Item.StartDate.ToString("dd.MM.yyyy")
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <TemplateColumn Title="Važenje do" Filterable="false">
+                    <CellTemplate>
+                        @if (context.Item.Duration == ContractDuration.Indefinite)
+                        {
+                            <MudChip Color="Color.Info" Size="Size.Small">Na neodređeno</MudChip>
+                        }
+                        else if (context.Item.EndDate.HasValue)
+                        {
+                            <span>@context.Item.EndDate.Value.ToString("dd.MM.yyyy")</span>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">-</MudText>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <PropertyColumn Property="c => c.Notes" Title="Komentar"/>
+
+                <TemplateColumn Title="Akcije" Filterable="false" Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => OpenDeleteDialog(context.Item))"
+                                       Title="Obriši ugovor"/>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+    </MudPaper>
+}

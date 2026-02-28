@@ -1,4 +1,7 @@
 using Domain.Enums;
+using Domain.Enums.Clients;
+using Domain.Enums.Contracts;
+using Domain.Enums.Documents;
 using Lumium.Application.Features.Clients.DTOs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
