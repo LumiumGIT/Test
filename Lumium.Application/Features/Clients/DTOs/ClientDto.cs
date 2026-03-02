@@ -1,4 +1,3 @@
-using Domain.Enums;
 using Domain.Enums.Clients;
 
 namespace Lumium.Application.Features.Clients.DTOs;
