@@ -18,7 +18,7 @@ public partial class AddContractDialog : ComponentBase
     private readonly CreateContractDtoValidator _validator = new();
     private bool _isSubmitting;
 
-    private List<ClientDto> _clients = new();
+    private List<ClientDto> _clients = [];
     private DateTime? _startDate = DateTime.Today;
     private DateTime? _endDate = DateTime.Today.AddYears(1);
 

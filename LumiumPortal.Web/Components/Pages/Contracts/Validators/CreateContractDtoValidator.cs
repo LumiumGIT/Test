@@ -12,7 +12,7 @@ public class CreateContractDtoValidator : AbstractValidator<CreateContractDto>
             .NotEmpty().WithMessage("Klijent je obavezan");
         
         RuleFor(x => x.ContractNumber)
-            .MaximumLength(100).WithMessage("Broj ugovora ne sme biti duži od 100 karaktera");
+            .NotEmpty().WithMessage("Broj ugovora je obavezan");
         
         RuleFor(x => x.MonthlyFee)
             .GreaterThan(0).WithMessage("Mesečna obaveza mora biti veća od 0");

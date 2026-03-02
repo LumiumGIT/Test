@@ -153,7 +153,10 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.Type" Title="Tip">
+                <PropertyColumn Property="c => c.Type" 
+                                Title="Tip"
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @GetTypeText(context.Item.Type)
                     </CellTemplate>

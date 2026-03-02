@@ -69,6 +69,26 @@ h1:focus {
     justify-content: center !important;
 }
 
+/* Centriranje header teksta */
+.certificates-grid .mud-table-cell {
+    text-align: center !important;
+}
+
+/* Centriranje sadržaja u ćelijama */
+.certificates-grid .mud-table-cell > * {
+    justify-content: center !important;
+}
+
+/* Centriranje header teksta */
+.contracts-grid .mud-table-cell {
+    text-align: center !important;
+}
+
+/* Centriranje sadržaja u ćelijama */
+.contracts-grid .mud-table-cell > * {
+    justify-content: center !important;
+}
+
 :root {
     /* Light theme */
     --certificate-critical: #f97316;      /* Bright Orange */

@@ -1,6 +1,5 @@
 @page "/clients"
 @inherits SecureComponentBase
-@using Domain.Enums
 @using Domain.Enums.Clients
 @using Lumium.Application.Common.Extensions
 @using Lumium.Application.Features.Clients.DTOs
@@ -43,7 +42,6 @@ else
                 </MudText>
                 <MudSpacer/>
                 <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
-                <MudButton Variant="Variant.Outlined" Size="Size.Small">Dodeli zaposlenog</MudButton>
                 <MudButton OnClick="@DeleteSelectedClients" Variant="Variant.Outlined" Size="Size.Small"
                            Color="Color.Error">Obriši selektovane
                 </MudButton>
@@ -127,7 +125,8 @@ else
                 @* PDV *@
                 <PropertyColumn Property="x => x.IsPdv"
                                 Title="PDV"
-                                HeaderStyle="white-space: nowrap; min-width: 50px; max-width: 50px; width: 50px;">
+                                HeaderStyle="white-space: nowrap; min-width: 70px;"
+                                Sortable="false">
                     <CellTemplate>
                         <MudText Typo="Typo.body2">@(context.Item.IsPdv ? "Da" : "Ne")</MudText>
                     </CellTemplate>
@@ -177,7 +176,8 @@ else
                 @* Boolean kolone - manje su *@
                 <PropertyColumn Property="x => x.EcoTax"
                                 Title="Eko taksa"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.EcoTax)
                         {
@@ -197,7 +197,8 @@ else
 
                 <PropertyColumn Property="x => x.BeneficialOwners"
                                 Title="Vlasnici"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.BeneficialOwners)
                         {
@@ -217,7 +218,8 @@ else
 
                 <PropertyColumn Property="x => x.Croso"
                                 Title="CROSO"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.Croso)
                         {
@@ -237,7 +239,8 @@ else
 
                 <PropertyColumn Property="x => x.Pep"
                                 Title="PEP"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.Pep)
                         {
@@ -257,7 +260,8 @@ else
 
                 <PropertyColumn Property="x => x.WingsTemplate"
                                 Title="Wings"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.WingsTemplate)
                         {
@@ -277,7 +281,8 @@ else
 
                 <PropertyColumn Property="x => x.IsActive"
                                 Title="Aktivan"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.IsActive)
                         {
@@ -297,7 +302,8 @@ else
 
                 <PropertyColumn Property="x => x.BusinessActivity"
                                 Title="Oblast rada"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.BusinessActivity)
                         {
