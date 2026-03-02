@@ -17,6 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Certificate> Certificates { get; set; } = null!;
     public DbSet<Contract> Contracts { get; set; } = null!;
+    public DbSet<Document> Documents { get; set; } = null!;
     
     // Shared lookup (public schema)
     public DbSet<RegulatoryBody> RegulatoryBodies { get; set; } = null!;

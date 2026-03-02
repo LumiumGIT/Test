@@ -100,7 +100,7 @@ else
     <MudPaper Class="pa-4">
         <MudDataGrid T="ContractDto"
                      Items="@_contracts"
-                     Class="contracts-grid"
+                     Class="common-grid"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -120,7 +120,7 @@ else
                         <ComboBoxColumnFilter T="ContractDto"
                                               Context="@context"
                                               ValueSelector="@(c => c.ClientName)"
-                                              PopoverWidth="250"/>
+                                              PopoverWidth="300"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
@@ -194,7 +194,7 @@ else
 
                 <PropertyColumn Property="c => c.Notes" Title="Komentar"/>
 
-                <TemplateColumn Title="Akcije" Filterable="false" Sortable="false">
+                <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
                     <CellTemplate>
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"

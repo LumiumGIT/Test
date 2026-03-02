@@ -60,32 +60,12 @@ h1:focus {
 }
 
 /* Centriranje header teksta */
-.clients-grid .mud-table-cell {
+.common-grid .mud-table-cell {
     text-align: center !important;
 }
 
 /* Centriranje sadržaja u ćelijama */
-.clients-grid .mud-table-cell > * {
-    justify-content: center !important;
-}
-
-/* Centriranje header teksta */
-.certificates-grid .mud-table-cell {
-    text-align: center !important;
-}
-
-/* Centriranje sadržaja u ćelijama */
-.certificates-grid .mud-table-cell > * {
-    justify-content: center !important;
-}
-
-/* Centriranje header teksta */
-.contracts-grid .mud-table-cell {
-    text-align: center !important;
-}
-
-/* Centriranje sadržaja u ćelijama */
-.contracts-grid .mud-table-cell > * {
+.common-grid .mud-table-cell > * {
     justify-content: center !important;
 }
 

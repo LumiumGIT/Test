@@ -10,6 +10,7 @@ public interface IApplicationDbContext : IAsyncDisposable
     DbSet<Client> Clients { get; }
     DbSet<Certificate> Certificates { get; }
     DbSet<Contract> Contracts { get; }
+    DbSet<Document> Documents { get; }
 
     // Shared lookup (public schema)
     DbSet<RegulatoryBody> RegulatoryBodies { get; }

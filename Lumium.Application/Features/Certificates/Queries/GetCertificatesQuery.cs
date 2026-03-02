@@ -18,7 +18,7 @@ public class GetCertificatesQueryHandler(IApplicationDbContextFactory contextFac
         {
             var certificates = await context.Certificates
                 .Include(c => c.Client)
-                .OrderBy(c => c.ExpiryDate)
+                .OrderBy(c => c.Client.Name)
                 .ToListAsync(cancellationToken);
             
             var regulatoryBodies = await context.RegulatoryBodies

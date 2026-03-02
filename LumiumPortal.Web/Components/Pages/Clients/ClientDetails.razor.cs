@@ -105,7 +105,7 @@ public partial class ClientDetails : ComponentBase
                 {
                     Id = Guid.NewGuid(),
                     Name = "Finansijski izveštaj Q4 2025.pdf",
-                    Category = DocumentCategory.Financial,
+                    Category = DocumentCategory.Authorizations,
                     UploadDate = new DateTime(2026, 1, 28),
                     UploadedBy = "Sarah Mitchell",
                     Size = "2.3 MB"
@@ -115,7 +115,7 @@ public partial class ClientDetails : ComponentBase
                 {
                     Id = Guid.NewGuid(),
                     Name = "Poreski izveštaj 2025.pdf",
-                    Category = DocumentCategory.Tax,
+                    Category = DocumentCategory.ArchiveBook,
                     UploadDate = new DateTime(2026, 1, 25),
                     UploadedBy = "John Smith",
                     Size = "1.8 MB"
