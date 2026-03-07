@@ -9,8 +9,9 @@ public class CreateCertificateDtoValidator : AbstractValidator<CreateCertificate
 
     public CreateCertificateDtoValidator()
     {
-        RuleFor(x => x.ClientId)
-            .NotEmpty().WithMessage(RequiredFieldMessage);
+        RuleFor(x => x.SelectedClient)
+            .Must(c => c.Id != Guid.Empty)
+            .WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.CertificateName)
             .NotEmpty().WithMessage(RequiredFieldMessage);

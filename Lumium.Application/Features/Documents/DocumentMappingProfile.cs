@@ -11,6 +11,7 @@ public class DocumentMappingProfile : Profile
         CreateMap<Document, DocumentDto>()
             .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => src.Client.Name));
         
-        CreateMap<CreateDocumentDto, Document>();
+        CreateMap<CreateDocumentDto, Document>()
+            .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.SelectedClient.Id));
     }
 }

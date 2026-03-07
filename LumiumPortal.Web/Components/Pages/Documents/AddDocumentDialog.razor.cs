@@ -17,8 +17,7 @@ public partial class AddDocumentDialog : ComponentBase
     private MudForm? _form;
     private readonly CreateDocumentDtoValidator _validator = new();
     private bool _isSubmitting;
-
-    private List<ClientDto> _clients = new();
+    private List<(Guid Id, string Name)> _clients = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,7 +33,7 @@ public partial class AddDocumentDialog : ComponentBase
     {
         try
         {
-            _clients = await Mediator.Send(new GetClientsQuery());
+            _clients = await Mediator.Send(new GetClientIdsQuery());
         }
         catch (Exception ex)
         {
@@ -83,4 +82,13 @@ public partial class AddDocumentDialog : ComponentBase
     }
 
     private void Cancel() => MudDialog.Cancel();
+    
+    private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
+
+        return Task.FromResult(_clients.Where(c => 
+            c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));
+    }
 }

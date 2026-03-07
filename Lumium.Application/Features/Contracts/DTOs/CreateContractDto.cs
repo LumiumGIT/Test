@@ -4,7 +4,7 @@ namespace Lumium.Application.Features.Contracts.DTOs;
 
 public class CreateContractDto
 {
-    public Guid? ClientId { get; set; }
+    public (Guid Id, string Name) SelectedClient { get; set; }
     
     public string ContractNumber { get; set; } = string.Empty;
     public decimal MonthlyFee { get; set; }

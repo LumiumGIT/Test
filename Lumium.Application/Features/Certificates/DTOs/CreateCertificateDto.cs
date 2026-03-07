@@ -2,7 +2,7 @@ namespace Lumium.Application.Features.Certificates.DTOs;
 
 public class CreateCertificateDto
 {
-    public Guid? ClientId { get; set; }
+    public (Guid Id, string Name) SelectedClient { get; set; }
     public string CertificateName { get; set; } = string.Empty;
     public string CertificateNumber { get; set; } = string.Empty;
     public DateTime IssueDate { get; set; } = DateTime.Today;

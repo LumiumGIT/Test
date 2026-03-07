@@ -3,17 +3,22 @@
         <MudForm @ref="_form" Model="@_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
             <MudGrid>
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="_model.ClientId"
-                               Label="Klijent"
-                               T="Guid?"
-                               For="@(() => _model.ClientId)"
-                               Immediate="true"
-                               Placeholder="Izaberite klijenta">
-                        @foreach (var client in _clients)
-                        {
-                            <MudSelectItem Value="@((Guid?)client.Id)">@client.Name</MudSelectItem>
-                        }
-                    </MudSelect>
+                    <MudAutocomplete T="(Guid Id, string Name)"
+                                     @bind-Value="_model.SelectedClient"
+                                     Label="Klijent"
+                                     SearchFunc="@SearchClients"
+                                     ToStringFunc="@(c => c.Name)"
+                                     For="@(() => _model.SelectedClient)"
+                                     Clearable="true"
+                                     Placeholder="Izaberite klijenta..."
+                                     ResetValueOnEmptyText="true"
+                                     CoerceText="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search"
+                                     AdornmentColor="Color.Primary"
+                                     DebounceInterval="300"
+                                     Immediate="true"
+                                     Required="true">
+                    </MudAutocomplete>
                 </MudItem>
 
                 <MudItem xs="12" md="6">

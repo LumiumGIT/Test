@@ -22,7 +22,7 @@ public partial class AddCertificateDialog : ComponentBase
 
     private DateTime? _issueDate = DateTime.Today;
     private DateTime? _expiryDate = DateTime.Today.AddYears(1);
-
+    
     protected override async Task OnInitializedAsync()
     {
         _model = new CreateCertificateDto
@@ -127,5 +127,14 @@ public partial class AddCertificateDialog : ComponentBase
     private void Cancel()
     {
         MudDialog.Cancel();
+    }
+    
+    private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
+
+        return Task.FromResult(_clients.Where(c => 
+            c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));
     }
 }

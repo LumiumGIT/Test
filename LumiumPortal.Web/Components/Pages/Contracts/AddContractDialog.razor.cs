@@ -1,5 +1,4 @@
 using Domain.Enums.Contracts;
-using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
 using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
@@ -18,7 +17,7 @@ public partial class AddContractDialog : ComponentBase
     private readonly CreateContractDtoValidator _validator = new();
     private bool _isSubmitting;
 
-    private List<ClientDto> _clients = [];
+    private List<(Guid Id, string Name)> _clients = [];
     private DateTime? _startDate = DateTime.Today;
     private DateTime? _endDate = DateTime.Today.AddYears(1);
 
@@ -40,7 +39,7 @@ public partial class AddContractDialog : ComponentBase
     {
         try
         {
-            _clients = await Mediator.Send(new GetClientsQuery());
+            _clients = await Mediator.Send(new GetClientIdsQuery());
         }
         catch (Exception ex)
         {
@@ -101,4 +100,13 @@ public partial class AddContractDialog : ComponentBase
     }
 
     private void Cancel() => MudDialog.Cancel();
+    
+    private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
+
+        return Task.FromResult(_clients.Where(c => 
+            c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));
+    }
 }

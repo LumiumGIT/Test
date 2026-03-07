@@ -7,8 +7,9 @@ public class CreateDocumentDtoValidator : AbstractValidator<CreateDocumentDto>
 {
     public CreateDocumentDtoValidator()
     {
-        RuleFor(x => x.ClientId)
-            .NotEmpty().WithMessage("Klijent je obavezan");
+        RuleFor(x => x.SelectedClient)
+            .Must(c => c.Id != Guid.Empty)
+            .WithMessage("Klijent je obavezan");
         
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Naziv dokumenta je obavezan")

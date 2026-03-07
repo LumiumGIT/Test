@@ -6,19 +6,22 @@
         <MudForm @ref="_form" Model="_model" Validation="@_validator.ValidateValue">
             <MudGrid>
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="_model.ClientId"
-                               Label="Klijent"
-                               T="Guid?"
-                               For="@(() => _model.ClientId)"
-                               Immediate="true"
-                               Required="true"
-                               Clearable="true"
-                               Placeholder="Izaberite klijenta">
-                        @foreach (var client in _clients)
-                        {
-                            <MudSelectItem Value="@((Guid?)client.Id)">@client.Name</MudSelectItem>
-                        }
-                    </MudSelect>
+                    <MudAutocomplete T="(Guid Id, string Name)"
+                                     @bind-Value="_model.SelectedClient"
+                                     Label="Klijent"
+                                     SearchFunc="@SearchClients"
+                                     ToStringFunc="@(c => c.Name)"
+                                     For="@(() => _model.SelectedClient)"
+                                     Clearable="true"
+                                     Placeholder="Izaberite klijenta..."
+                                     ResetValueOnEmptyText="true"
+                                     CoerceText="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search"
+                                     AdornmentColor="Color.Primary"
+                                     DebounceInterval="300"
+                                     Immediate="true"
+                                     Required="true">
+                    </MudAutocomplete>
                 </MudItem>
 
                 <MudItem xs="12">
@@ -28,38 +31,6 @@
                                   Immediate="true"
                                   Required="true"/>
                 </MudItem>
-
-                @* <MudItem xs="12"> *@
-                @*     <MudSelect @bind-Value="_model.Category" *@
-                @*                Label="Kategorija" *@
-                @*                T="DocumentCategory" *@
-                @*                For="@(() => _model.Category)" *@
-                @*                Immediate="true" *@
-                @*                Required="true"> *@
-                @*          *@
-                @*         $1$ Zvanična dokumentacija #1# *@
-                @*         <MudListSubheader>Zvanična dokumentacija</MudListSubheader> *@
-                @*         @foreach (var category in Enum.GetValues<DocumentCategory>().Where(c => (int)c < 10)) *@
-                @*         { *@
-                @*             <MudSelectItem T="DocumentCategory" Value="@category">@category.GetDescription()</MudSelectItem> *@
-                @*         } *@
-                @*          *@
-                @*         $1$ Prateća dokumentacija #1# *@
-                @*         <MudDivider Class="my-2" /> *@
-                @*         <MudListSubheader>Prateća dokumentacija</MudListSubheader> *@
-                @*         @foreach (var category in Enum.GetValues<DocumentCategory>().Where(c => (int)c >= 10 && (int)c < 99)) *@
-                @*         { *@
-                @*             <MudSelectItem T="DocumentCategory" Value="@category">@category.GetDescription()</MudSelectItem> *@
-                @*         } *@
-                @* *@
-                @*         $1$ Ostalo (99) #1# *@
-                @*         @if (Enum.GetValues<DocumentCategory>().Any(c => (int)c == 99)) *@
-                @*         { *@
-                @*             <MudDivider Class="my-2" /> *@
-                @*             <MudSelectItem T="DocumentCategory" Value="DocumentCategory.Other">@DocumentCategory.Other.GetDescription()</MudSelectItem> *@
-                @*         } *@
-                @*     </MudSelect> *@
-                @* </MudItem> *@
                 
                 <MudItem xs="12">
                     <MudSelect @bind-Value="_model.Category"

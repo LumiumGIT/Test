@@ -8,8 +8,9 @@ public class CreateContractDtoValidator : AbstractValidator<CreateContractDto>
 {
     public CreateContractDtoValidator()
     {
-        RuleFor(x => x.ClientId)
-            .NotEmpty().WithMessage("Klijent je obavezan");
+        RuleFor(x => x.SelectedClient)
+            .Must(c => c.Id != Guid.Empty)
+            .WithMessage("Klijent je obavezan");
         
         RuleFor(x => x.ContractNumber)
             .NotEmpty().WithMessage("Broj ugovora je obavezan");

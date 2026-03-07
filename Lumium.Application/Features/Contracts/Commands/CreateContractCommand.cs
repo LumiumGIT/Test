@@ -13,9 +13,7 @@ public record CreateContractCommand(CreateContractDto ContractDto) : IRequest<Re
 public class CreateContractCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateContractCommand, Result>
 {
-    public async Task<Result> Handle(
-        CreateContractCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(CreateContractCommand request, CancellationToken cancellationToken)
     {
         return await contextFactory.ExecuteInContextAsync(async context =>
         {
