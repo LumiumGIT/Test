@@ -13,12 +13,15 @@ public partial class AddCertificateDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
     
+    [Parameter] public Guid ClientId { get; set; }
+    
     private List<(Guid Id, string Name)> _clients = [];
     private List<RegulatoryBodyDto> _regulatoryBodies = [];
     private CreateCertificateDto _model = new();
     private MudForm? _form;
     private readonly CreateCertificateDtoValidator _validator = new();
     private bool _isSubmitting;
+    private bool DisableClientSelection => ClientId != Guid.Empty;
 
     private DateTime? _issueDate = DateTime.Today;
     private DateTime? _expiryDate = DateTime.Today.AddYears(1);
@@ -33,6 +36,7 @@ public partial class AddCertificateDialog : ComponentBase
         
         await LoadRegulatoryBodies();
         await LoadClients();
+        PreselectClient();
     }
     
     private async Task LoadClients()
@@ -58,6 +62,14 @@ public partial class AddCertificateDialog : ComponentBase
         {
             Snackbar.Add($"Greška pri učitavanju regulatornih tela: {ex.Message}", Severity.Error);
             Console.WriteLine($"[ERROR] Load regulatory bodies failed: {ex}");
+        }
+    }
+
+    private void PreselectClient()
+    {
+        if (ClientId != Guid.Empty)
+        {
+            _model.SelectedClient = _clients.FirstOrDefault(c => c.Id == ClientId);
         }
     }
 

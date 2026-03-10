@@ -3,7 +3,7 @@ using Lumium.Application.Features.Clients.Queries;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace LumiumPortal.Web.Components.Pages.Clients;
+namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 
 public partial class ClientDetails : ComponentBase
 {

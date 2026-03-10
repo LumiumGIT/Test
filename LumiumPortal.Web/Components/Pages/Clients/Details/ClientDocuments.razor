@@ -15,6 +15,9 @@
     </MudStack>
     
     <MudTable Items="@Documents" 
+              Class="center-table"
+              Striped="true" 
+              Bordered="true"
               Hover="true" 
               Breakpoint="Breakpoint.Sm" 
               Elevation="0"
@@ -22,10 +25,9 @@
         <HeaderContent>
             <MudTh>Naziv dokumenta</MudTh>
             <MudTh>Kategorija</MudTh>
-            <MudTh>Otpremio</MudTh>
             <MudTh>Datum</MudTh>
-            <MudTh>Veličina</MudTh>
-            <MudTh></MudTh>
+            <MudTh>Otvori dokument</MudTh>
+            <MudTh>Obriši</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Naziv">
@@ -39,10 +41,10 @@
                     @context.Category.GetDescription()
                 </MudChip>
             </MudTd>
-            <MudTd DataLabel="Datum">
+            <MudTd DataLabel="Datum otpremanja">
                 <MudText Typo="Typo.body2">@context.UploadedAt.ToString("dd.MM.yyyy")</MudText>
             </MudTd>
-            <MudTd DataLabel="Veličina">
+            <MudTd DataLabel="Otvori dokument">
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Primary"
                            Size="Size.Small"
@@ -50,6 +52,11 @@
                            OnClick="@(() => OpenDocument(context.Url))">
                     Otvori
                 </MudButton>
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"/>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>

@@ -164,20 +164,17 @@ else
 
                 @* Contracts Tab *@
                 <MudTabPanel Text="Ugovori" Icon="@Icons.Material.Filled.Description">
-                    <ClientContracts Contracts="@_clientDetails.Contracts" 
-                                     OnAddContract="@HandleAddContract" />
+                    <ClientContracts Contracts="@_clientDetails.Contracts" />
                 </MudTabPanel>
 
                 @* Certificates Tab *@
                 <MudTabPanel Text="Sertifikati" Icon="@Icons.Material.Filled.VerifiedUser">
-                    <ClientCertificates Certificates="@_clientDetails.Certificates" 
-                                        OnAddCertificate="@HandleAddCertificate" />
+                    <ClientCertificates ClientId="@ClientId" />
                 </MudTabPanel>
 
                 @* Documents Tab *@
                 <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
-                    <ClientDocuments Documents="@_clientDetails.Documents" 
-                                     OnUploadDocument="@HandleUploadDocument" />
+                    <ClientDocuments Documents="@_clientDetails.Documents" />
                 </MudTabPanel>
             </MudTabs>
         </MudPaper>

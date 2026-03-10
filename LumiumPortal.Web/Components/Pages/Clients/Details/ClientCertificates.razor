@@ -3,21 +3,21 @@
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
-            Ukupno @Certificates.Count sertifikata
+            Ukupno @_certificates.Count sertifikata
         </MudText>
         <MudButton StartIcon="@Icons.Material.Filled.Add" 
                    Size="Size.Small" 
                    Variant="Variant.Filled" 
                    Color="Color.Primary"
-                   OnClick="@OnAddCertificate">
+                   OnClick="@OpenAddCertificateDialog">
             Dodaj sertifikat
         </MudButton>
     </MudStack>
     
-    @if (Certificates.Any())
+    @if (_certificates.Any())
     {
         <MudStack Spacing="2">
-            @foreach (var certificate in Certificates)
+            @foreach (var certificate in _certificates)
             {
                 <MudPaper Elevation="1" Class="pa-4">
                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
@@ -47,7 +47,7 @@
     }
     else
     {
-        <MudPaper Elevation="0" Class="pa-6" Style="background-color: var(--mud-palette-background-grey);">
+        <MudPaper Elevation="0" Class="pa-6">
             <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">
                 Nema sertifikata
             </MudText>

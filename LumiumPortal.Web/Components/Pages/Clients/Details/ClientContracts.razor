@@ -9,13 +9,15 @@
                    Size="Size.Small" 
                    Variant="Variant.Filled" 
                    Color="Color.Primary"
-                   OnClick="@OnAddContract">
+                   OnClick="@OpenAddContractDialog">
             Novi ugovor
         </MudButton>
     </MudStack>
     
     <MudTable Items="@Contracts" 
               Class="center-table"
+              Striped="true" 
+              Bordered="true"
               Hover="true" 
               Breakpoint="Breakpoint.Sm" 
               Elevation="0"
@@ -27,6 +29,7 @@
             <MudTh Style="text-align: right">Vrednost</MudTh>
             <MudTh>Status</MudTh>
             <MudTh>Napomena</MudTh>
+            <MudTh>Obriši</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Broj ugovora">
@@ -53,6 +56,12 @@
             </MudTd>
             <MudTd DataLabel="Napomena" Style="text-align: right">
                 <MudText Typo="Typo.body2">@context.Notes</MudText>
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="@(() => OpenDeleteDialog(context))"/>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>

@@ -101,6 +101,7 @@ else
         <MudDataGrid T="ContractDto"
                      Items="@_contracts"
                      Class="center-table"
+                     Striped="true" 
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -193,8 +194,7 @@ else
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"
                                        Size="Size.Small"
-                                       OnClick="@(() => OpenDeleteDialog(context.Item))"
-                                       Title="Obriši ugovor"/>
+                                       OnClick="@(() => OpenDeleteDialog(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
