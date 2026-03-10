@@ -22,6 +22,6 @@ public class ContractConfiguration : TenantEntityConfiguration<Contract>
         builder.Property(c => c.EndDate).HasColumnName("end_date");
         builder.Property(c => c.ClientId).HasColumnName("client_id");
         
-        builder.HasOne(c => c.Client).WithMany().HasForeignKey(c => c.ClientId);
+        builder.HasOne(c => c.Client).WithMany(cl => cl.Contracts).HasForeignKey(c => c.ClientId);
     }
 }

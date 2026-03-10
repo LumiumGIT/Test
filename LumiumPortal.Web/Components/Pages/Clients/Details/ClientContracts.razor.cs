@@ -1,5 +1,5 @@
 using Domain.Enums.Contracts;
-using Lumium.Application.Features.Clients.DTOs;
+using Lumium.Application.Features.Contracts.DTOs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

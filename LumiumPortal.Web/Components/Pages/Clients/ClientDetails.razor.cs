@@ -1,7 +1,5 @@
-using Domain.Enums.Clients;
-using Domain.Enums.Contracts;
-using Domain.Enums.Documents;
 using Lumium.Application.Features.Clients.DTOs;
+using Lumium.Application.Features.Clients.Queries;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,9 +9,9 @@ public partial class ClientDetails : ComponentBase
 {
     [Parameter] public Guid ClientId { get; set; }
 
-    private ClientDetailsDto? _client;
+    private ClientDetailsDto? _clientDetails;
     private bool _isLoading = true;
-    private decimal _totalContractValue => _client?.Contracts.Sum(c => c.Value) ?? 0;
+    private decimal _totalContractValue => _clientDetails?.Contracts.Sum(c => c.MonthlyFee) ?? 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,104 +22,20 @@ public partial class ClientDetails : ComponentBase
     {
         _isLoading = true;
 
-        // Simulacija async call
-        await Task.Delay(200);
-
         // Dummy data
-        _client = new ClientDetailsDto
+        _clientDetails = await Mediator.Send(new GetClientDetailsQuery(ClientId));
+
+        if (_clientDetails == null)
         {
-            Id = ClientId,
-            Name = "TechCorp d.o.o.",
-            LegalForm = LegalForm.NonGovernmentalOrganization,
-            TaxNumber = "12345678",
-            TaxIdentificationNumber = "987654321",
-            IsPdv = true,
-            ResponsiblePerson = "Marko Marković",
-            BackupPerson = "Ana Anić",
-            Address = "Knez Mihailova 15",
-            PhoneNumber = "+381 11 1234567",
-            Director = "Petar Petrović",
-            Email = "info@techcorp.rs",
-            Country = "Srbija",
-            RiskLevel = RiskLevel.Low,
-            IsActive = true,
-            CreatedAt = new DateTime(2024, 6, 15),
-            
-            Industry = "Informacione tehnologije",
-            CompanySize = "50-100 zaposlenih",
-            MonthlyFee = 150000,
-            BillingContact = "finance@techcorp.rs",
-            AssignedTo = "Sarah Mitchell",
-            
-            Contracts =
-            [
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Mesečno knjigovodstvo",
-                    Type = ContractType.Recurring,
-                    StartDate = new DateTime(2024, 6, 15),
-                    EndDate = new DateTime(2025, 6, 15),
-                    Value = 1800000,
-                    Status = ContractStatus.Active
-                },
+            Snackbar.Add("Klijent nije pronađen", Severity.Error);
+            return;
+        }
 
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Godišnja poreska prijava",
-                    Type = ContractType.OneTime,
-                    StartDate = new DateTime(2024, 1, 1),
-                    EndDate = new DateTime(2024, 12, 31),
-                    Value = 300000,
-                    Status = ContractStatus.Completed
-                }
-            ],
-            
-            Certificates =
-            [
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    CertificateName = "Poreski sertifikat",
-                    IssueDate = new DateTime(2026, 1, 30),
-                    ExpiryDate = new DateTime(2027, 1, 30),
-                    RegulatoryBodyName = "Poreska uprava"
-                },
-
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    CertificateName = "Poslovna dozvola",
-                    IssueDate = new DateTime(2025, 12, 15),
-                    ExpiryDate = new DateTime(2026, 12, 15),
-                    RegulatoryBodyName = "Gradska uprava"
-                }
-            ],
-            
-            Documents =
-            [
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Finansijski izveštaj Q4 2025.pdf",
-                    Category = DocumentCategory.Authorizations,
-                    UploadDate = new DateTime(2026, 1, 28),
-                    UploadedBy = "Sarah Mitchell",
-                    Size = "2.3 MB"
-                },
-
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Poreski izveštaj 2025.pdf",
-                    Category = DocumentCategory.ArchiveBook,
-                    UploadDate = new DateTime(2026, 1, 25),
-                    UploadedBy = "John Smith",
-                    Size = "1.8 MB"
-                }
-            ]
-        };
+        _clientDetails.Industry = "Informacione tehnologije";
+        _clientDetails.CompanySize = "50-100 zaposlenih";
+        _clientDetails.MonthlyFee = 150000;
+        _clientDetails.BillingContact = "finance@techcorp.rs";
+        _clientDetails.AssignedTo = "Sarah Mitchell";
 
         _isLoading = false;
     }
@@ -139,10 +53,5 @@ public partial class ClientDetails : ComponentBase
     private void HandleUploadDocument()
     {
         Snackbar.Add("Funkcionalnost 'Otpremi dokument' - uskoro", Severity.Info);
-    }
-
-    private void HandleDownloadDocument(Guid documentId)
-    {
-        Snackbar.Add($"Preuzimanje dokumenta {documentId} - uskoro", Severity.Info);
     }
 }

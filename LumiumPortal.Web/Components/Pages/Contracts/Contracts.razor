@@ -100,7 +100,7 @@ else
     <MudPaper Class="pa-4">
         <MudDataGrid T="ContractDto"
                      Items="@_contracts"
-                     Class="common-grid"
+                     Class="center-table"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -114,14 +114,8 @@ else
             <Columns>
                 <PropertyColumn Property="c => c.ClientName" 
                                 Title="Klijent"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;">
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ContractDto"
-                                              Context="@context"
-                                              ValueSelector="@(c => c.ClientName)"
-                                              PopoverWidth="300"/>
-                    </FilterTemplate>
+                                HeaderStyle="white-space: nowrap; min-width: 300px;"
+                                CellStyle="min-width: 300px;">
                 </PropertyColumn>
 
                 <PropertyColumn Property="c => c.ContractNumber" 

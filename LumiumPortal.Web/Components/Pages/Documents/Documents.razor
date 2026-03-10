@@ -102,7 +102,7 @@ else
     <MudPaper Class="pa-4">
         <MudDataGrid T="DocumentDto"
                      Items="@_documents"
-                     Class="common-grid"
+                     Class="center-table"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -116,15 +116,8 @@ else
             <Columns>
                 <PropertyColumn Property="d => d.Name" Title="Naziv"/>
 
-                <PropertyColumn Property="d => d.ClientName" Title="Klijent">
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="DocumentDto"
-                                              Context="@context"
-                                              ValueSelector="@(c => c.ClientName)"
-                                              PopoverWidth="300"/>
-                    </FilterTemplate>
-                </PropertyColumn>
-
+                <PropertyColumn Property="d => d.ClientName" Title="Klijent" />
+                
                 <PropertyColumn Property="d => d.Category" Title="Kategorija">
                     <CellTemplate>
                         <MudChip Color="@GetCategoryColor(context.Item.Category)" Size="Size.Small">

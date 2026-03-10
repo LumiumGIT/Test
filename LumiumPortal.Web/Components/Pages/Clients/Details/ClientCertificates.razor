@@ -3,7 +3,7 @@
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
-            @Certificates.Count ukupno sertifikata
+            Ukupno @Certificates.Count sertifikata
         </MudText>
         <MudButton StartIcon="@Icons.Material.Filled.Add" 
                    Size="Size.Small" 
@@ -17,7 +17,7 @@
     @if (Certificates.Any())
     {
         <MudStack Spacing="2">
-            @foreach (var cert in Certificates)
+            @foreach (var certificate in Certificates)
             {
                 <MudPaper Elevation="1" Class="pa-4">
                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
@@ -26,19 +26,19 @@
                                 <MudIcon Icon="@Icons.Material.Filled.VerifiedUser" />
                             </MudAvatar>
                             <div>
-                                <MudText Typo="Typo.body1"><strong>@cert.CertificateName</strong></MudText>
+                                <MudText Typo="Typo.body1"><strong>@certificate.CertificateName</strong></MudText>
                                 <MudText Typo="Typo.body2" Color="Color.Default" Class="mt-1">
-                                    Izdao: @cert.RegulatoryBodyName
+                                    Izdao: @certificate.RegulatoryBodyName
                                 </MudText>
                                 <MudText Typo="Typo.body2" Color="Color.Default">
-                                    Ističe: @cert.ExpiryDate.ToString("dd.MM.yyyy")
+                                    Ističe: @certificate.ExpiryDate.ToString("dd.MM.yyyy")
                                 </MudText>
                             </div>
                         </MudStack>
                         <MudChip T="string" Size="Size.Small" 
-                                 Color="@GetCertificateStatusColor(cert.Status)"
+                                 Color="@GetCertificateStatusColor(certificate.Status)"
                                  Variant="Variant.Filled">
-                            @cert.Status.GetDescription()
+                            @certificate.Status.GetDescription()
                         </MudChip>
                     </MudStack>
                 </MudPaper>

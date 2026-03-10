@@ -26,9 +26,10 @@ public class GetCertificatesQueryHandler(IApplicationDbContextFactory contextFac
             
             var certificateDtOs = mapper.Map<List<CertificateDto>>(certificates);
 
-            foreach (var certificateDto in certificateDtOs)
+            foreach (var certificate in certificateDtOs.Where(certificate =>
+                         regulatoryBodies.ContainsKey(certificate.RegulatoryBodyId)))
             {
-                certificateDto.RegulatoryBodyName = regulatoryBodies[certificateDto.RegulatoryBodyId];
+                certificate.RegulatoryBodyName = regulatoryBodies[certificate.RegulatoryBodyId];
             }
 
             return certificateDtOs;

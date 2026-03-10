@@ -21,6 +21,6 @@ public class DocumentConfiguration : TenantEntityConfiguration<Document>
         builder.Property(d => d.ClientId).HasColumnName("client_id");
         
         // Relationships
-        builder.HasOne(d => d.Client).WithMany().HasForeignKey(d => d.ClientId);
+        builder.HasOne(d => d.Client).WithMany(cl => cl.Documents).HasForeignKey(d => d.ClientId);
     }
 }

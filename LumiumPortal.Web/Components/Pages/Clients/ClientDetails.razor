@@ -3,13 +3,13 @@
 @using LumiumPortal.Web.Components.Pages.Clients.Details
 @inject NavigationManager Navigation
 
-<PageTitle>Detalji klijenta - @_client?.Name</PageTitle>
+<PageTitle>Detalji klijenta - @_clientDetails?.Name</PageTitle>
 
 @if (_isLoading)
 {
     <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
 }
-else if (_client == null)
+else if (_clientDetails == null)
 {
     <MudAlert Severity="Severity.Error">Klijent nije pronađen</MudAlert>
 }
@@ -32,16 +32,16 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Large"/>
                     </MudAvatar>
                     <div>
-                        <MudText Typo="Typo.h4">@_client.Name</MudText>
+                        <MudText Typo="Typo.h4">@_clientDetails.Name</MudText>
                         <MudStack Row="true" Spacing="2" Class="mt-2">
                             <MudChip T="string" Size="Size.Small"
-                                     Color="@(_client.IsActive ? Color.Success : Color.Default)">
-                                @(_client.IsActive ? "Aktivan" : "Neaktivan")
+                                     Color="@(_clientDetails.IsActive ? Color.Success : Color.Default)">
+                                @(_clientDetails.IsActive ? "Aktivan" : "Neaktivan")
                             </MudChip>
                             <MudChip T="string" Size="Size.Small"
                                      Color="Color.Info"
                                      Variant="Variant.Outlined">
-                                Rizik: @_client.RiskLevel.GetDescription()
+                                Rizik: @_clientDetails.RiskLevel.GetDescription()
                             </MudChip>
                         </MudStack>
                     </div>
@@ -66,7 +66,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Default"/>
                         <div>
                             <MudText Typo="Typo.caption" Color="Color.Default">Kontakt osoba</MudText>
-                            <MudText Typo="Typo.body2"><strong>@_client.ResponsiblePerson</strong></MudText>
+                            <MudText Typo="Typo.body2"><strong>@_clientDetails.ResponsiblePerson</strong></MudText>
                         </div>
                     </MudStack>
                 </MudItem>
@@ -75,7 +75,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default"/>
                         <div>
                             <MudText Typo="Typo.caption" Color="Color.Default">Email</MudText>
-                            <MudText Typo="Typo.body2"><strong>@_client.Email</strong></MudText>
+                            <MudText Typo="Typo.body2"><strong>@_clientDetails.Email</strong></MudText>
                         </div>
                     </MudStack>
                 </MudItem>
@@ -84,7 +84,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Phone" Color="Color.Default"/>
                         <div>
                             <MudText Typo="Typo.caption" Color="Color.Default">Telefon</MudText>
-                            <MudText Typo="Typo.body2"><strong>@_client.PhoneNumber</strong></MudText>
+                            <MudText Typo="Typo.body2"><strong>@_clientDetails.PhoneNumber</strong></MudText>
                         </div>
                     </MudStack>
                 </MudItem>
@@ -93,7 +93,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.PersonOutline" Color="Color.Default"/>
                         <div>
                             <MudText Typo="Typo.caption" Color="Color.Default">Dodeljen</MudText>
-                            <MudText Typo="Typo.body2"><strong>@_client.AssignedTo</strong></MudText>
+                            <MudText Typo="Typo.body2"><strong>@_clientDetails.AssignedTo</strong></MudText>
                         </div>
                     </MudStack>
                 </MudItem>
@@ -108,7 +108,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Description"
                                  Color="Color.Primary"
                                  Size="Size.Large"/>
-                        <MudText Typo="Typo.h4" Align="Align.Center">@_client.Contracts.Count</MudText>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_clientDetails.Contracts.Count</MudText>
                         <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">Aktivnih ugovora</MudText>
                     </MudStack>
                 </MudPaper>
@@ -120,7 +120,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.VerifiedUser"
                                  Color="Color.Success"
                                  Size="Size.Large"/>
-                        <MudText Typo="Typo.h4" Align="Align.Center">@_client.Certificates.Count</MudText>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_clientDetails.Certificates.Count</MudText>
                         <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">Važećih sertifikata
                         </MudText>
                     </MudStack>
@@ -133,7 +133,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Folder"
                                  Color="Color.Info"
                                  Size="Size.Large"/>
-                        <MudText Typo="Typo.h4" Align="Align.Center">@_client.Documents.Count</MudText>
+                        <MudText Typo="Typo.h4" Align="Align.Center">@_clientDetails.Documents.Count</MudText>
                         <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">Dokumenata</MudText>
                     </MudStack>
                 </MudPaper>
@@ -159,26 +159,25 @@ else
         
                 @* Overview Tab *@
                 <MudTabPanel Text="Pregled" Icon="@Icons.Material.Filled.Business">
-                    <ClientOverview Client="@_client" />
+                    <ClientOverview Client="@_clientDetails" />
                 </MudTabPanel>
 
                 @* Contracts Tab *@
                 <MudTabPanel Text="Ugovori" Icon="@Icons.Material.Filled.Description">
-                    <ClientContracts Contracts="@_client.Contracts" 
+                    <ClientContracts Contracts="@_clientDetails.Contracts" 
                                      OnAddContract="@HandleAddContract" />
                 </MudTabPanel>
 
                 @* Certificates Tab *@
                 <MudTabPanel Text="Sertifikati" Icon="@Icons.Material.Filled.VerifiedUser">
-                    <ClientCertificates Certificates="@_client.Certificates" 
+                    <ClientCertificates Certificates="@_clientDetails.Certificates" 
                                         OnAddCertificate="@HandleAddCertificate" />
                 </MudTabPanel>
 
                 @* Documents Tab *@
                 <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
-                    <ClientDocuments Documents="@_client.Documents" 
-                                     OnUploadDocument="@HandleUploadDocument"
-                                     OnDownloadDocument="@HandleDownloadDocument" />
+                    <ClientDocuments Documents="@_clientDetails.Documents" 
+                                     OnUploadDocument="@HandleUploadDocument" />
                 </MudTabPanel>
             </MudTabs>
         </MudPaper>

@@ -147,14 +147,8 @@ else
                 @* Klijent *@
                 <PropertyColumn Property="x => x.ClientName"
                                 Title="Klijent"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;">
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="CertificateDto"
-                                              Context="@context"
-                                              ValueSelector="@(c => c.ClientName)"
-                                              PopoverWidth="250"/>
-                    </FilterTemplate>
+                                HeaderStyle="white-space: nowrap; min-width: 300px;"
+                                CellStyle="min-width: 300px;">
                 </PropertyColumn>
 
                 @* Broj sertifikata *@

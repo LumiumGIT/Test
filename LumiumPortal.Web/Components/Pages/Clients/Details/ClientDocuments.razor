@@ -3,7 +3,7 @@
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
-            @Documents.Count ukupno dokumenata
+            Ukupno @Documents.Count dokumenata
         </MudText>
         <MudButton StartIcon="@Icons.Material.Filled.Upload" 
                    Size="Size.Small" 
@@ -39,21 +39,17 @@
                     @context.Category.GetDescription()
                 </MudChip>
             </MudTd>
-            <MudTd DataLabel="Otpremio">
-                <MudText Typo="Typo.body2">@context.UploadedBy</MudText>
-            </MudTd>
             <MudTd DataLabel="Datum">
-                <MudText Typo="Typo.body2">@context.UploadDate.ToString("dd.MM.yyyy")</MudText>
+                <MudText Typo="Typo.body2">@context.UploadedAt.ToString("dd.MM.yyyy")</MudText>
             </MudTd>
             <MudTd DataLabel="Veličina">
-                <MudText Typo="Typo.body2" Color="Color.Default">@context.Size</MudText>
-            </MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Download" 
-                               Size="Size.Small" 
-                               Color="Color.Primary"
-                               OnClick="@(() => OnDownloadDocument.InvokeAsync(context.Id))"
-                               aria-label="Preuzmi" />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           StartIcon="@Icons.Material.Filled.OpenInNew"
+                           OnClick="@(() => OpenDocument(context.Url))">
+                    Otvori
+                </MudButton>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>

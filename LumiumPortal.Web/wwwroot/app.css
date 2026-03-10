@@ -59,13 +59,13 @@ h1:focus {
     text-align: start;
 }
 
-/* Centriranje header teksta */
-.common-grid .mud-table-cell {
+/* Header centering */
+.center-table .mud-table-cell {
     text-align: center !important;
 }
 
-/* Centriranje sadržaja u ćelijama */
-.common-grid .mud-table-cell > * {
+/* Cells content centering */
+.center-table .mud-table-cell > * {
     justify-content: center !important;
 }
 

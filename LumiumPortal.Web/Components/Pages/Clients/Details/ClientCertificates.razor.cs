@@ -8,9 +8,7 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 public partial class ClientCertificates : ComponentBase
 {
     [Parameter, EditorRequired] public List<CertificateDto> Certificates { get; set; } = [];
-
-    [Parameter]
-    public EventCallback OnAddCertificate { get; set; }
+    [Parameter] public EventCallback OnAddCertificate { get; set; }
 
     private Color GetCertificateStatusColor(CertificateStatus status)
     {

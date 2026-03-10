@@ -37,4 +37,6 @@ public class Client : TenantEntity
     
     // Navigation
     public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
+    public ICollection<Contract> Contracts { get; set; } = new List<Contract>();
+    public ICollection<Document> Documents { get; set; } = new List<Document>();
 }

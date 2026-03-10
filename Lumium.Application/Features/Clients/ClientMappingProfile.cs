@@ -15,5 +15,10 @@ public class ClientMappingProfile : Profile
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
         CreateMap<Client, ClientDto>();
+        
+        CreateMap<Client, ClientDetailsDto>()
+            .ForMember(dest => dest.Certificates, opt => opt.MapFrom(src => src.Certificates))
+            .ForMember(dest => dest.Contracts, opt => opt.MapFrom(src => src.Contracts))
+            .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents));
     }
 }
