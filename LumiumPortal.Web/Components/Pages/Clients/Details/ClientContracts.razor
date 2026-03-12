@@ -6,69 +6,83 @@
         <MudText Typo="Typo.body2" Color="Color.Default">
             Ukupno @_contracts.Count ugovora
         </MudText>
-        <MudButton StartIcon="@Icons.Material.Filled.Add" 
-                   Size="Size.Small" 
-                   Variant="Variant.Filled" 
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Size="Size.Small"
+                   Variant="Variant.Filled"
                    Color="Color.Primary"
                    OnClick="@OpenAddContractDialog">
-            Novi ugovor
+            Dodaj ugovor
         </MudButton>
     </MudStack>
-    
-    <MudTable Items="@_contracts" 
-              Class="center-table"
-              Striped="true" 
-              Bordered="true"
-              Hover="true" 
-              Breakpoint="Breakpoint.Sm" 
-              Elevation="0"
-              Dense="true">
-        <HeaderContent>
-            <MudTh>Broj ugovora</MudTh>
-            <MudTh>Tip</MudTh>
-            <MudTh>Period</MudTh>
-            <MudTh Style="text-align: right">Vrednost</MudTh>
-            <MudTh>Status</MudTh>
-            <MudTh>Napomena</MudTh>
-            <MudTh>Obriši</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Broj ugovora">
-                <MudText Typo="Typo.body2"><strong>@context.ContractNumber</strong></MudText>
-            </MudTd>
-            <MudTd DataLabel="Tip">
-                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
-                    @context.Type.GetDescription()
-                </MudChip>
-            </MudTd>
-            <MudTd DataLabel="Period">
-                <MudText Typo="Typo.body2">
-                    @context.StartDate.ToString("MMM yyyy") - @(context.EndDate.HasValue ? context.EndDate.Value.ToString("MMM yyyy") : string.Empty)
+    @if (_contracts.Any())
+    {
+        <MudTable Items="@_contracts"
+                  Class="center-table"
+                  Striped="true"
+                  Bordered="true"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm"
+                  Elevation="0"
+                  Dense="true">
+            <HeaderContent>
+                <MudTh>Broj ugovora</MudTh>
+                <MudTh>Tip</MudTh>
+                <MudTh>Period</MudTh>
+                <MudTh Style="text-align: right">Vrednost</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>Napomena</MudTh>
+                <MudTh>Obriši</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Broj ugovora">
+                    <MudText Typo="Typo.body2"><strong>@context.ContractNumber</strong></MudText>
+                </MudTd>
+                <MudTd DataLabel="Tip">
+                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
+                        @context.Type.GetDescription()
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Period">
+                    <MudText Typo="Typo.body2">
+                        @context.StartDate.ToString("MMM yyyy") - @(context.EndDate.HasValue ? context.EndDate.Value.ToString("MMM yyyy") : "Neodređeno")
+                    </MudText>
+                </MudTd>
+                <MudTd DataLabel="Vrednost" Style="text-align: right">
+                    <MudText Typo="Typo.body2"><strong>@context.MonthlyFee.ToString("N0") €</strong></MudText>
+                </MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string" Size="Size.Small"
+                             Color="@ContractHelper.GetStatusColor(context.Status)">
+                        @context.Status.GetDescription()
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Napomena">
+                    <MudText Typo="Typo.body2">@context.Notes</MudText>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   OnClick="@(() => DeleteContract(context))"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema ugovora
                 </MudText>
-            </MudTd>
-            <MudTd DataLabel="Vrednost" Style="text-align: right">
-                <MudText Typo="Typo.body2"><strong>@context.MonthlyFee.ToString("N0") €</strong></MudText>
-            </MudTd>
-            <MudTd DataLabel="Status">
-                <MudChip T="string" Size="Size.Small" 
-                         Color="@ContractHelper.GetStatusColor(context.Status)">
-                    @context.Status.GetDescription()
-                </MudChip>
-            </MudTd>
-            <MudTd DataLabel="Napomena" Style="text-align: right">
-                <MudText Typo="Typo.body2">@context.Notes</MudText>
-            </MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               Size="Size.Small"
-                               OnClick="@(() => DeleteContract(context))"/>
-            </MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center" Class="py-6">
-                Nema aktivnih ugovora
-            </MudText>
-        </NoRecordsContent>
-    </MudTable>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj ugovor" da dodate prvi ugovor
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 </MudStack>

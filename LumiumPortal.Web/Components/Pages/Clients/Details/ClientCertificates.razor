@@ -14,66 +14,80 @@
             Dodaj sertifikat
         </MudButton>
     </MudStack>
-    
-    <MudTable Items="@_certificates" 
-              Class="center-table"
-              Striped="true" 
-              Bordered="true"
-              Hover="true" 
-              Breakpoint="Breakpoint.Sm" 
-              Elevation="0"
-              Dense="true">
-        <HeaderContent>
-            <MudTh>Naziv sertifikata</MudTh>
-            <MudTh>Broj sertifikata</MudTh>
-            <MudTh>Izdavač</MudTh>
-            <MudTh>Datum izdavanja</MudTh>
-            <MudTh>Datum isteka</MudTh>
-            <MudTh>Preostalo</MudTh>
-            <MudTh>Status</MudTh>
-            <MudTh>Obriši</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Naziv">
-                <MudText Typo="Typo.body2"><strong>@context.CertificateName</strong></MudText>
-            </MudTd>
-            <MudTd DataLabel="Broj">
-                <MudText Typo="Typo.body2">@context.CertificateNumber</MudText>
-            </MudTd>
-            <MudTd DataLabel="Izdavač">
-                <MudText Typo="Typo.body2">@context.RegulatoryBodyName</MudText>
-            </MudTd>
-            <MudTd DataLabel="Datum izdavanja">
-                <MudText Typo="Typo.body2">@context.IssueDate.ToString("dd.MM.yyyy")</MudText>
-            </MudTd>
-            <MudTd DataLabel="Datum isteka">
-                <MudText Typo="Typo.body2">@context.ExpiryDate.ToString("dd.MM.yyyy")</MudText>
-            </MudTd>
-            <MudTd>
-                <MudChip T="string" Size="Size.Small"
-                         Variant="Variant.Outlined"
-                         Style="@CertificateHelper.GetDaysChipStyle(context.Status)">
-                    @CertificateHelper.GetDaysText(context.DaysUntilExpiry)
-                </MudChip>
-            </MudTd>
-            <MudTd DataLabel="Status">
-                <MudChip T="string" Size="Size.Small" 
-                         Variant="Variant.Outlined"
-                         Style="@CertificateHelper.GetDaysChipStyle(context.Status)">
-                    @context.Status.GetDescription()
-                </MudChip>
-            </MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               Size="Size.Small"
-                               OnClick="@(() => DeleteCertificate(context))" />
-            </MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center" Class="py-6">
+@if (_certificates.Any())
+    {
+        <MudTable Items="@_certificates"
+                  Class="center-table"
+                  Striped="true"
+                  Bordered="true"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm"
+                  Elevation="0"
+                  Dense="true">
+            <HeaderContent>
+                <MudTh>Naziv sertifikata</MudTh>
+                <MudTh>Broj sertifikata</MudTh>
+                <MudTh>Izdavač</MudTh>
+                <MudTh>Datum izdavanja</MudTh>
+                <MudTh>Datum isteka</MudTh>
+                <MudTh>Preostalo</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>Obriši</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Naziv">
+                    <MudText Typo="Typo.body2"><strong>@context.CertificateName</strong></MudText>
+                </MudTd>
+                <MudTd DataLabel="Broj">
+                    <MudText Typo="Typo.body2">@context.CertificateNumber</MudText>
+                </MudTd>
+                <MudTd DataLabel="Izdavač">
+                    <MudText Typo="Typo.body2">@context.RegulatoryBodyName</MudText>
+                </MudTd>
+                <MudTd DataLabel="Datum izdavanja">
+                    <MudText Typo="Typo.body2">@context.IssueDate.ToString("dd.MM.yyyy")</MudText>
+                </MudTd>
+                <MudTd DataLabel="Datum isteka">
+                    <MudText Typo="Typo.body2">@context.ExpiryDate.ToString("dd.MM.yyyy")</MudText>
+                </MudTd>
+                <MudTd>
+                    <MudChip T="string" Size="Size.Small"
+                             Variant="Variant.Outlined"
+                             Style="@CertificateHelper.GetDaysChipStyle(context.Status)">
+                        @CertificateHelper.GetDaysText(context.DaysUntilExpiry)
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string" Size="Size.Small"
+                             Variant="Variant.Outlined"
+                             Style="@CertificateHelper.GetDaysChipStyle(context.Status)">
+                        @context.Status.GetDescription()
+                    </MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   OnClick="@(() => DeleteCertificate(context))"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+else
+{
+    <MudPaper Elevation="0" Class="pa-8">
+        <MudStack AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Description"
+                     Size="Size.Large"
+                     Color="Color.Default"
+                     Style="font-size: 36px; opacity: 0.3;"/>
+            <MudText Typo="Typo.h6" Color="Color.Default">
                 Nema sertifikata
             </MudText>
-        </NoRecordsContent>
-    </MudTable>
+            <MudText Typo="Typo.body2" Color="Color.Default">
+                Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
+            </MudText>
+        </MudStack>
+    </MudPaper>
+}
 </MudStack>
