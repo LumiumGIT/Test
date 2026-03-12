@@ -1,9 +1,8 @@
-using Domain.Enums.Documents;
+using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Documents.Commands;
 using Lumium.Application.Features.Documents.DTOs;
 using Lumium.Application.Features.Documents.Queries;
-using LumiumPortal.Web.Components.Shared;
-using MediatR;
+using LumiumPortal.Web.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -61,52 +60,40 @@ public partial class Documents : SecureComponentBase
         }
     }
 
-    private async Task OpenDocument(string url)
-    {
-        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
-    }
-
     private async Task OpenDeleteDialog(DocumentDto document)
     {
-        var parameters = new DialogParameters
-        {
-            { nameof(ConfirmDialog.Message), $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?" },
-            { nameof(ConfirmDialog.ConfirmText), "Obriši" },
-            { nameof(ConfirmDialog.ConfirmColor), Color.Error }
-        };
+        var confirmed = await DialogHelper.ShowConfirmDialog(
+            DialogService,
+            message: $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
+            title: "Potvrda brisanja",
+            confirmText: "Obriši",
+            confirmColor: Color.Error
+        );
 
-        var options = new DialogOptions
+        if (confirmed)
         {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        var dialog = await DialogService.ShowAsync<ConfirmDialog>("Potvrda brisanja", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
-        {
-            await DeleteDocument(document.Id);
+            var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
+            
+            await HandleResult(result);
         }
     }
-
-    private async Task DeleteDocument(Guid id)
+    
+    private async Task HandleResult(Result result)
     {
-        var result = await Mediator.Send(new DeleteDocumentCommand(id));
 
         if (result.IsSuccess)
         {
-            Snackbar.Add(result.Message, Severity.Success);
             await LoadDocuments();
+            Snackbar.Add(result.Message, Severity.Success);
         }
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-
-    private Color GetCategoryColor(DocumentCategory category) => (int)category < 10
-        ? Color.Info    // Official
-        : Color.Success; // Supporting
+    
+    private async Task OpenDocument(string url)
+    {
+        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
 }

@@ -1,7 +1,9 @@
-using Domain.Enums.Certificates;
+using Lumium.Application.Common.Models;
+using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
 using LumiumPortal.Web.Components.Pages.Certificates;
+using LumiumPortal.Web.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -24,7 +26,15 @@ public partial class ClientCertificates : ComponentBase
     
     private async Task LoadCertificates()
     {
-        _certificates = await Mediator.Send(new GetCertificatesByClientQuery(ClientId));
+        try
+        {
+            _certificates = await Mediator.Send(new GetCertificatesByClientQuery(ClientId));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška pri učitavanju sertifikata: {ex.Message}", Severity.Error);
+            Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
+        }
     }
     
     private async Task OpenAddCertificateDialog()
@@ -50,15 +60,35 @@ public partial class ClientCertificates : ComponentBase
             await LoadCertificates();
         }
     }
-
-    private Color GetCertificateStatusColor(CertificateStatus status)
+    
+    private async Task DeleteCertificate(CertificateDto certificate)
     {
-        return status switch
+        var confirmed = await DialogHelper.ShowConfirmDialog(
+            DialogService,
+            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
+            title: "Potvrda brisanja",
+            confirmText: "Obriši",
+            confirmColor: Color.Error
+        );
+
+        if (confirmed)
         {
-            CertificateStatus.Valid => Color.Success,
-            CertificateStatus.ExpiringSoon => Color.Warning,
-            CertificateStatus.Expired => Color.Error,
-            _ => Color.Default
-        };
+            var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
+            
+            await HandleResult(result);
+        }
+    }
+    
+    private async Task HandleResult(Result result)
+    {
+        if (result.IsSuccess)
+        {
+            await LoadCertificates();
+            Snackbar.Add(result.Message, Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
+        }
     }
 }

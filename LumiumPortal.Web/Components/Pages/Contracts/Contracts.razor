@@ -2,6 +2,7 @@
 @using Domain.Enums.Contracts
 @using Lumium.Application.Features.Contracts.DTOs
 @using LumiumPortal.Web.Components.Shared
+@using LumiumPortal.Web.Helpers
 @inherits SecureComponentBase
 
 @if (_isLoading)
@@ -135,8 +136,8 @@ else
 
                 <PropertyColumn Property="c => c.Status" Title="Status">
                     <CellTemplate>
-                        <MudChip Color="@GetStatusColor(context.Item.Status)" Size="Size.Small">
-                            @GetStatusText(context.Item.Status)
+                        <MudChip Color="@ContractHelper.GetStatusColor(context.Item.Status)" Size="Size.Small">
+                            @ContractHelper.GetStatusText(context.Item.Status)
                         </MudChip>
                     </CellTemplate>
                     <FilterTemplate>
@@ -153,7 +154,7 @@ else
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 Sortable="false">
                     <CellTemplate>
-                        @GetTypeText(context.Item.Type)
+                        @ContractHelper.GetTypeText(context.Item.Type)
                     </CellTemplate>
                     <FilterTemplate>
                         <EnumColumnFilter TItem="ContractDto"
@@ -194,7 +195,7 @@ else
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"
                                        Size="Size.Small"
-                                       OnClick="@(() => OpenDeleteDialog(context.Item))"/>
+                                       OnClick="@(() => DeleteContract(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>

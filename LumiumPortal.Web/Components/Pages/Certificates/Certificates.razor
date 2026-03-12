@@ -3,6 +3,7 @@
 @using Domain.Enums.Certificates
 @using Lumium.Application.Features.Certificates.DTOs
 @using LumiumPortal.Web.Components.Shared
+@using LumiumPortal.Web.Helpers
 
 @if (_isLoading)
 {
@@ -114,7 +115,7 @@ else
                      FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
                      Hideable="false"
                      Bordered="true"
-                     RowStyleFunc="@GetRowStyle">
+                     RowStyleFunc="GetRowStyle">
             <Columns>
 
                 @* Status *@
@@ -124,9 +125,9 @@ else
                                 HeaderStyle="white-space: nowrap; min-width: 80px; max-width: 80px; width: 80px;"
                                 CellStyle="min-width: 80px; max-width: 80px; width: 80px;">
                     <CellTemplate>
-                        <MudTooltip Text="@GetStatusText(context.Item.Status)">
+                        <MudTooltip Text="@CertificateHelper.GetStatusText(context.Item.Status)">
                             <MudIcon Icon="@Icons.Material.Filled.Circle"
-                                     Style="@($"color: {GetStatusColor(context.Item.Status)}; font-size: 14px;")"/>
+                                     Style="@($"color: {CertificateHelper.GetStatusColor(context.Item.Status)}; font-size: 14px;")"/>
                         </MudTooltip>
                     </CellTemplate>
                 </TemplateColumn>
@@ -160,7 +161,7 @@ else
 
                 @* Izdao *@
                 <PropertyColumn Property="x => x.RegulatoryBodyName"
-                                Title="Izdao"
+                                Title="Izdavač"
                                 HeaderStyle="white-space: nowrap; min-width: 180px;"
                                 CellStyle="min-width: 180px;">
                     <FilterTemplate>
@@ -201,8 +202,8 @@ else
                     <CellTemplate>
                         <MudChip Size="Size.Small"
                                  Variant="Variant.Outlined"
-                                 Style="@GetDaysChipStyle(context.Item.Status)">
-                            @GetDaysText(context.Item.DaysUntilExpiry)
+                                 Style="@CertificateHelper.GetDaysChipStyle(context.Item.Status)">
+                            @CertificateHelper.GetDaysText(context.Item.DaysUntilExpiry)
                         </MudChip>
                     </CellTemplate>
                     <FilterTemplate>

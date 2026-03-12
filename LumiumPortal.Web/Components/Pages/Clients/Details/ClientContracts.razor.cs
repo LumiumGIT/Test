@@ -1,8 +1,9 @@
-using Domain.Enums.Contracts;
+using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
+using Lumium.Application.Features.Contracts.Queries;
 using LumiumPortal.Web.Components.Pages.Contracts;
-using LumiumPortal.Web.Components.Shared;
+using LumiumPortal.Web.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,10 +13,24 @@ public partial class ClientContracts : ComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
     
-    [Parameter, EditorRequired] public List<ContractDto> Contracts { get; set; } = [];
+    [Parameter] public Guid ClientId { get; set; }
+    
+    private List<ContractDto> _contracts = [];
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadContracts();
+        
+        await base.OnInitializedAsync();
+    }
     
     private async Task OpenAddContractDialog()
     {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddContractDialog.ClientId), ClientId}
+        };
+        
         var options = new DialogOptions
         {
             MaxWidth = MaxWidth.Medium,
@@ -24,63 +39,57 @@ public partial class ClientContracts : ComponentBase
             CloseOnEscapeKey = true
         };
 
-        var dialog = await DialogService.ShowAsync<AddContractDialog>("Dodaj ugovor", options);
+        var dialog = await DialogService.ShowAsync<AddContractDialog>("Dodaj ugovor", parameters, options);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
-           // await LoadContracts();
-        }
-    }
-
-    private async Task OpenDeleteDialog(ContractDto contract)
-    {
-        var parameters = new DialogParameters
-        {
-            { nameof(ConfirmDialog.Message), $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?" },
-            { nameof(ConfirmDialog.ConfirmText), "Obriši" },
-            { nameof(ConfirmDialog.ConfirmColor), Color.Error }
-        };
-
-        var options = new DialogOptions
-        {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        var dialog = await DialogService.ShowAsync<ConfirmDialog>("Potvrda brisanja", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
-        {
-            await DeleteContract(contract.Id);
+           await LoadContracts();
         }
     }
     
-    private async Task DeleteContract(Guid id)
+    private async Task LoadContracts()
     {
-        var result = await Mediator.Send(new DeleteContractCommand(id));
+        try
+        {
+           _contracts = await Mediator.Send(new GetContractsByClientQuery(ClientId));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška pri učitavanju ugovora: {ex.Message}", Severity.Error);
+            Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
+        }
+    }
+
+    private async Task DeleteContract(ContractDto contract)
+    {
+        var confirmed = await DialogHelper.ShowConfirmDialog(
+            DialogService,
+            message: $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
+            title: "Potvrda brisanja",
+            confirmText: "Obriši",
+            confirmColor: Color.Error
+        );
+
+        if (confirmed)
+        {
+            var result = await Mediator.Send(new DeleteContractCommand(contract.Id));
+            
+            await HandleResult(result);
+        }
+    }
+    
+    private async Task HandleResult(Result result)
+    {
 
         if (result.IsSuccess)
         {
+            await LoadContracts();
             Snackbar.Add(result.Message, Severity.Success);
         }
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
         }
-    }
-
-    private Color GetContractStatusColor(ContractStatus status)
-    {
-        return status switch
-        {
-            ContractStatus.Active => Color.Success,
-            ContractStatus.Completed => Color.Default,
-            ContractStatus.Pending => Color.Warning,
-            ContractStatus.Cancelled => Color.Error,
-            _ => Color.Default
-        };
     }
 }

@@ -1,5 +1,4 @@
 using Domain.Enums.Documents;
-using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
 using Lumium.Application.Features.Documents.Commands;
 using Lumium.Application.Features.Documents.DTOs;
@@ -12,12 +11,15 @@ namespace LumiumPortal.Web.Components.Pages.Documents;
 public partial class AddDocumentDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+    
+    [Parameter] public Guid ClientId { get; set; }
 
     private CreateDocumentDto _model = new();
     private MudForm? _form;
     private readonly CreateDocumentDtoValidator _validator = new();
     private bool _isSubmitting;
     private List<(Guid Id, string Name)> _clients = [];
+    private bool DisableClientSelection => ClientId != Guid.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,6 +29,7 @@ public partial class AddDocumentDialog : ComponentBase
         };
 
         await LoadClients();
+        PreselectClient();
     }
 
     private async Task LoadClients()
@@ -39,6 +42,14 @@ public partial class AddDocumentDialog : ComponentBase
         {
             Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
             Console.WriteLine($"[ERROR] Load clients failed: {ex}");
+        }
+    }
+    
+    private void PreselectClient()
+    {
+        if (ClientId != Guid.Empty)
+        {
+            _model.SelectedClient = _clients.FirstOrDefault(c => c.Id == ClientId);
         }
     }
 

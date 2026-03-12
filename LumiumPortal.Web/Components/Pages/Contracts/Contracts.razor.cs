@@ -1,8 +1,9 @@
 using Domain.Enums.Contracts;
+using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
 using Lumium.Application.Features.Contracts.Queries;
-using LumiumPortal.Web.Components.Shared;
+using LumiumPortal.Web.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -59,68 +60,35 @@ public partial class Contracts : SecureComponentBase
         }
     }
 
-    private async Task OpenDeleteDialog(ContractDto contract)
+    private async Task DeleteContract(ContractDto contract)
     {
-        var parameters = new DialogParameters
-        {
-            { nameof(ConfirmDialog.Message), $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?" },
-            { nameof(ConfirmDialog.ConfirmText), "Obriši" },
-            { nameof(ConfirmDialog.ConfirmColor), Color.Error }
-        };
+        var confirmed = await DialogHelper.ShowConfirmDialog(
+            DialogService,
+            message: $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
+            title: "Potvrda brisanja",
+            confirmText: "Obriši",
+            confirmColor: Color.Error
+        );
 
-        var options = new DialogOptions
+        if (confirmed)
         {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        var dialog = await DialogService.ShowAsync<ConfirmDialog>("Potvrda brisanja", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
-        {
-            await DeleteContract(contract.Id);
+            var result = await Mediator.Send(new DeleteContractCommand(contract.Id));
+            
+            await HandleResult(result);
         }
     }
-
-    private async Task DeleteContract(Guid id)
+    
+    private async Task HandleResult(Result result)
     {
-        var result = await Mediator.Send(new DeleteContractCommand(id));
 
         if (result.IsSuccess)
         {
-            Snackbar.Add(result.Message, Severity.Success);
             await LoadContracts();
+            Snackbar.Add(result.Message, Severity.Success);
         }
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-
-    private Color GetStatusColor(ContractStatus status) => status switch
-    {
-        ContractStatus.Active => Color.Success,
-        ContractStatus.Pending => Color.Warning,
-        ContractStatus.Completed => Color.Info,
-        ContractStatus.Cancelled => Color.Error,
-        _ => Color.Default
-    };
-
-    private string GetStatusText(ContractStatus status) => status switch
-    {
-        ContractStatus.Active => "Aktivan",
-        ContractStatus.Pending => "Na čekanju",
-        ContractStatus.Completed => "Završen",
-        ContractStatus.Cancelled => "Otkazan",
-        _ => "Nepoznat"
-    };
-
-    private string GetTypeText(ContractType type) => type switch
-    {
-        ContractType.Recurring => "Ponavljajući",
-        ContractType.OneTime => "Jednokratni",
-        _ => "Nepoznat"
-    };
 }

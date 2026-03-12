@@ -2,7 +2,7 @@ using Domain.Enums.Certificates;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
-using LumiumPortal.Web.Components.Shared;
+using LumiumPortal.Web.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -53,24 +53,15 @@ public partial class Certificates : SecureComponentBase
     
     private async Task OpenDeleteDialog(CertificateDto certificate)
     {
-        var parameters = new DialogParameters
-        {
-            { nameof(ConfirmDialog.Message), $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?" },
-            { nameof(ConfirmDialog.ConfirmText), "Obriši" },
-            { nameof(ConfirmDialog.ConfirmColor), Color.Error }
-        };
+        var confirmed = await DialogHelper.ShowConfirmDialog(
+            DialogService,
+            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
+            title: "Potvrda brisanja",
+            confirmText: "Obriši",
+            confirmColor: Color.Error
+        );
 
-        var options = new DialogOptions
-        {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        var dialog = await DialogService.ShowAsync<ConfirmDialog>("Potvrda brisanja", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+        if (confirmed)
         {
             await DeleteCertificate(certificate.Id);
         }
@@ -90,37 +81,6 @@ public partial class Certificates : SecureComponentBase
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-
-    private string GetStatusColor(CertificateStatus status) => status switch
-    {
-        CertificateStatus.Expired => "var(--mud-palette-error)",           
-        CertificateStatus.AboutToExpire => "var(--mud-palette-warning)",  
-        CertificateStatus.ExpiringSoon => "var(--mud-palette-info)", 
-        CertificateStatus.Valid => "var(--mud-palette-success)",           
-        _ => "var(--mud-palette-text-secondary)"
-    };
-
-    private string GetStatusText(CertificateStatus status) => status switch
-    {
-        CertificateStatus.Expired => "Istekao",
-        CertificateStatus.AboutToExpire => "Kritično (≤7 dana)",
-        CertificateStatus.ExpiringSoon => "Upozorenje (≤30 dana)",
-        CertificateStatus.Valid => "Validan",
-        _ => string.Empty
-    };
-
-    private string GetDaysText(int days) => days < 0
-        ? $"Istekao pre {Math.Abs(days)}d"
-        : $"{days} dana";
-
-    private string GetDaysChipStyle(CertificateStatus status) => status switch
-    {
-        CertificateStatus.Expired => "border-color: var(--mud-palette-error); color: var(--mud-palette-error);",
-        CertificateStatus.AboutToExpire => "border-color: var(--mud-palette-warning); color: var(--mud-palette-warning);",
-        CertificateStatus.ExpiringSoon => "border-color: var(--mud-palette-info); color: var(--mud-palette-info);",
-        CertificateStatus.Valid => "border-color: var(--mud-palette-success); color: var(--mud-palette-success);",
-        _ => string.Empty
-    };
 
     private string GetRowStyle(CertificateDto cert, int index) => cert.Status switch
     {

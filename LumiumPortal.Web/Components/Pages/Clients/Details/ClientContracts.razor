@@ -1,9 +1,10 @@
 @using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Helpers
 
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
-            Ukupno @Contracts.Count ugovora
+            Ukupno @_contracts.Count ugovora
         </MudText>
         <MudButton StartIcon="@Icons.Material.Filled.Add" 
                    Size="Size.Small" 
@@ -14,7 +15,7 @@
         </MudButton>
     </MudStack>
     
-    <MudTable Items="@Contracts" 
+    <MudTable Items="@_contracts" 
               Class="center-table"
               Striped="true" 
               Bordered="true"
@@ -50,7 +51,7 @@
             </MudTd>
             <MudTd DataLabel="Status">
                 <MudChip T="string" Size="Size.Small" 
-                         Color="@GetContractStatusColor(context.Status)">
+                         Color="@ContractHelper.GetStatusColor(context.Status)">
                     @context.Status.GetDescription()
                 </MudChip>
             </MudTd>
@@ -61,7 +62,7 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
                                Size="Size.Small"
-                               OnClick="@(() => OpenDeleteDialog(context))"/>
+                               OnClick="@(() => DeleteContract(context))"/>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>

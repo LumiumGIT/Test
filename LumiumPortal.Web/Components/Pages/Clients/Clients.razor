@@ -4,6 +4,7 @@
 @using Lumium.Application.Common.Extensions
 @using Lumium.Application.Features.Clients.DTOs
 @using LumiumPortal.Web.Components.Shared
+@using LumiumPortal.Web.Helpers
 
 @if (_isLoading)
 {
@@ -335,7 +336,7 @@ else
                                 CellStyle="min-width: 120px;">
                     <CellTemplate>
                         <MudChip Size="Size.Small"
-                                 Color="@GetRiskColor(context.Item.RiskLevel)"
+                                 Color="@ClientHelper.GetRiskColor(context.Item.RiskLevel)"
                                  Variant="Variant.Filled">
                             @context.Item.RiskLevel.GetDescription()
                         </MudChip>

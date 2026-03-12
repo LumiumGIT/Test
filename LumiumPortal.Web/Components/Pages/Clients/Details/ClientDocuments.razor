@@ -1,20 +1,21 @@
 @using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Helpers
 
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
-            Ukupno @Documents.Count dokumenata
+            Ukupno @_documents.Count dokumenata
         </MudText>
-        <MudButton StartIcon="@Icons.Material.Filled.Upload" 
+        <MudButton StartIcon="@Icons.Material.Filled.Add" 
                    Size="Size.Small" 
                    Variant="Variant.Filled" 
                    Color="Color.Primary"
-                   OnClick="@OnUploadDocument">
-            Otpremi dokument
+                   OnClick="@OpenAddDocumentDialog">
+            Dodaj dokument
         </MudButton>
     </MudStack>
     
-    <MudTable Items="@Documents" 
+    <MudTable Items="@_documents" 
               Class="center-table"
               Striped="true" 
               Bordered="true"
@@ -25,7 +26,8 @@
         <HeaderContent>
             <MudTh>Naziv dokumenta</MudTh>
             <MudTh>Kategorija</MudTh>
-            <MudTh>Datum</MudTh>
+            <MudTh>Datum dodavanja</MudTh>
+            <MudTh>Opis</MudTh>
             <MudTh>Otvori dokument</MudTh>
             <MudTh>Obriši</MudTh>
         </HeaderContent>
@@ -37,12 +39,15 @@
                 </MudStack>
             </MudTd>
             <MudTd DataLabel="Kategorija">
-                <MudChip T="string" Size="Size.Small" Variant="Variant.Filled" Color="Color.Default">
+                <MudChip T="string" Color="@DocumentHelper.GetCategoryColor(context.Category)" Size="Size.Small" Variant="Variant.Filled">
                     @context.Category.GetDescription()
                 </MudChip>
             </MudTd>
             <MudTd DataLabel="Datum otpremanja">
                 <MudText Typo="Typo.body2">@context.UploadedAt.ToString("dd.MM.yyyy")</MudText>
+            </MudTd>
+            <MudTd>
+                <MudText Typo="Typo.body2"><strong>@context.Description</strong></MudText>
             </MudTd>
             <MudTd DataLabel="Otvori dokument">
                 <MudButton Variant="Variant.Filled"
@@ -56,7 +61,8 @@
             <MudTd>
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
-                               Size="Size.Small"/>
+                               Size="Size.Small"
+                               OnClick="@(() => DeleteDocument(context))"/>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>

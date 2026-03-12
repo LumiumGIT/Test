@@ -1,4 +1,3 @@
-using Domain.Enums.Clients;
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
@@ -127,17 +126,4 @@ public partial class Clients : SecureComponentBase
             _selectedClients.Remove(id);
         }
     }
-
-    private void ViewClient(Guid id)
-    {
-        Console.WriteLine($"View client: {id}");
-    }
-
-    private Color GetRiskColor(RiskLevel risk) => risk switch
-    {
-        RiskLevel.Low => Color.Success,
-        RiskLevel.Medium => Color.Warning,
-        RiskLevel.High => Color.Error,
-        _ => Color.Default
-    };
 }

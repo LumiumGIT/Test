@@ -11,6 +11,8 @@ namespace LumiumPortal.Web.Components.Pages.Contracts;
 public partial class AddContractDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+    
+    [Parameter] public Guid ClientId { get; set; }
 
     private CreateContractDto _model = new();
     private MudForm? _form;
@@ -20,6 +22,7 @@ public partial class AddContractDialog : ComponentBase
     private List<(Guid Id, string Name)> _clients = [];
     private DateTime? _startDate = DateTime.Today;
     private DateTime? _endDate = DateTime.Today.AddYears(1);
+    private bool DisableClientSelection => ClientId != Guid.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -33,6 +36,7 @@ public partial class AddContractDialog : ComponentBase
         };
 
         await LoadClients();
+        PreselectClient();
     }
 
     private async Task LoadClients()
@@ -45,6 +49,14 @@ public partial class AddContractDialog : ComponentBase
         {
             Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
             Console.WriteLine($"[ERROR] Load clients failed: {ex}");
+        }
+    }
+    
+    private void PreselectClient()
+    {
+        if (ClientId != Guid.Empty)
+        {
+            _model.SelectedClient = _clients.FirstOrDefault(c => c.Id == ClientId);
         }
     }
 

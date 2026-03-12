@@ -1,6 +1,6 @@
 @page "/clients/{ClientId:guid}"
 @using Lumium.Application.Common.Extensions
-@using LumiumPortal.Web.Components.Pages.Clients.Details
+@using LumiumPortal.Web.Helpers
 @inject NavigationManager Navigation
 
 <PageTitle>Detalji klijenta - @_clientDetails?.Name</PageTitle>
@@ -39,8 +39,8 @@ else
                                 @(_clientDetails.IsActive ? "Aktivan" : "Neaktivan")
                             </MudChip>
                             <MudChip T="string" Size="Size.Small"
-                                     Color="Color.Info"
-                                     Variant="Variant.Outlined">
+                                     Color="@ClientHelper.GetRiskColor(_clientDetails.RiskLevel)"
+                                     Variant="Variant.Filled">
                                 Rizik: @_clientDetails.RiskLevel.GetDescription()
                             </MudChip>
                         </MudStack>
@@ -164,7 +164,7 @@ else
 
                 @* Contracts Tab *@
                 <MudTabPanel Text="Ugovori" Icon="@Icons.Material.Filled.Description">
-                    <ClientContracts Contracts="@_clientDetails.Contracts" />
+                    <ClientContracts ClientId="@ClientId" />
                 </MudTabPanel>
 
                 @* Certificates Tab *@
@@ -174,7 +174,7 @@ else
 
                 @* Documents Tab *@
                 <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
-                    <ClientDocuments Documents="@_clientDetails.Documents" />
+                    <ClientDocuments ClientId="@ClientId" />
                 </MudTabPanel>
             </MudTabs>
         </MudPaper>
