@@ -7,14 +7,25 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 
 public partial class ClientDetails : ComponentBase
 {
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    
     [Parameter] public Guid ClientId { get; set; }
 
     private ClientDetailsDto? _clientDetails;
     private bool _isLoading = true;
-    private decimal _totalContractValue => _clientDetails?.Contracts.Sum(c => c.MonthlyFee) ?? 0;
+    private int _activeTabIndex = 0;
+    private decimal TotalContractValue => _clientDetails?.Contracts.Sum(c => c.MonthlyFee) ?? 0;
 
     protected override async Task OnInitializedAsync()
     {
+        var uri = new Uri(NavigationManager.Uri);
+        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        
+        if (int.TryParse(queryParams["tab"], out var tabIndex))
+        {
+            _activeTabIndex = tabIndex;
+        }
+        
         await LoadClientDetails();
     }
 

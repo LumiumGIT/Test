@@ -165,13 +165,13 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.StartDate" Title="Datum početka">
+                <PropertyColumn Property="c => c.StartDate" Title="Datum početka" Filterable="false" HeaderStyle="white-space: nowrap; min-width: 200px;">
                     <CellTemplate>
                         @context.Item.StartDate.ToString("dd.MM.yyyy")
                     </CellTemplate>
                 </PropertyColumn>
 
-                <TemplateColumn Title="Važenje do" Filterable="false">
+                <TemplateColumn Title="Važenje do" Filterable="false" HeaderStyle="white-space: nowrap; min-width: 150px;">
                     <CellTemplate>
                         @if (context.Item.Duration == ContractDuration.Indefinite)
                         {
