@@ -63,7 +63,7 @@ public partial class ClientContracts : ComponentBase
 
     private async Task DeleteContract(ContractDto contract)
     {
-        var confirmed = await DialogHelper.ShowConfirmDialog(
+        var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
             message: $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
             title: "Potvrda brisanja",

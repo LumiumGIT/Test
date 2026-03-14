@@ -136,8 +136,8 @@ else
 
                 <PropertyColumn Property="c => c.Status" Title="Status">
                     <CellTemplate>
-                        <MudChip Color="@ContractHelper.GetStatusColor(context.Item.Status)" Size="Size.Small">
-                            @ContractHelper.GetStatusText(context.Item.Status)
+                        <MudChip Color="@ContractHelpers.GetStatusColor(context.Item.Status)" Size="Size.Small">
+                            @ContractHelpers.GetStatusText(context.Item.Status)
                         </MudChip>
                     </CellTemplate>
                     <FilterTemplate>
@@ -154,7 +154,7 @@ else
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 Sortable="false">
                     <CellTemplate>
-                        @ContractHelper.GetTypeText(context.Item.Type)
+                        @ContractHelpers.GetTypeText(context.Item.Type)
                     </CellTemplate>
                     <FilterTemplate>
                         <EnumColumnFilter TItem="ContractDto"

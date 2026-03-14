@@ -1,0 +1,64 @@
+@using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Helpers
+
+<MudPaper Elevation="1" Class="pa-4">
+    <MudStack Spacing="3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.PieChart" Color="Color.Primary" Size="Size.Medium"/>
+            <MudText Typo="Typo.h6">Klijenti po statusu</MudText>
+        </MudStack>
+
+        <MudDivider/>
+
+        @if (StatusDistribution.Any())
+        {
+            <MudStack Spacing="2">
+                @foreach (var item in StatusDistribution)
+                {
+                    var status = item.Status;
+                    var totalClients = StatusDistribution.Sum(d => d.Count);
+                    var percentage = totalClients > 0 ? (item.Count * 100.0 / totalClients) : 0;
+
+                    <MudStack Spacing="1">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <MudIcon Icon="@ClientHelpers.GetStatusIcon(status)"
+                                         Color="@ClientHelpers.GetStatusColor(status)"
+                                         Size="Size.Small"/>
+                                <MudText Typo="Typo.body2">@item.Status.GetDescription()</MudText>
+                            </MudStack>
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <MudText Typo="Typo.body2" Color="Color.Default">
+                                    @percentage.ToString("F0")%
+                                </MudText>
+                                <MudChip T="string"
+                                         Size="Size.Small"
+                                         Color="@ClientHelpers.GetStatusColor(status)">
+                                    @item.Count
+                                </MudChip>
+                            </MudStack>
+                        </MudStack>
+                        <MudProgressLinear Color="@ClientHelpers.GetStatusColor(status)"
+                                           Value="@percentage"
+                                           Size="Size.Small"
+                                           Rounded="true"/>
+                    </MudStack>
+                }
+            </MudStack>
+        }
+        else
+        {
+            <MudPaper Elevation="0" Class="pa-6">
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.DoNotDisturb"
+                             Size="Size.Large"
+                             Color="Color.Default"
+                             Style="font-size: 36px; opacity: 0.3;"/>
+                    <MudText Typo="Typo.body2" Color="Color.Default">
+                        Nema podataka
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        }
+    </MudStack>
+</MudPaper>

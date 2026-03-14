@@ -39,7 +39,7 @@ else
                                 @(_clientDetails.IsActive ? "Aktivan" : "Neaktivan")
                             </MudChip>
                             <MudChip T="string" Size="Size.Small"
-                                     Color="@ClientHelper.GetRiskColor(_clientDetails.RiskLevel)"
+                                     Color="@ClientHelpers.GetRiskColor(_clientDetails.RiskLevel)"
                                      Variant="Variant.Filled">
                                 Rizik: @_clientDetails.RiskLevel.GetDescription()
                             </MudChip>

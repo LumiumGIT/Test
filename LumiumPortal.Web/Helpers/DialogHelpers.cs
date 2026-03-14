@@ -3,7 +3,7 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Helpers;
 
-public static class DialogHelper
+public static class DialogHelpers
 {
     public static async Task<bool> ShowConfirmDialog(
         IDialogService dialogService,

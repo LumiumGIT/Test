@@ -63,7 +63,7 @@ public partial class ClientCertificates : ComponentBase
     
     private async Task DeleteCertificate(CertificateDto certificate)
     {
-        var confirmed = await DialogHelper.ShowConfirmDialog(
+        var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
             message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
             title: "Potvrda brisanja",

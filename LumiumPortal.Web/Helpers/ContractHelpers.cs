@@ -3,7 +3,7 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Helpers;
 
-public static class ContractHelper
+public static class ContractHelpers
 {
     public static Color GetStatusColor(ContractStatus status) => status switch
     {

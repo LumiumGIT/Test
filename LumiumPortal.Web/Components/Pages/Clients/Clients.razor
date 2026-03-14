@@ -336,7 +336,7 @@ else
                                 CellStyle="min-width: 120px;">
                     <CellTemplate>
                         <MudChip Size="Size.Small"
-                                 Color="@ClientHelper.GetRiskColor(context.Item.RiskLevel)"
+                                 Color="@ClientHelpers.GetRiskColor(context.Item.RiskLevel)"
                                  Variant="Variant.Filled">
                             @context.Item.RiskLevel.GetDescription()
                         </MudChip>

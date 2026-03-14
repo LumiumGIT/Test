@@ -1,32 +1,13 @@
-using Domain.Enums.Shared;
 using Lumium.Application.Features.Dashboard.DTOs;
 using Lumium.Application.Features.Dashboard.Queries;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Dashboard;
 
 public partial class Dashboard : SecureComponentBase
 {
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    
     private DashboardDataDto _data = new();
     private bool _isLoading = true;
-    
-    private bool _showExpiredCertificates;
-    private bool _showExpiredContracts;
-    private bool _showClientsWithoutDocs;
-
-    private string UserName => "Korisnik"; // TODO: Uzmi iz auth context-a
-    
-    private void ToggleExpiredCertificates() => _showExpiredCertificates = !_showExpiredCertificates;
-    private void ToggleExpiredContracts() => _showExpiredContracts = !_showExpiredContracts;
-    private void ToggleClientsWithoutDocs() => _showClientsWithoutDocs = !_showClientsWithoutDocs;
-
-    private bool HasAlerts =>
-        _data.Alerts.ExpiredCertificates.Count != 0 ||
-        _data.Alerts.ExpiredContracts.Count != 0 ||
-        _data.Alerts.ClientsWithoutDocuments.Count != 0;
 
     protected override async Task OnSecureInitializedAsync()
     {
@@ -48,25 +29,16 @@ public partial class Dashboard : SecureComponentBase
         }
     }
     
-    private void OnDeadlineClick(TableRowClickEventArgs<UpcomingDeadlineDto> args)
-    {
-        var deadline = args.Item;
-        
-        var tabIndex = deadline?.Type == DeadlineType.Certificate ? 2 : 1;
-        
-        NavigationManager.NavigateTo($"/clients/{deadline?.ClientId}?tab={tabIndex}");
-    }
+    private bool HasAlerts =>
+        _data.Alerts.ExpiredCertificates.Count != 0 ||
+        _data.Alerts.ExpiredContracts.Count != 0 ||
+        _data.Alerts.ClientsWithoutDocuments.Count != 0;
     
-    private void NavigateToClientTab(Guid clientId, int tabIndex)
-    {
-        NavigationManager.NavigateTo($"/clients/{clientId}?tab={tabIndex}");
-    }
-
-    private Color GetDeadlineColor(DeadlineStatus status) => status switch
-    {
-        DeadlineStatus.Critical => Color.Error,
-        DeadlineStatus.Warning => Color.Warning,
-        DeadlineStatus.Info => Color.Info,
-        _ => Color.Default
-    };
+    private bool HasRecentClients => _data.RecentClients.Count != 0;
+    
+    private bool HasAcquisitions => _data.AcquisitionsThisYear.Count != 0;
+    
+    private bool HasStatusDistribution => _data.ClientsByStatus.Count != 0;
+    
+    private bool HasSubStatusDistribution => _data.ClientsBySubStatus.Count != 0;
 }

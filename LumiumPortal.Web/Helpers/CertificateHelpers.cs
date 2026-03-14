@@ -2,7 +2,7 @@ using Domain.Enums.Certificates;
 
 namespace LumiumPortal.Web.Helpers;
 
-public static class CertificateHelper
+public static class CertificateHelpers
 {
     public static string GetStatusColor(CertificateStatus status) => status switch
     {

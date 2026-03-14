@@ -40,7 +40,7 @@
                     </MudStack>
                 </MudTd>
                 <MudTd DataLabel="Kategorija">
-                    <MudChip T="string" Color="@DocumentHelper.GetCategoryColor(context.Category)" Size="Size.Small"
+                    <MudChip T="string" Color="@DocumentHelpers.GetCategoryColor(context.Category)" Size="Size.Small"
                              Variant="Variant.Filled">
                         @context.Category.GetDescription()
                     </MudChip>

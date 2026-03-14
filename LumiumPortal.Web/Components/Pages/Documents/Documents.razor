@@ -122,7 +122,7 @@ else
                 
                 <PropertyColumn Property="d => d.Category" Title="Kategorija">
                     <CellTemplate>
-                        <MudChip Color="@DocumentHelper.GetCategoryColor(context.Item.Category)" Size="Size.Small">
+                        <MudChip Color="@DocumentHelpers.GetCategoryColor(context.Item.Category)" Size="Size.Small">
                             @context.Item.Category.GetDescription()
                         </MudChip>
                     </CellTemplate>

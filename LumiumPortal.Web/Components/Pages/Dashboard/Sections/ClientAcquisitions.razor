@@ -1,0 +1,44 @@
+<MudPaper Elevation="1" Class="pa-4 mb-4">
+    <MudStack Spacing="3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Color="Color.Primary" Size="Size.Medium"/>
+            <MudText Typo="Typo.h6">Akvizicije u @DateTime.Today.Year. godini</MudText>
+            <MudSpacer/>
+            <MudText Typo="Typo.h6" Color="Color.Primary">
+                Ukupno: @Acquisitions.Sum(a => a.Count)
+            </MudText>
+        </MudStack>
+
+        <MudDivider/>
+
+        @if (Acquisitions.Any())
+        {
+            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+                @foreach (var acquisition in Acquisitions)
+                {
+                    var maxCount = Acquisitions.Max(a => a.Count);
+                    var heightPercentage = maxCount > 0 ? (acquisition.Count * 100.0 / maxCount) : 0;
+                    var minHeight = 20; // Minimum visina za vizuelni efekat
+                    var barHeight = Math.Max(minHeight, heightPercentage);
+
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1" Style="flex: 1;">
+                        <MudText Typo="Typo.body2" Color="@(acquisition.Count > 0 ? Color.Primary : Color.Default)">
+                            <strong>@acquisition.Count</strong>
+                        </MudText>
+                        <MudPaper Elevation="0"
+                                  Class="pa-2"
+                                  Style="@($"width: 100%; height: {barHeight}px; background-color: {(acquisition.Count > 0 ? "var(--mud-palette-primary)" : "var(--mud-palette-table-striped)")}; border-radius: 4px 4px 0 0; transition: all 0.3s;")">
+                        </MudPaper>
+                        <MudText Typo="Typo.caption" Color="Color.Default">@acquisition.MonthName</MudText>
+                    </MudStack>
+                }
+            </MudStack>
+        }
+        else
+        {
+            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center">
+                Nema podataka za ovu godinu
+            </MudText>
+        }
+    </MudStack>
+</MudPaper>

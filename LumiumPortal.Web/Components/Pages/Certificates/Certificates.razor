@@ -125,9 +125,9 @@ else
                                 HeaderStyle="white-space: nowrap; min-width: 80px; max-width: 80px; width: 80px;"
                                 CellStyle="min-width: 80px; max-width: 80px; width: 80px;">
                     <CellTemplate>
-                        <MudTooltip Text="@CertificateHelper.GetStatusText(context.Item.Status)">
+                        <MudTooltip Text="@CertificateHelpers.GetStatusText(context.Item.Status)">
                             <MudIcon Icon="@Icons.Material.Filled.Circle"
-                                     Style="@($"color: {CertificateHelper.GetStatusColor(context.Item.Status)}; font-size: 14px;")"/>
+                                     Style="@($"color: {CertificateHelpers.GetStatusColor(context.Item.Status)}; font-size: 14px;")"/>
                         </MudTooltip>
                     </CellTemplate>
                 </TemplateColumn>
@@ -202,8 +202,8 @@ else
                     <CellTemplate>
                         <MudChip Size="Size.Small"
                                  Variant="Variant.Outlined"
-                                 Style="@CertificateHelper.GetDaysChipStyle(context.Item.Status)">
-                            @CertificateHelper.GetDaysText(context.Item.DaysUntilExpiry)
+                                 Style="@CertificateHelpers.GetDaysChipStyle(context.Item.Status)">
+                            @CertificateHelpers.GetDaysText(context.Item.DaysUntilExpiry)
                         </MudChip>
                     </CellTemplate>
                     <FilterTemplate>

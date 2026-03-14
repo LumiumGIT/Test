@@ -1,4 +1,5 @@
 using Domain.Entities.Portal;
+using Domain.Enums.Clients;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,6 +29,8 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
         builder.Property(c => c.Croso).HasColumnName("croso");
         builder.Property(c => c.Pep).HasColumnName("pep");
         builder.Property(c => c.WingsTemplate).HasColumnName("wings_template");
+        builder.Property(c => c.Status).HasColumnName("status").HasDefaultValue(ClientStatus.Active).HasConversion<int>();
+        builder.Property(c => c.SubStatus).HasColumnName("sub_status").HasDefaultValue(ClientSubStatus.Standard).HasConversion<int>();
         builder.Property(c => c.IsActive).HasColumnName("is_active");
         builder.Property(c => c.BusinessActivity).HasColumnName("business_activity");
         builder.Property(c => c.Country).HasColumnName("country");

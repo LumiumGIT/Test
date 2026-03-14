@@ -1,0 +1,71 @@
+@using Lumium.Application.Common.Extensions
+@using Lumium.Application.Features.Dashboard.DTOs
+
+<MudPaper Elevation="1" Class="pa-4">
+    <MudStack Spacing="3">
+        <MudText Typo="Typo.h6">Predstoji u narednih 30 dana</MudText>
+        
+        @if (Deadlines.Any())
+        {
+            <MudTable Items="@Deadlines"
+                      Class="center-table"
+                      Striped="true"
+                      Bordered="true"
+                      Hover="true"
+                      Breakpoint="Breakpoint.Sm"
+                      Elevation="0"
+                      Dense="true"
+                      OnRowClick="@OnDeadlineClick"
+                      T="UpcomingDeadlineDto"
+                      Style="cursor: pointer;">
+                <HeaderContent>
+                    <MudTh>Datum</MudTh>
+                    <MudTh>Tip</MudTh>
+                    <MudTh>Naziv</MudTh>
+                    <MudTh>Klijent</MudTh>
+                    <MudTh>Preostalo</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Datum">
+                        <MudText Typo="Typo.body2">@context.Date.ToString("dd.MM.yyyy")</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Tip">
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
+                            @context.Type.GetDescription()
+                        </MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Naziv">
+                        <MudText Typo="Typo.body2"><strong>@context.Title</strong></MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Klijent">
+                        <MudText Typo="Typo.body2">@context.ClientName</MudText>
+                    </MudTd>
+                    <MudTd DataLabel="Preostalo">
+                        <MudChip T="string" 
+                                 Size="Size.Small"
+                                 Color="@GetDeadlineColor(context.Status)">
+                            @context.DaysRemaining dana
+                        </MudChip>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+        else
+        {
+            <MudPaper Elevation="0" Class="pa-6">
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" 
+                             Size="Size.Large" 
+                             Color="Color.Success"
+                             Style="font-size: 36px; opacity: 0.5;" />
+                    <MudText Typo="Typo.h6" Color="Color.Success">
+                        Nema predstojećih rokova
+                    </MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Default">
+                        Sve je u redu! Nema sertifikata ili ugovora koji ističu u narednih 30 dana.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        }
+    </MudStack>
+</MudPaper>

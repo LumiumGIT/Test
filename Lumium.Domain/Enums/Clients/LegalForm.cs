@@ -4,9 +4,11 @@ namespace Domain.Enums.Clients;
 
 public enum LegalForm
 {
-    [Description("Preduzetnik")] Entrepreneur = 0,
+    [Description("Preduzetnik")] 
+    Entrepreneur = 0,
 
-    [Description("Državni organ")] GovernmentBody = 1,
+    [Description("Državni organ")] 
+    GovernmentBody = 1,
 
     [Description("Udruženje građana - Nevladina organizacija")]
     NonGovernmentalOrganization = 2

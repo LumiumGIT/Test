@@ -1,0 +1,78 @@
+<MudPaper Elevation="2" Class="pa-4" Style="height: 100%;">
+    <MudStack Spacing="3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Size="Size.Medium"/>
+            <MudText Typo="Typo.h6">Najnoviji klijenti</MudText>
+        </MudStack>
+
+        <MudDivider/>
+
+        @if (Clients.Any())
+        {
+            <MudStack Spacing="2">
+                @foreach (var client in Clients)
+                {
+                    <MudPaper Elevation="0"
+                              Class="pa-3"
+                              Style="background-color: var(--mud-palette-table-striped); cursor: pointer; transition: background-color 0.2s;"
+                              @onclick="@(() => NavigateToClient(client.Id))">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body1"><strong>@client.Name</strong></MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Default">
+                                    @client.DaysAgo
+                                </MudText>
+                            </MudStack>
+                            <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                @if (client.CertificatesCount > 0)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Info">
+                                        @client.CertificatesCount <MudIcon Icon="@Icons.Material.Filled.VerifiedUser"
+                                                                           Size="Size.Small"/>
+                                    </MudChip>
+                                }
+                                @if (client.ContractsCount > 0)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Success">
+                                        @client.ContractsCount <MudIcon Icon="@Icons.Material.Filled.Description"
+                                                                        Size="Size.Small"/>
+                                    </MudChip>
+                                }
+                                @if (client.DocumentsCount > 0)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Text"
+                                             Color="Color.Secondary">
+                                        @client.DocumentsCount <MudIcon Icon="@Icons.Material.Filled.Folder"
+                                                                        Size="Size.Small"/>
+                                    </MudChip>
+                                }
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudStack>
+
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       StartIcon="@Icons.Material.Filled.ArrowForward"
+                       OnClick="@(() => NavigationManager.NavigateTo("/clients"))">
+                Vidi sve klijente
+            </MudButton>
+        }
+        else
+        {
+            <MudPaper Elevation="0" Class="pa-6">
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.PersonOff"
+                             Size="Size.Large"
+                             Color="Color.Default"
+                             Style="font-size: 36px; opacity: 0.3;"/>
+                    <MudText Typo="Typo.body2" Color="Color.Default">
+                        Nema novih klijenata
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        }
+    </MudStack>
+</MudPaper>

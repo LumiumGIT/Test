@@ -65,7 +65,7 @@ public partial class ClientDocuments : ComponentBase
     
     private async Task DeleteDocument(DocumentDto document)
     {
-        var confirmed = await DialogHelper.ShowConfirmDialog(
+        var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
             message: $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
             title: "Potvrda brisanja",

@@ -53,7 +53,7 @@ public partial class Certificates : SecureComponentBase
     
     private async Task OpenDeleteDialog(CertificateDto certificate)
     {
-        var confirmed = await DialogHelper.ShowConfirmDialog(
+        var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
             message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
             title: "Potvrda brisanja",

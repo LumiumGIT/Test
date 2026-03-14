@@ -53,14 +53,14 @@
                 <MudTd>
                     <MudChip T="string" Size="Size.Small"
                              Variant="Variant.Outlined"
-                             Style="@CertificateHelper.GetDaysChipStyle(context.Status)">
-                        @CertificateHelper.GetDaysText(context.DaysUntilExpiry)
+                             Style="@CertificateHelpers.GetDaysChipStyle(context.Status)">
+                        @CertificateHelpers.GetDaysText(context.DaysUntilExpiry)
                     </MudChip>
                 </MudTd>
                 <MudTd DataLabel="Status">
                     <MudChip T="string" Size="Size.Small"
                              Variant="Variant.Outlined"
-                             Style="@CertificateHelper.GetDaysChipStyle(context.Status)">
+                             Style="@CertificateHelpers.GetDaysChipStyle(context.Status)">
                         @context.Status.GetDescription()
                     </MudChip>
                 </MudTd>
