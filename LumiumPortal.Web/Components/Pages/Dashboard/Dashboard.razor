@@ -9,7 +9,7 @@
 }
 else
 {
-    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-3">
         
         @* Header *@
         <MudText Typo="Typo.h3" GutterBottom="true">Dashboard</MudText>
@@ -19,6 +19,9 @@ else
 
         @* Stats Cards *@
         <DashboardStats Stats="_data.Stats" />
+        
+        @* Upcoming Deadlines *@
+        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines" />
 
         @* Alerts + Recent Clients Grid *@
         @if (HasAlerts || HasRecentClients)
@@ -65,9 +68,6 @@ else
                 }
             </MudGrid>
         }
-
-        @* Upcoming Deadlines *@
-        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines" />
 
     </MudContainer>
 }
