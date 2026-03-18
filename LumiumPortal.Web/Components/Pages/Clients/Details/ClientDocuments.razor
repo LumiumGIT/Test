@@ -1,65 +1,89 @@
 @using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Helpers
 
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
-            @Documents.Count ukupno dokumenata
+            Ukupno @_documents.Count dokumenata
         </MudText>
-        <MudButton StartIcon="@Icons.Material.Filled.Upload" 
-                   Size="Size.Small" 
-                   Variant="Variant.Filled" 
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Size="Size.Small"
+                   Variant="Variant.Filled"
                    Color="Color.Primary"
-                   OnClick="@OnUploadDocument">
-            Otpremi dokument
+                   OnClick="@OpenAddDocumentDialog">
+            Dodaj dokument
         </MudButton>
     </MudStack>
-    
-    <MudTable Items="@Documents" 
-              Hover="true" 
-              Breakpoint="Breakpoint.Sm" 
-              Elevation="0"
-              Dense="true">
-        <HeaderContent>
-            <MudTh>Naziv dokumenta</MudTh>
-            <MudTh>Kategorija</MudTh>
-            <MudTh>Otpremio</MudTh>
-            <MudTh>Datum</MudTh>
-            <MudTh>Veličina</MudTh>
-            <MudTh></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Naziv">
-                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-                    <MudIcon Icon="@Icons.Material.Filled.Description" Size="Size.Small" Color="Color.Default" />
-                    <MudText Typo="Typo.body2"><strong>@context.Name</strong></MudText>
-                </MudStack>
-            </MudTd>
-            <MudTd DataLabel="Kategorija">
-                <MudChip T="string" Size="Size.Small" Variant="Variant.Filled" Color="Color.Default">
-                    @context.Category.GetDescription()
-                </MudChip>
-            </MudTd>
-            <MudTd DataLabel="Otpremio">
-                <MudText Typo="Typo.body2">@context.UploadedBy</MudText>
-            </MudTd>
-            <MudTd DataLabel="Datum">
-                <MudText Typo="Typo.body2">@context.UploadDate.ToString("dd.MM.yyyy")</MudText>
-            </MudTd>
-            <MudTd DataLabel="Veličina">
-                <MudText Typo="Typo.body2" Color="Color.Default">@context.Size</MudText>
-            </MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Download" 
-                               Size="Size.Small" 
+    @if (_documents.Any())
+    {
+        <MudTable Items="@_documents"
+                  Class="center-table"
+                  Striped="true"
+                  Bordered="true"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm"
+                  Elevation="0"
+                  Dense="true">
+            <HeaderContent>
+                <MudTh>Naziv dokumenta</MudTh>
+                <MudTh>Kategorija</MudTh>
+                <MudTh>Datum dodavanja</MudTh>
+                <MudTh>Opis</MudTh>
+                <MudTh>Otvori dokument</MudTh>
+                <MudTh>Obriši</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Naziv">
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.Description" Size="Size.Small" Color="Color.Default"/>
+                        <MudText Typo="Typo.body2"><strong>@context.Name</strong></MudText>
+                    </MudStack>
+                </MudTd>
+                <MudTd DataLabel="Kategorija">
+                    <MudChip T="string" Color="@DocumentHelpers.GetCategoryColor(context.Category)" Size="Size.Small"
+                             Variant="Variant.Filled">
+                        @context.Category.GetDescription()
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Datum otpremanja">
+                    <MudText Typo="Typo.body2">@context.UploadedAt.ToString("dd.MM.yyyy")</MudText>
+                </MudTd>
+                <MudTd>
+                    <MudText Typo="Typo.body2"><strong>@context.Description</strong></MudText>
+                </MudTd>
+                <MudTd DataLabel="Otvori dokument">
+                    <MudButton Variant="Variant.Filled"
                                Color="Color.Primary"
-                               OnClick="@(() => OnDownloadDocument.InvokeAsync(context.Id))"
-                               aria-label="Preuzmi" />
-            </MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <MudText Typo="Typo.body2" Color="Color.Default" Align="Align.Center" Class="py-6">
-                Nema otpremljenih dokumenata
-            </MudText>
-        </NoRecordsContent>
-    </MudTable>
+                               Size="Size.Small"
+                               StartIcon="@Icons.Material.Filled.OpenInNew"
+                               OnClick="@(() => OpenDocument(context.Url))">
+                        Otvori
+                    </MudButton>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   OnClick="@(() => DeleteDocument(context))"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema dokumenata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj dokument" da dodate prvi dokument
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 </MudStack>

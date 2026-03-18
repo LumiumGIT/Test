@@ -1,4 +1,3 @@
-using Domain.Enums;
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
@@ -8,47 +7,25 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Clients;
 
-public partial class Clients : ComponentBase
+public partial class Clients : SecureComponentBase 
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
     
+    private MudDataGrid<ClientDto>? _dataGrid;
     private List<ClientDto> _clients = [];
-    
-    // Filters
-    private string _searchQuery = "";
-    
-    // Selection
     private readonly HashSet<Guid> _selectedClients = [];
+    private bool _isLoading = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnSecureInitializedAsync()
     {
+        _isLoading = true;
         await LoadClients();
+        _isLoading = false;
     }
 
     private async Task LoadClients()
     {
-        try
-        {
-            _clients = await Mediator.Send(new GetClientsQuery());
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
-            Console.WriteLine($"Error loading clients: {ex}");
-        }
-    }
-
-    private IEnumerable<ClientDto> GetFilteredClients()
-    {
-        return _clients.Where(c =>
-        {
-            var matchesSearch = string.IsNullOrWhiteSpace(_searchQuery) ||
-                                c.Name.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                                c.Email.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                                c.TaxNumber.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase);
-
-            return matchesSearch;
-        });
+        _clients = await Mediator.Send(new GetClientsQuery());
     }
     
     private async Task OpenAddClientDialog()
@@ -105,26 +82,37 @@ public partial class Clients : ComponentBase
         }
     }
 
-    // Selection methods
     private bool IsAllSelected()
     {
-        var filtered = GetFilteredClients().ToList();
-        return filtered.Any() && filtered.All(c => _selectedClients.Contains(c.Id));
+        if (_dataGrid?.FilteredItems == null)
+        {
+            return false;
+        }
+    
+        var filteredClients = _dataGrid.FilteredItems.ToList();
+        
+        return filteredClients.Count != 0 && filteredClients.All(c => _selectedClients.Contains(c.Id));
     }
 
     private void ToggleSelectAll()
     {
-        var filtered = GetFilteredClients().ToList();
+        if (_dataGrid?.FilteredItems == null)
+        {
+            return;
+        }
+
+        var filteredClients = _dataGrid.FilteredItems.ToList();
+    
         if (IsAllSelected())
         {
-            foreach (var client in filtered)
+            foreach (var client in filteredClients)
             {
                 _selectedClients.Remove(client.Id);
             }
         }
         else
         {
-            foreach (var client in filtered)
+            foreach (var client in filteredClients)
             {
                 _selectedClients.Add(client.Id);
             }
@@ -138,19 +126,4 @@ public partial class Clients : ComponentBase
             _selectedClients.Remove(id);
         }
     }
-
-    // Action handlers
-    private void ViewClient(Guid id)
-    {
-        Console.WriteLine($"View client: {id}");
-    }
-
-    // Helper methods for styling
-    private Color GetRiskColor(RiskLevel risk) => risk switch
-    {
-        RiskLevel.Low => Color.Success,
-        RiskLevel.Medium => Color.Warning,
-        RiskLevel.High => Color.Error,
-        _ => Color.Default
-    };
 }

@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <None Remove="Components\Pages\Clients\Clients.razor.css" />
-      <Content Include="Components\Pages\Clients\Clients.razor.css" />
     </ItemGroup>
 
 </Project>

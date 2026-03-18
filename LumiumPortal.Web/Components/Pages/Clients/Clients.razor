@@ -1,17 +1,23 @@
 @page "/clients"
-@using Domain.Enums
+@inherits SecureComponentBase
+@using Domain.Enums.Clients
 @using Lumium.Application.Common.Extensions
 @using Lumium.Application.Features.Clients.DTOs
 @using LumiumPortal.Web.Components.Shared
-@using Boolean = Domain.Enums.Boolean
+@using LumiumPortal.Web.Helpers
 
-<ProtectedPage>
+@if (_isLoading)
+{
+    <LoadingIndicator />
+}
+else
+{
     <MudText Typo="Typo.h3" GutterBottom="true">Klijenti</MudText>
     <MudText Class="mb-4" Color="Color.Default">Upravljajte računima i odnosima sa klijentima</MudText>
 
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddClientDialog" 
+            <MudButton OnClick="@OpenAddClientDialog"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add">
@@ -35,19 +41,22 @@
                 <MudText Typo="Typo.body1" Color="Color.Primary">
                     <strong>@_selectedClients.Count</strong> klijent(a) selektovano
                 </MudText>
-                <MudSpacer />
+                <MudSpacer/>
                 <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
-                <MudButton Variant="Variant.Outlined" Size="Size.Small">Dodeli zaposlenog</MudButton>
-                <MudButton OnClick="@DeleteSelectedClients" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error">Obriši selektovane</MudButton>
+                <MudButton OnClick="@DeleteSelectedClients" Variant="Variant.Outlined" Size="Size.Small"
+                           Color="Color.Error">Obriši selektovane
+                </MudButton>
             </MudStack>
         </MudPaper>
     }
 
     @* Data Grid *@
     <MudPaper Elevation="1">
-        <MudDataGrid T="ClientDto"
+        <MudDataGrid @ref="_dataGrid"
+                     T="ClientDto"
                      Items="@_clients"
-                     Class="clients-grid"
+                     Class="center-table"
+                     Striped="true" 
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -59,7 +68,7 @@
                      Hideable="false"
                      Bordered="true">
             <Columns>
-                
+
                 @* Checkbox Column *@
                 <TemplateColumn Sortable="false" Filterable="false">
                     <HeaderTemplate>
@@ -118,14 +127,15 @@
                 @* PDV *@
                 <PropertyColumn Property="x => x.IsPdv"
                                 Title="PDV"
-                                HeaderStyle="white-space: nowrap; min-width: 50px; max-width: 50px; width: 50px;">
+                                HeaderStyle="white-space: nowrap; min-width: 70px;"
+                                Sortable="false">
                     <CellTemplate>
                         <MudText Typo="Typo.body2">@(context.Item.IsPdv ? "Da" : "Ne")</MudText>
                     </CellTemplate>
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.IsPdv ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.IsPdv ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
@@ -168,7 +178,8 @@
                 @* Boolean kolone - manje su *@
                 <PropertyColumn Property="x => x.EcoTax"
                                 Title="Eko taksa"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.EcoTax)
                         {
@@ -182,13 +193,14 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.EcoTax ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.EcoTax ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="x => x.BeneficialOwners"
                                 Title="Vlasnici"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.BeneficialOwners)
                         {
@@ -202,13 +214,14 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.BeneficialOwners ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.BeneficialOwners ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="x => x.Croso"
                                 Title="CROSO"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.Croso)
                         {
@@ -222,13 +235,14 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.Croso ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.Croso ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="x => x.Pep"
                                 Title="PEP"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.Pep)
                         {
@@ -242,13 +256,14 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.Pep ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.Pep ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="x => x.WingsTemplate"
                                 Title="Wings"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.WingsTemplate)
                         {
@@ -262,13 +277,14 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.WingsTemplate ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.WingsTemplate ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="x => x.IsActive"
                                 Title="Aktivan"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.IsActive)
                         {
@@ -282,13 +298,14 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.IsActive ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.IsActive ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
                 <PropertyColumn Property="x => x.BusinessActivity"
                                 Title="Oblast rada"
-                                HeaderStyle="white-space: nowrap; min-width: 90px; max-width: 90px; width: 90px;">
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
                     <CellTemplate>
                         @if (context.Item.BusinessActivity)
                         {
@@ -302,7 +319,7 @@
                     <FilterTemplate>
                         <ComboBoxColumnFilter T="ClientDto"
                                               Context="@context"
-                                              ValueSelector="@(client => client.BusinessActivity ? "Da" : "Ne")" />
+                                              ValueSelector="@(client => client.BusinessActivity ? "Da" : "Ne")"/>
                     </FilterTemplate>
                 </PropertyColumn>
 
@@ -319,7 +336,7 @@
                                 CellStyle="min-width: 120px;">
                     <CellTemplate>
                         <MudChip Size="Size.Small"
-                                 Color="@GetRiskColor(context.Item.RiskLevel)"
+                                 Color="@ClientHelpers.GetRiskColor(context.Item.RiskLevel)"
                                  Variant="Variant.Filled">
                             @context.Item.RiskLevel.GetDescription()
                         </MudChip>
@@ -332,36 +349,25 @@
                     </FilterTemplate>
                 </PropertyColumn>
 
-                @* Akcije *@
-                <TemplateColumn Title="Akcije"
+                @* Izmeni *@
+                <TemplateColumn Title="Izmeni"
                                 Sortable="false"
                                 Filterable="false"
                                 HeaderStyle="white-space: nowrap; min-width: 120px;"
                                 CellStyle="min-width: 120px;">
                     <CellTemplate>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexEnd">
-                            <MudIconButton Icon="@Icons.Material.Filled.Visibility"
-                                           Size="Size.Small"
-                                           OnClick="@(() => ViewClient(context.Item.Id))"
-                                           Title="Pregledaj"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Size="Size.Small"
-                                           Disabled="true"
-                                           Title="Izmeni"/>
-                            <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomRight">
-                                <MudMenuItem Icon="@Icons.Material.Filled.Description">Dokumenti</MudMenuItem>
-                                <MudMenuItem Icon="@Icons.Material.Filled.Shield">Sertifikati</MudMenuItem>
-                            </MudMenu>
-                        </MudStack>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
+                                       Disabled="true"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
 
             <PagerContent>
-                <MudDataGridPager T="ClientDto" 
+                <MudDataGridPager T="ClientDto"
                                   InfoFormat="{first_item}-{last_item} od {all_items}"
-                                  RowsPerPageString="Redova po stranici:" />
+                                  RowsPerPageString="Redova po stranici:"/>
             </PagerContent>
         </MudDataGrid>
     </MudPaper>
-</ProtectedPage>
+}

@@ -12,9 +12,15 @@ namespace Lumium.Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ITenantContext tenantContext)
     : DbContext(options), IApplicationDbContext
 {
+    // Tenant-specific
     public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Customer> Customers { get; set; } = null!;
     public DbSet<Client> Clients { get; set; } = null!;
+    public DbSet<Certificate> Certificates { get; set; } = null!;
+    public DbSet<Contract> Contracts { get; set; } = null!;
+    public DbSet<Document> Documents { get; set; } = null!;
+    
+    // Shared lookup (public schema)
+    public DbSet<RegulatoryBody> RegulatoryBodies { get; set; } = null!;
 
     public string GetTenantId()
     {
@@ -24,7 +30,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.ReplaceService<IModelCacheKeyFactory, DynamicModelCacheKeyFactory>();
-
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -56,9 +61,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             if (!typeof(TenantEntity).IsAssignableFrom(entityType.ClrType))
-            {
                 continue;
-            }
 
             var parameter = Expression.Parameter(entityType.ClrType, "e");
             var property = Expression.Property(parameter, nameof(TenantEntity.TenantId));
@@ -75,16 +78,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public async Task SetSearchPathAsync(string schemaName)
     {
         if (string.IsNullOrEmpty(schemaName))
-        {
             return;
-        }
 
         var connection = Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
-        {
             await connection.OpenAsync();
-        }
 
         await using var command = connection.CreateCommand();
         command.CommandText = $"SET search_path TO {schemaName}";
@@ -98,10 +97,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             if (entry.State == EntityState.Added && entry.Entity.TenantId == Guid.Empty)
             {
                 if (tenantContext.TenantId == Guid.Empty)
-                {
                     throw new InvalidOperationException("TenantId nije setovan u tenant context-u");
-                }
-                
+
                 entry.Entity.TenantId = tenantContext.TenantId;
             }
         }

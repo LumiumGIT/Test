@@ -1,16 +1,14 @@
 @page "/dashboard"
 
-<ProtectedPage>
-    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
-        <MudText Typo="Typo.h3" GutterBottom="true">Admin Dashboard</MudText>
-        <MudText Typo="Typo.body1">Dobrodošli u admin panel!</MudText>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+    <MudText Typo="Typo.h3" GutterBottom="true">Admin Dashboard</MudText>
+    <MudText Typo="Typo.body1">Dobrodošli u admin panel!</MudText>
 
-        <MudButton
-            Variant="Variant.Filled"
-            Color="Color.Secondary"
-            Class="mt-4"
-            OnClick="@Logout">
-            Odjavi se
-        </MudButton>
-    </MudContainer>
-</ProtectedPage>
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Secondary"
+        Class="mt-4"
+        OnClick="@Logout">
+        Odjavi se
+    </MudButton>
+</MudContainer>

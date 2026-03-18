@@ -1,5 +1,5 @@
 using Domain.Common;
-using Domain.Enums;
+using Domain.Enums.Clients;
 
 namespace Domain.Entities.Portal;
 
@@ -22,16 +22,27 @@ public class Client : TenantEntity
     public string Director { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     
+    // Status Management
+    public ClientStatus Status { get; set; } = ClientStatus.Active;
+    public ClientSubStatus SubStatus { get; set; } = ClientSubStatus.Standard;
+    
+    // DEPRECATED - zadržaj za backward compatibility, ali koristi Status
+    public bool IsActive { get; set; } = true;
+    
     // Flags/Checkboxes
     public bool EcoTax { get; set; }
     public bool BeneficialOwners { get; set; }
     public bool Croso { get; set; }
     public bool Pep { get; set; }
     public bool WingsTemplate { get; set; }
-    public bool IsActive { get; set; }
     public bool BusinessActivity { get; set; }
     
     // Additional
     public string Country { get; set; } = string.Empty;
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
+    
+    // Navigation
+    public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
+    public ICollection<Contract> Contracts { get; set; } = new List<Contract>();
+    public ICollection<Document> Documents { get; set; } = new List<Document>();
 }

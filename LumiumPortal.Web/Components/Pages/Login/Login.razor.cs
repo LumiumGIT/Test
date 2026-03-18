@@ -1,5 +1,6 @@
 using LumiumPortal.Web.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Login;
@@ -27,6 +28,11 @@ public partial class Login : ComponentBase
                 {
                     _companyName = lastCompanyName;
                     StateHasChanged();
+                    
+                    if (_form != null)
+                    {
+                        await _form.Validate();
+                    }
                 }
             }
             catch (Exception ex)
@@ -39,6 +45,14 @@ public partial class Login : ComponentBase
     private void ClearError()
     {
         _errorMessage = null;
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(_companyName) && !_isLoading)
+        {
+            await ContinueToLogin();
+        }
     }
 
     private async Task ContinueToLogin()

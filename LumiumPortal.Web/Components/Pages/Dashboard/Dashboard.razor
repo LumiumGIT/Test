@@ -1,0 +1,73 @@
+@page "/dashboard"
+@inherits SecureComponentBase
+@using LumiumPortal.Web.Components.Shared
+@using LumiumPortal.Web.Components.Pages.Dashboard.Sections
+
+@if (_isLoading)
+{
+    <LoadingIndicator Text="Učitavam dashboard..." />
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-3">
+        
+        @* Header *@
+        <MudText Typo="Typo.h3" GutterBottom="true">Dashboard</MudText>
+        <MudText Class="mb-4" Color="Color.Default">
+            Pregled stanja za @DateTime.Today.ToString("dd.MM.yyyy")
+        </MudText>
+
+        @* Stats Cards *@
+        <DashboardStats Stats="_data.Stats" />
+        
+        @* Upcoming Deadlines *@
+        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines" />
+
+        @* Alerts + Recent Clients Grid *@
+        @if (HasAlerts || HasRecentClients)
+        {
+            <MudGrid Class="mb-4">
+                @if (HasAlerts)
+                {
+                    <MudItem xs="12" md="6">
+                        <DashboardAlerts Alerts="_data.Alerts" />
+                    </MudItem>
+                }
+
+                @if (HasRecentClients)
+                {
+                    <MudItem xs="12" md="@(HasAlerts ? 6 : 12)">
+                        <RecentClients Clients="_data.RecentClients" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+
+        @* Akvizicije u godini *@
+        @if (HasAcquisitions)
+        {
+            <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear" />
+        }
+
+        @* Status & SubStatus Distribution Grid *@
+        @if (HasStatusDistribution || HasSubStatusDistribution)
+        {
+            <MudGrid Class="mb-4">
+                @if (HasStatusDistribution)
+                {
+                    <MudItem xs="12" md="6">
+                        <ClientStatusDistribution StatusDistribution="_data.ClientsByStatus" />
+                    </MudItem>
+                }
+
+                @if (HasSubStatusDistribution)
+                {
+                    <MudItem xs="12" md="6">
+                        <ClientSubStatusDistribution SubStatusDistribution="_data.ClientsBySubStatus" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+
+    </MudContainer>
+}

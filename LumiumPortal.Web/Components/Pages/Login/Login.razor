@@ -21,6 +21,7 @@
                 RequiredError="Ime kompanije je obavezno1"
                 HelperText="Primeri: Acme Corp, Test Tenant"
                 Immediate="true"
+                OnKeyDown="@HandleKeyDown"
                 Class="mb-4"/>
 
             @if (!string.IsNullOrEmpty(_errorMessage))

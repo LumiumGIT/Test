@@ -1,0 +1,89 @@
+<MudGrid Class="mb-4">
+    @* Sertifikati ističu - ACTIONABLE *@
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Sertifikati ističu
+                    </MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Warning">@Stats.CertificatesExpiringSoon</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Default">
+                        u narednih 30 dana
+                    </MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2"
+                          Style="background-color: rgba(255, 152, 0, 0.1); border-radius: 8px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Schedule" Color="Color.Warning" Size="Size.Large"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    @* Aktivni ugovori *@
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Aktivni ugovori
+                    </MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Success">@Stats.ActiveContracts</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Default">
+                        od @Stats.TotalContracts ukupno
+                    </MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2"
+                          Style="background-color: rgba(76, 175, 80, 0.1); border-radius: 8px;">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Large"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    @* Novi klijenti (mesec) *@
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Novi klijenti
+                    </MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Primary">+@Stats.NewClientsThisMonth</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Default">
+                        ovog meseca
+                    </MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2"
+                          Style="background-color: rgba(33, 150, 243, 0.1); border-radius: 8px;">
+                    <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Color="Color.Primary" Size="Size.Large"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    @* Ukupno klijenata *@
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.caption"
+                             Style="text-transform: uppercase; font-weight: 500; color: var(--mud-palette-text-secondary);">
+                        Ukupno klijenata
+                    </MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Info">@Stats.TotalClients</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Success">
+                        +@Stats.NewClientsThisYear ove godine
+                    </MudText>
+                </MudStack>
+                <MudPaper Elevation="0" Class="pa-2"
+                          Style="background-color: rgba(3, 169, 244, 0.1); border-radius: 8px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Business" Color="Color.Info" Size="Size.Large"/>
+                </MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

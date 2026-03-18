@@ -1,4 +1,4 @@
-using Domain.Enums;
+using Domain.Enums.Clients;
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using LumiumPortal.Web.Components.Pages.Clients.Validators;
@@ -13,7 +13,7 @@ public partial class AddClientDialog : ComponentBase
 
     private ClientDto _model = new();
     private MudForm? _form;
-    private CreateClientDtoValidator _validator = new();
+    private readonly CreateClientDtoValidator _validator = new();
     private bool _isSubmitting;
 
     protected override void OnInitialized()

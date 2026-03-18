@@ -1,0 +1,168 @@
+<MudPaper Elevation="2" Class="pa-4" Style="border-left: 4px solid var(--mud-palette-error); height: 100%;">
+    <MudStack Spacing="3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" Size="Size.Medium"/>
+            <MudText Typo="Typo.h6" Color="Color.Error">Zahteva pažnju</MudText>
+        </MudStack>
+
+        <MudDivider/>
+
+        @* ISTEKLI UGOVORI *@
+        @if (Alerts.ExpiredContracts.Any())
+        {
+            <MudStack Spacing="1">
+                <MudStack Row="true"
+                          AlignItems="AlignItems.Center"
+                          Spacing="2"
+                          Class="alert-header pa-1"
+                          Style="cursor: pointer; transition: background-color 0.2s;"
+                          @onclick="@(() => _showExpiredContracts = !_showExpiredContracts)">
+                    <MudIcon
+                        Icon="@(_showExpiredContracts ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                        Size="Size.Small"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
+                    <MudText Typo="Typo.body1">
+                        <strong>@Alerts.ExpiredContracts.Count</strong> isteklih ugovora
+                    </MudText>
+                </MudStack>
+
+                @if (_showExpiredContracts)
+                {
+                    <MudStack Spacing="0" Class="ml-8">
+                        @for (var i = 0; i < Alerts.ExpiredContracts.Count; i++)
+                        {
+                            var contract = Alerts.ExpiredContracts[i];
+                            var isEven = i % 2 == 0;
+
+                            <MudPaper Elevation="0"
+                                      Class="pa-2"
+                                      Style="@($"background-color: {(isEven ? "var(--mud-palette-table-striped)" : "transparent")};")">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                    <MudStack Spacing="0">
+                                        <MudText Typo="Typo.body2"><strong>@contract.ContractNumber</strong></MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Default">
+                                            @contract.ClientName • Istekao pre @contract.DaysExpired dana
+                                            (@contract.EndDate?.ToString("dd.MM.yyyy"))
+                                        </MudText>
+                                    </MudStack>
+                                    <MudButton Size="Size.Small"
+                                               Variant="Variant.Text"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.ChevronRight"
+                                               OnClick="@(() => NavigateToClientTab(contract.ClientId, 1))">
+                                        Otvori
+                                    </MudButton>
+                                </MudStack>
+                            </MudPaper>
+                        }
+                    </MudStack>
+                }
+            </MudStack>
+        }
+
+        @* ISTEKLI SERTIFIKATI *@
+        @if (Alerts.ExpiredCertificates.Any())
+        {
+            <MudStack Spacing="1">
+                <MudStack Row="true"
+                          AlignItems="AlignItems.Center"
+                          Spacing="2"
+                          Class="alert-header pa-1"
+                          Style="cursor: pointer; transition: background-color 0.2s;"
+                          @onclick="@(() => _showExpiredCertificates = !_showExpiredCertificates)">
+                    <MudIcon
+                        Icon="@(_showExpiredCertificates ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                        Size="Size.Small"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
+                    <MudText Typo="Typo.body1">
+                        <strong>@Alerts.ExpiredCertificates.Count</strong> isteklih sertifikata
+                    </MudText>
+                </MudStack>
+
+                @if (_showExpiredCertificates)
+                {
+                    <MudStack Spacing="0" Class="ml-8">
+                        @for (var i = 0; i < Alerts.ExpiredCertificates.Count; i++)
+                        {
+                            var cert = Alerts.ExpiredCertificates[i];
+                            var isEven = i % 2 == 0;
+
+                            <MudPaper Elevation="0"
+                                      Class="pa-2"
+                                      Style="@($"background-color: {(isEven ? "var(--mud-palette-table-striped)" : "transparent")};")">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                    <MudStack Spacing="0">
+                                        <MudText Typo="Typo.body2"><strong>@cert.CertificateName</strong></MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Default">
+                                            @cert.ClientName • Istekao pre @cert.DaysExpired dana
+                                            (@cert.ExpiryDate.ToString("dd.MM.yyyy"))
+                                        </MudText>
+                                    </MudStack>
+                                    <MudButton Size="Size.Small"
+                                               Variant="Variant.Text"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.ChevronRight"
+                                               OnClick="@(() => NavigateToClientTab(cert.ClientId, 2))">
+                                        Otvori
+                                    </MudButton>
+                                </MudStack>
+                            </MudPaper>
+                        }
+                    </MudStack>
+                }
+            </MudStack>
+        }
+
+        @* KLIJENTI BEZ DOKUMENATA *@
+        @if (Alerts.ClientsWithoutDocuments.Any())
+        {
+            <MudStack Spacing="1">
+                <MudStack Row="true"
+                          AlignItems="AlignItems.Center"
+                          Spacing="2"
+                          Class="alert-header pa-1"
+                          Style="cursor: pointer; transition: background-color 0.2s;"
+                          @onclick="@(() => _showClientsWithoutDocs = !_showClientsWithoutDocs)">
+                    <MudIcon
+                        Icon="@(_showClientsWithoutDocs ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                        Size="Size.Small"/>
+                    <MudIcon Icon="@Icons.Material.Filled.FolderOff" Color="Color.Default" Size="Size.Small"/>
+                    <MudText Typo="Typo.body1">
+                        <strong>@Alerts.ClientsWithoutDocuments.Count</strong> klijenata bez dokumenata
+                    </MudText>
+                </MudStack>
+
+                @if (_showClientsWithoutDocs)
+                {
+                    <MudStack Spacing="0" Class="ml-8">
+                        @for (var i = 0; i < Alerts.ClientsWithoutDocuments.Count; i++)
+                        {
+                            var client = Alerts.ClientsWithoutDocuments[i];
+                            var isEven = i % 2 == 0;
+
+                            <MudPaper Elevation="0"
+                                      Class="pa-2"
+                                      Style="@($"background-color: {(isEven ? "var(--mud-palette-table-striped)" : "transparent")};")">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                    <MudStack Spacing="0">
+                                        <MudText Typo="Typo.body2"><strong>@client.ClientName</strong></MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Default">
+                                            @client.CertificatesCount sertifikata • @client.ContractsCount ugovora
+                                        </MudText>
+                                    </MudStack>
+                                    <MudButton Size="Size.Small"
+                                               Variant="Variant.Text"
+                                               Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.ChevronRight"
+                                               OnClick="@(() => NavigateToClientTab(client.ClientId, 3))">
+                                        Otvori
+                                    </MudButton>
+                                </MudStack>
+                            </MudPaper>
+                        }
+                    </MudStack>
+                }
+            </MudStack>
+        }
+    </MudStack>
+</MudPaper>

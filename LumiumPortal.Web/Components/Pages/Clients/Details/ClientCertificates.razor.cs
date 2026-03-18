@@ -1,5 +1,9 @@
-using Domain.Enums;
-using Lumium.Application.Features.Clients.DTOs;
+using Lumium.Application.Common.Models;
+using Lumium.Application.Features.Certificates.Commands;
+using Lumium.Application.Features.Certificates.DTOs;
+using Lumium.Application.Features.Certificates.Queries;
+using LumiumPortal.Web.Components.Pages.Certificates;
+using LumiumPortal.Web.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,19 +11,84 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 
 public partial class ClientCertificates : ComponentBase
 {
-    [Parameter, EditorRequired] public List<CertificateDto> Certificates { get; set; } = [];
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+    
+    [Parameter] public Guid ClientId { get; set; }
+    
+    private List<CertificateDto> _certificates = [];
 
-    [Parameter]
-    public EventCallback OnAddCertificate { get; set; }
-
-    private Color GetCertificateStatusColor(CertificateStatus status)
+    protected override async Task OnInitializedAsync()
     {
-        return status switch
+        await LoadCertificates();
+        
+        await base.OnInitializedAsync();
+    }
+    
+    private async Task LoadCertificates()
+    {
+        try
         {
-            CertificateStatus.Valid => Color.Success,
-            CertificateStatus.ExpiringSoon => Color.Warning,
-            CertificateStatus.Expired => Color.Error,
-            _ => Color.Default
+            _certificates = await Mediator.Send(new GetCertificatesByClientQuery(ClientId));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška pri učitavanju sertifikata: {ex.Message}", Severity.Error);
+            Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
+        }
+    }
+    
+    private async Task OpenAddCertificateDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { nameof(AddCertificateDialog.ClientId), ClientId}
         };
+        
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            CloseButton = true,
+            CloseOnEscapeKey = true
+        };
+
+        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", parameters, options);
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            await LoadCertificates();
+        }
+    }
+    
+    private async Task DeleteCertificate(CertificateDto certificate)
+    {
+        var confirmed = await DialogHelpers.ShowConfirmDialog(
+            DialogService,
+            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
+            title: "Potvrda brisanja",
+            confirmText: "Obriši",
+            confirmColor: Color.Error
+        );
+
+        if (confirmed)
+        {
+            var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
+            
+            await HandleResult(result);
+        }
+    }
+    
+    private async Task HandleResult(Result result)
+    {
+        if (result.IsSuccess)
+        {
+            await LoadCertificates();
+            Snackbar.Add(result.Message, Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
+        }
     }
 }

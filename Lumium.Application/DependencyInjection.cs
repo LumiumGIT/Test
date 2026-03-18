@@ -1,7 +1,5 @@
 using System.Reflection;
 using FluentValidation;
-using Lumium.Application.Common.Behaviors;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lumium.Application;
@@ -15,7 +13,6 @@ public static class DependencyInjection
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(assembly);
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         });
 
         services.AddValidatorsFromAssembly(assembly);
