@@ -12,9 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Dotnet info
-        run: dotnet --info
-        
       - name: Restore
         run: dotnet restore
 
@@ -24,20 +21,18 @@ jobs:
       - name: Publish Web
         run: dotnet publish ./LumiumPortal.Web/LumiumPortal.Web.csproj -c Release -o out-web
 
-      - name: Start SSH agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy API (rsync)
+      - name: Stop services
         run: |
-          rsync -az --delete -e "ssh -o StrictHostKeyChecking=no" ./out-api/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/lumium-api/app/
+          sudo systemctl stop lumium-api
+          sudo systemctl stop lumium-web
 
-      - name: Deploy Web (rsync)
-        run: |
-          rsync -az --delete -e "ssh -o StrictHostKeyChecking=no" ./out-web/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/lumium-web/app/
+      - name: Copy API
+        run: sudo cp -r ./out-api/. /var/www/lumium-api/app/
 
-      - name: Restart services
+      - name: Copy Web
+        run: sudo cp -r ./out-web/. /var/www/lumium-web/app/
+
+      - name: Start services
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "sudo systemctl restart lumium-api && sudo systemctl restart lumium-web && sudo systemctl status lumium-web --no-pager"
+          sudo systemctl start lumium-api
+          sudo systemctl start lumium-web
