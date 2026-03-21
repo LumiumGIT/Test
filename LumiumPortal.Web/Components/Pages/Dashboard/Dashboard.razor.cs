@@ -39,6 +39,4 @@ public partial class Dashboard : SecureComponentBase
     private bool HasAcquisitions => _data.AcquisitionsThisYear.Count != 0;
     
     private bool HasStatusDistribution => _data.ClientsByStatus.Count != 0;
-    
-    private bool HasSubStatusDistribution => _data.ClientsBySubStatus.Count != 0;
 }

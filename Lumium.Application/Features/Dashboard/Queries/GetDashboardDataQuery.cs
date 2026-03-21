@@ -24,7 +24,6 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
             var recentClients = await GetRecentClientsAsync(context, cancellationToken);
             var acquisitions = await GetAcquisitionsThisYearAsync(context, cancellationToken);
             var clientsByStatus = await GetClientsByStatusAsync(context, cancellationToken);
-            var clientsBySubStatus = await GetClientsBySubStatusAsync(context, cancellationToken);
 
             return new DashboardDataDto
             {
@@ -33,8 +32,7 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
                 UpcomingDeadlines = upcomingDeadlines,
                 RecentClients = recentClients,
                 AcquisitionsThisYear = acquisitions,
-                ClientsByStatus = clientsByStatus,
-                ClientsBySubStatus = clientsBySubStatus
+                ClientsByStatus = clientsByStatus
             };
         }, cancellationToken);
     }
@@ -94,8 +92,7 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
         };
     }
 
-    private static async Task<DashboardStatsDto> GetStatsAsync(
-        IApplicationDbContext context,
+    private static async Task<DashboardStatsDto> GetStatsAsync(IApplicationDbContext context,
         CancellationToken cancellationToken)
     {
         var today = DateTime.Today;
@@ -109,7 +106,7 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
 
             NewClientsThisMonth = await context.Clients
                 .CountAsync(c => c.CreatedAt >= startOfMonth, cancellationToken),
-            
+
             NewClientsThisYear = await context.Clients
                 .CountAsync(c => c.CreatedAt >= startOfYear, cancellationToken),
 
@@ -130,8 +127,7 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
         };
     }
 
-    private static async Task<List<UpcomingDeadlineDto>> GetUpcomingDeadlinesAsync(
-        IApplicationDbContext context,
+    private static async Task<List<UpcomingDeadlineDto>> GetUpcomingDeadlinesAsync(IApplicationDbContext context,
         CancellationToken cancellationToken)
     {
         var today = DateTime.Today;
@@ -203,13 +199,12 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
             })
             .ToListAsync(cancellationToken);
     }
-    
-    private static async Task<List<RecentClientDto>> GetRecentClientsAsync(
-        IApplicationDbContext context,
+
+    private static async Task<List<RecentClientDto>> GetRecentClientsAsync(IApplicationDbContext context,
         CancellationToken cancellationToken)
     {
         var today = DateTime.Today;
-    
+
         var clients = await context.Clients
             .OrderByDescending(c => c.CreatedAt)
             .Take(5)
@@ -223,7 +218,7 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
                 DocumentsCount = c.Documents.Count
             })
             .ToListAsync(cancellationToken);
-    
+
         // Calculate "days ago" text
         foreach (var client in clients)
         {
@@ -237,84 +232,83 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
                 _ => client.CreatedAt.ToString("dd.MM.yyyy")
             };
         }
-    
+
         return clients;
     }
 
-private static async Task<List<ClientAcquisitionDto>> GetAcquisitionsThisYearAsync(
-    IApplicationDbContext context,
-    CancellationToken cancellationToken)
-{
-    var startOfYear = new DateTime(DateTime.Today.Year, 1, 1);
-    var monthNames = new[] { "", "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec" };
-    
-    var acquisitions = await context.Clients
-        .Where(c => c.CreatedAt >= startOfYear)
-        .GroupBy(c => c.CreatedAt.Month)
-        .Select(g => new ClientAcquisitionDto
-        {
-            Month = g.Key,
-            Count = g.Count()
-        })
-        .OrderBy(a => a.Month)
-        .ToListAsync(cancellationToken);
-    
-    // Dodaj nazive meseci
-    foreach (var acquisition in acquisitions)
+    private static async Task<List<ClientAcquisitionDto>> GetAcquisitionsThisYearAsync(IApplicationDbContext context,
+        CancellationToken cancellationToken)
     {
-        acquisition.MonthName = monthNames[acquisition.Month];
+        var startOfYear = new DateTime(DateTime.Today.Year, 1, 1);
+        var monthNames = new[]
+            { "", "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sep", "Okt", "Nov", "Dec" };
+
+        var acquisitions = await context.Clients
+            .Where(c => c.CreatedAt >= startOfYear)
+            .GroupBy(c => c.CreatedAt.Month)
+            .Select(g => new ClientAcquisitionDto
+            {
+                Month = g.Key,
+                Count = g.Count()
+            })
+            .OrderBy(a => a.Month)
+            .ToListAsync(cancellationToken);
+
+        // Dodaj nazive meseci
+        foreach (var acquisition in acquisitions)
+        {
+            acquisition.MonthName = monthNames[acquisition.Month];
+        }
+
+        // Dodaj mesece sa 0 klijenata (do trenutnog meseca)
+        var currentMonth = DateTime.Today.Month;
+        var allMonths = new List<ClientAcquisitionDto>();
+
+        for (int month = 1; month <= currentMonth; month++)
+        {
+            var existing = acquisitions.FirstOrDefault(a => a.Month == month);
+            allMonths.Add(existing ?? new ClientAcquisitionDto
+            {
+                Month = month,
+                MonthName = monthNames[month],
+                Count = 0
+            });
+        }
+
+        return allMonths;
     }
-    
-    // Dodaj mesece sa 0 klijenata (do trenutnog meseca)
-    var currentMonth = DateTime.Today.Month;
-    var allMonths = new List<ClientAcquisitionDto>();
-    
-    for (int month = 1; month <= currentMonth; month++)
+
+    private static async Task<List<ClientStatusDistributionDto>> GetClientsByStatusAsync(IApplicationDbContext context,
+        CancellationToken cancellationToken)
     {
-        var existing = acquisitions.FirstOrDefault(a => a.Month == month);
-        allMonths.Add(existing ?? new ClientAcquisitionDto
-        {
-            Month = month,
-            MonthName = monthNames[month],
-            Count = 0
-        });
+        var clientsData = await context.Clients
+            .Select(c => new
+            {
+                c.Status,
+                c.SubStatus
+            })
+            .ToListAsync(cancellationToken);
+
+        var distribution = clientsData
+            .GroupBy(c => c.Status)
+            .Select(g => new ClientStatusDistributionDto
+            {
+                Status = g.Key,
+                Count = g.Count(),
+                SubStatuses = g
+                    .Where(c => c.SubStatus != ClientSubStatus.None)
+                    .GroupBy(c => c.SubStatus)
+                    .Select(sg => new ClientSubStatusDistributionDto
+                    {
+                        SubStatus = sg.Key,
+                        Count = sg.Count()
+                    })
+                    .OrderByDescending(s => s.Count)
+                    .ToList()
+            })
+            .OrderBy(d => d.Status)
+            .ToList();
+
+        return distribution;
     }
-    
-    return allMonths;
-}
-
-private static async Task<List<ClientStatusDistributionDto>> GetClientsByStatusAsync(
-    IApplicationDbContext context,
-    CancellationToken cancellationToken)
-{
-    var distribution = await context.Clients
-        .GroupBy(c => c.Status)
-        .Select(g => new ClientStatusDistributionDto
-        {
-            Status = g.Key,
-            Count = g.Count()
-        })
-        .OrderBy(d => d.Status)
-        .ToListAsync(cancellationToken);
-    
-    return distribution;
-}
-
-private static async Task<List<ClientSubStatusDistributionDto>> GetClientsBySubStatusAsync(
-    IApplicationDbContext context,
-    CancellationToken cancellationToken)
-{
-    var distribution = await context.Clients
-        .Where(c => c.SubStatus != ClientSubStatus.None && c.SubStatus != ClientSubStatus.Standard)
-        .GroupBy(c => c.SubStatus)
-        .Select(g => new ClientSubStatusDistributionDto
-        {
-            SubStatus = g.Key,
-            Count = g.Count()
-        })
-        .OrderByDescending(d => d.Count)
-        .ToListAsync(cancellationToken);
-    
-    return distribution;
-}
 }

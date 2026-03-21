@@ -23,8 +23,8 @@ else
         @* Upcoming Deadlines *@
         <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines" />
 
-        @* Alerts + Recent Clients Grid *@
-        @if (HasAlerts || HasRecentClients)
+        @* Alerts + statusi Grid *@
+        @if (HasAlerts || HasStatusDistribution)
         {
             <MudGrid Class="mb-4">
                 @if (HasAlerts)
@@ -34,36 +34,30 @@ else
                     </MudItem>
                 }
 
-                @if (HasRecentClients)
-                {
-                    <MudItem xs="12" md="@(HasAlerts ? 6 : 12)">
-                        <RecentClients Clients="_data.RecentClients" />
-                    </MudItem>
-                }
-            </MudGrid>
-        }
-
-        @* Akvizicije u godini *@
-        @if (HasAcquisitions)
-        {
-            <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear" />
-        }
-
-        @* Status & SubStatus Distribution Grid *@
-        @if (HasStatusDistribution || HasSubStatusDistribution)
-        {
-            <MudGrid Class="mb-4">
                 @if (HasStatusDistribution)
                 {
                     <MudItem xs="12" md="6">
                         <ClientStatusDistribution StatusDistribution="_data.ClientsByStatus" />
                     </MudItem>
                 }
+            </MudGrid>
+        }
 
-                @if (HasSubStatusDistribution)
+        @* Novi klijenti i Akvizicije u godini *@
+        @if (HasRecentClients || HasAcquisitions)
+        {
+            <MudGrid Class="mb-4">
+                @if (HasRecentClients)
                 {
                     <MudItem xs="12" md="6">
-                        <ClientSubStatusDistribution SubStatusDistribution="_data.ClientsBySubStatus" />
+                        <RecentClients Clients="_data.RecentClients" />
+                    </MudItem>
+                }
+
+                @if (HasAcquisitions)
+                {
+                    <MudItem xs="12" md="6">
+                        <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear" />
                     </MudItem>
                 }
             </MudGrid>

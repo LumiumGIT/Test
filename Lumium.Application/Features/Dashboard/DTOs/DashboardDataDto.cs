@@ -8,5 +8,4 @@ public class DashboardDataDto
     public List<RecentClientDto> RecentClients { get; set; } = [];
     public List<ClientAcquisitionDto> AcquisitionsThisYear { get; set; } = [];
     public List<ClientStatusDistributionDto> ClientsByStatus { get; set; } = [];
-    public List<ClientSubStatusDistributionDto> ClientsBySubStatus { get; set; } = [];
 }

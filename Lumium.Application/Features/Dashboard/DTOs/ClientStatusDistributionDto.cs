@@ -6,4 +6,5 @@ public class ClientStatusDistributionDto
 {
     public ClientStatus Status { get; set; } = ClientStatus.Active;
     public int Count { get; set; }
+    public List<ClientSubStatusDistributionDto> SubStatuses { get; set; } = [];
 }

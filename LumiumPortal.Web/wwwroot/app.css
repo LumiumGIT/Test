@@ -86,7 +86,7 @@ h1:focus {
     --certificate-warning-hover: #78350f;
 }
 
-.alert-header:hover {
+.hover:hover {
     background-color: var(--mud-palette-action-default-hover);
     border-radius: 4px;
 }
