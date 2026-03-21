@@ -7,7 +7,7 @@ public partial class AdminLogin : ComponentBase
 {
     [Inject] private AdminAuthService AuthService { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-    
+
     private bool _isLoading;
     private string _email = string.Empty;
     private string _password = string.Empty;
@@ -27,7 +27,7 @@ public partial class AdminLogin : ComponentBase
         try
         {
             Console.WriteLine($"Attempting admin login: {_email}");
-            
+
             var response = await AuthService.LoginAsync(_email, _password);
 
             if (response == null)
@@ -39,7 +39,7 @@ public partial class AdminLogin : ComponentBase
 
             Console.WriteLine("Login successful!");
             await AuthService.SaveTokenAsync(response.Token);
-            
+
             Navigation.NavigateTo("/dashboard");
         }
         catch (Exception ex)

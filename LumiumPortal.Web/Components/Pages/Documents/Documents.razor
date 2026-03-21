@@ -104,7 +104,7 @@ else
         <MudDataGrid T="DocumentDto"
                      Items="@_documents"
                      Class="center-table"
-                     Striped="true" 
+                     Striped="true"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -118,8 +118,8 @@ else
             <Columns>
                 <PropertyColumn Property="d => d.Name" Title="Naziv"/>
 
-                <PropertyColumn Property="d => d.ClientName" Title="Klijent" />
-                
+                <PropertyColumn Property="d => d.ClientName" Title="Klijent"/>
+
                 <PropertyColumn Property="d => d.Category" Title="Kategorija">
                     <CellTemplate>
                         <MudChip Color="@DocumentHelpers.GetCategoryColor(context.Item.Category)" Size="Size.Small">
@@ -145,26 +145,26 @@ else
 
                 <TemplateColumn Title="Otvori dokument" Filterable="false" Sortable="false">
                     <CellTemplate>
-                            <MudButton Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Size="Size.Small"
-                                       StartIcon="@Icons.Material.Filled.OpenInNew"
-                                       OnClick="@(() => OpenDocument(context.Item.Url))">
-                                Otvori
-                            </MudButton>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.OpenInNew"
+                                   OnClick="@(() => OpenDocument(context.Item.Url))">
+                            Otvori
+                        </MudButton>
                     </CellTemplate>
                 </TemplateColumn>
-                
+
                 <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
                     <CellTemplate>
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error"
-                                           Size="Size.Small"
-                                           OnClick="@(() => OpenDeleteDialog(context.Item))"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => OpenDeleteDialog(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
-            
+
             <PagerContent>
                 <MudDataGridPager T="DocumentDto"
                                   InfoFormat="{first_item}-{last_item} od {all_items}"

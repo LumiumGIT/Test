@@ -10,7 +10,7 @@ public class ContractMappingProfile : Profile
     {
         CreateMap<Contract, ContractDto>()
             .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => src.Client.Name));
-        
+
         CreateMap<CreateContractDto, Contract>()
             .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.SelectedClient.Id));
     }

@@ -14,18 +14,18 @@ public partial class ClientDocuments : ComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
-    
+
     private List<DocumentDto> _documents = [];
-    
+
     protected override async Task OnInitializedAsync()
     {
         await LoadDocuments();
-        
+
         await base.OnInitializedAsync();
     }
-    
+
     private async Task LoadDocuments()
     {
         try
@@ -38,14 +38,14 @@ public partial class ClientDocuments : ComponentBase
             Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
         }
     }
-    
+
     private async Task OpenAddDocumentDialog()
     {
         var parameters = new DialogParameters
         {
-            { nameof(AddDocumentDialog.ClientId), ClientId}
+            { nameof(AddDocumentDialog.ClientId), ClientId }
         };
-        
+
         var options = new DialogOptions
         {
             MaxWidth = MaxWidth.Medium,
@@ -62,28 +62,27 @@ public partial class ClientDocuments : ComponentBase
             await LoadDocuments();
         }
     }
-    
+
     private async Task DeleteDocument(DocumentDto document)
     {
         var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
-            message: $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
+            $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
+            "Potvrda brisanja",
+            "Obriši",
+            Color.Error
         );
 
         if (confirmed)
         {
             var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
-            
+
             await HandleResult(result);
         }
     }
-    
+
     private async Task HandleResult(Result result)
     {
-
         if (result.IsSuccess)
         {
             await LoadDocuments();
@@ -94,9 +93,6 @@ public partial class ClientDocuments : ComponentBase
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-    
-    private async Task OpenDocument(string url)
-    {
-        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
-    }
+
+    private async Task OpenDocument(string url) => await JsRuntime.InvokeVoidAsync("open", url, "_blank");
 }

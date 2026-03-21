@@ -73,19 +73,17 @@ public class CustomAuthenticationStateProvider(
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
     }
 
-    public void NotifyUserLogout()
-    {
+    public void NotifyUserLogout() =>
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_anonymous)));
-    }
 
     private void ResolveTenantFromClaims(IEnumerable<Claim> claims)
     {
         var enumerable = claims.ToList();
-        
+
         var tenantIdClaim = enumerable.FirstOrDefault(c => c.Type == "tenant_id")?.Value;
         var schemaName = enumerable.FirstOrDefault(c => c.Type == "schema_name")?.Value;
 
-        if (!string.IsNullOrEmpty(tenantIdClaim) && 
+        if (!string.IsNullOrEmpty(tenantIdClaim) &&
             Guid.TryParse(tenantIdClaim, out var tenantId) &&
             !string.IsNullOrEmpty(schemaName))
         {

@@ -51,8 +51,6 @@ public class AdminAuthenticationStateProvider(IJSRuntime jsRuntime) : Authentica
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
     }
 
-    public void NotifyUserLogout()
-    {
+    public void NotifyUserLogout() =>
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_anonymous)));
-    }
 }

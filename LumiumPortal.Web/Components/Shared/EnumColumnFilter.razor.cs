@@ -3,10 +3,10 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Shared;
 
-public partial class EnumColumnFilter<TItem, TEnum> : ComponentBase where TEnum : struct, Enum 
+public partial class EnumColumnFilter<TItem, TEnum> : ComponentBase where TEnum : struct, Enum
 {
-   [Parameter, EditorRequired] public FilterContext<TItem> Context { get; set; } = null!;
-    [Parameter, EditorRequired] public Func<TItem, TEnum> ValueSelector { get; set; } = null!;
+    [Parameter] [EditorRequired] public FilterContext<TItem> Context { get; set; } = null!;
+    [Parameter] [EditorRequired] public Func<TItem, TEnum> ValueSelector { get; set; } = null!;
     [Parameter] public int PopoverWidth { get; set; } = 150;
 
     private bool _isInitialized;
@@ -26,7 +26,10 @@ public partial class EnumColumnFilter<TItem, TEnum> : ComponentBase where TEnum 
 
     private void InitializeFilter()
     {
-        if (_isInitialized) return;
+        if (_isInitialized)
+        {
+            return;
+        }
 
         _selectedValues = Enum.GetValues<TEnum>().ToHashSet();
 
@@ -39,6 +42,7 @@ public partial class EnumColumnFilter<TItem, TEnum> : ComponentBase where TEnum 
     }
 
     private void OpenFilter() => _isOpen = true;
+
     private void CloseFilter() => _isOpen = false;
 
     private void HandleValueChanged(bool isChecked, TEnum value)

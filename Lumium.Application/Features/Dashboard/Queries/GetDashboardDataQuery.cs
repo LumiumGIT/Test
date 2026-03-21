@@ -14,9 +14,8 @@ public record GetDashboardDataQuery : IRequest<DashboardDataDto>;
 public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFactory)
     : IRequestHandler<GetDashboardDataQuery, DashboardDataDto>
 {
-    public async Task<DashboardDataDto> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<DashboardDataDto> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             var alerts = await GetAlertsAsync(context, cancellationToken);
             var stats = await GetStatsAsync(context, cancellationToken);
@@ -35,7 +34,6 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
                 ClientsByStatus = clientsByStatus
             };
         }, cancellationToken);
-    }
 
     private static async Task<DashboardAlertsDto> GetAlertsAsync(IApplicationDbContext context,
         CancellationToken cancellationToken)
@@ -147,9 +145,8 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
         IApplicationDbContext context,
         DateTime today,
         DateTime endDate,
-        CancellationToken cancellationToken)
-    {
-        return await context.Certificates
+        CancellationToken cancellationToken) =>
+        await context.Certificates
             .Where(c => c.ExpiryDate >= today && c.ExpiryDate <= endDate)
             .Include(c => c.Client)
             .OrderBy(c => c.ExpiryDate)
@@ -168,15 +165,13 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
                     DeadlineStatus.Info
             })
             .ToListAsync(cancellationToken);
-    }
 
     private static async Task<List<UpcomingDeadlineDto>> GetContractDeadlinesAsync(
         IApplicationDbContext context,
         DateTime today,
         DateTime endDate,
-        CancellationToken cancellationToken)
-    {
-        return await context.Contracts
+        CancellationToken cancellationToken) =>
+        await context.Contracts
             .Where(c => c.EndDate.HasValue &&
                         c.EndDate.Value >= today &&
                         c.EndDate.Value <= endDate &&
@@ -198,7 +193,6 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
                     DeadlineStatus.Info
             })
             .ToListAsync(cancellationToken);
-    }
 
     private static async Task<List<RecentClientDto>> GetRecentClientsAsync(IApplicationDbContext context,
         CancellationToken cancellationToken)
@@ -219,7 +213,6 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
             })
             .ToListAsync(cancellationToken);
 
-        // Calculate "days ago" text
         foreach (var client in clients)
         {
             var daysAgo = (today - client.CreatedAt.Date).Days;
@@ -254,19 +247,18 @@ public class GetDashboardDataQueryHandler(IApplicationDbContextFactory contextFa
             .OrderBy(a => a.Month)
             .ToListAsync(cancellationToken);
 
-        // Dodaj nazive meseci
         foreach (var acquisition in acquisitions)
         {
             acquisition.MonthName = monthNames[acquisition.Month];
         }
 
-        // Dodaj mesece sa 0 klijenata (do trenutnog meseca)
         var currentMonth = DateTime.Today.Month;
         var allMonths = new List<ClientAcquisitionDto>();
 
-        for (int month = 1; month <= currentMonth; month++)
+        for (var month = 1; month <= currentMonth; month++)
         {
             var existing = acquisitions.FirstOrDefault(a => a.Month == month);
+
             allMonths.Add(existing ?? new ClientAcquisitionDto
             {
                 Month = month,

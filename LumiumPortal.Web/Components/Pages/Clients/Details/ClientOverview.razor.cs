@@ -5,5 +5,5 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 
 public partial class ClientOverview : ComponentBase
 {
-    [Parameter, EditorRequired] public ClientDetailsDto Client { get; set; } = null!;
+    [Parameter] [EditorRequired] public ClientDetailsDto Client { get; set; } = null!;
 }

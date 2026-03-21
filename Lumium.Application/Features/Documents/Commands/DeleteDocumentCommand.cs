@@ -13,9 +13,8 @@ public class DeleteDocumentCommandHandler(IApplicationDbContextFactory contextFa
 {
     public async Task<Result> Handle(
         DeleteDocumentCommand request,
-        CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+        CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -39,5 +38,4 @@ public class DeleteDocumentCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure($"Greška pri brisanju dokumenta: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

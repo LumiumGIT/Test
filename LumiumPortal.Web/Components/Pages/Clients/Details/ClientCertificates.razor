@@ -6,15 +6,15 @@
         <MudText Typo="Typo.body2" Color="Color.Default">
             Ukupno @_certificates.Count sertifikata
         </MudText>
-        <MudButton StartIcon="@Icons.Material.Filled.Add" 
-                   Size="Size.Small" 
-                   Variant="Variant.Filled" 
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Size="Size.Small"
+                   Variant="Variant.Filled"
                    Color="Color.Primary"
                    OnClick="@OpenAddCertificateDialog">
             Dodaj sertifikat
         </MudButton>
     </MudStack>
-@if (_certificates.Any())
+    @if (_certificates.Any())
     {
         <MudTable Items="@_certificates"
                   Class="center-table"
@@ -73,21 +73,21 @@
             </RowTemplate>
         </MudTable>
     }
-else
-{
-    <MudPaper Elevation="0" Class="pa-8">
-        <MudStack AlignItems="AlignItems.Center" Spacing="2">
-            <MudIcon Icon="@Icons.Material.Filled.Description"
-                     Size="Size.Large"
-                     Color="Color.Default"
-                     Style="font-size: 36px; opacity: 0.3;"/>
-            <MudText Typo="Typo.h6" Color="Color.Default">
-                Nema sertifikata
-            </MudText>
-            <MudText Typo="Typo.body2" Color="Color.Default">
-                Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
-            </MudText>
-        </MudStack>
-    </MudPaper>
-}
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema sertifikata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 </MudStack>

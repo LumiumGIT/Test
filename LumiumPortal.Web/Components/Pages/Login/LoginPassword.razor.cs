@@ -42,10 +42,7 @@ public partial class LoginPassword : ComponentBase
         return !email.Contains('@') ? "Pogresan format email-a" : null;
     }
 
-    private void GoBack()
-    {
-        Navigation.NavigateTo("/login");
-    }
+    private void GoBack() => Navigation.NavigateTo("/login");
 
     private async Task HandleLogin()
     {
@@ -85,7 +82,7 @@ public partial class LoginPassword : ComponentBase
             StateHasChanged();
         }
     }
-    
+
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" && _isValid && !_isLoading)

@@ -32,9 +32,7 @@ public partial class AddUsers : Migration
     }
 
     /// <inheritdoc />
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
+    protected override void Down(MigrationBuilder migrationBuilder) =>
         migrationBuilder.DropTable(
             "users");
-    }
 }

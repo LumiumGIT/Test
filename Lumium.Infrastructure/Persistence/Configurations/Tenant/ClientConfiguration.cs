@@ -10,9 +10,9 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
     public override void Configure(EntityTypeBuilder<Client> builder)
     {
         base.Configure(builder);
-        
+
         builder.ToTable("clients");
-        
+
         builder.Property(c => c.Name).HasColumnName("name");
         builder.Property(c => c.LegalForm).HasColumnName("legal_form").HasConversion<int>();
         builder.Property(c => c.TaxNumber).HasColumnName("tax_number");
@@ -29,8 +29,10 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
         builder.Property(c => c.Croso).HasColumnName("croso");
         builder.Property(c => c.Pep).HasColumnName("pep");
         builder.Property(c => c.WingsTemplate).HasColumnName("wings_template");
-        builder.Property(c => c.Status).HasColumnName("status").HasDefaultValue(ClientStatus.Active).HasConversion<int>();
-        builder.Property(c => c.SubStatus).HasColumnName("sub_status").HasDefaultValue(ClientSubStatus.Standard).HasConversion<int>();
+        builder.Property(c => c.Status).HasColumnName("status").HasDefaultValue(ClientStatus.Active)
+            .HasConversion<int>();
+        builder.Property(c => c.SubStatus).HasColumnName("sub_status").HasDefaultValue(ClientSubStatus.Standard)
+            .HasConversion<int>();
         builder.Property(c => c.IsActive).HasColumnName("is_active");
         builder.Property(c => c.BusinessActivity).HasColumnName("business_activity");
         builder.Property(c => c.Country).HasColumnName("country");

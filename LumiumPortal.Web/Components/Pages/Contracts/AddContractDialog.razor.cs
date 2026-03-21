@@ -11,7 +11,7 @@ namespace LumiumPortal.Web.Components.Pages.Contracts;
 public partial class AddContractDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
 
     private CreateContractDto _model = new();
@@ -51,7 +51,7 @@ public partial class AddContractDialog : ComponentBase
             Console.WriteLine($"[ERROR] Load clients failed: {ex}");
         }
     }
-    
+
     private void PreselectClient()
     {
         if (ClientId != Guid.Empty)
@@ -62,7 +62,10 @@ public partial class AddContractDialog : ComponentBase
 
     private async Task HandleSubmit()
     {
-        if (_form == null) return;
+        if (_form == null)
+        {
+            return;
+        }
 
         await _form.Validate();
 
@@ -112,13 +115,15 @@ public partial class AddContractDialog : ComponentBase
     }
 
     private void Cancel() => MudDialog.Cancel();
-    
+
     private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
+        }
 
-        return Task.FromResult(_clients.Where(c => 
+        return Task.FromResult(_clients.Where(c =>
             c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));
     }
 }

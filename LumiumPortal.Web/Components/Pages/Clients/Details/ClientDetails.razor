@@ -150,27 +150,28 @@ else
         </MudGrid>
 
         <MudPaper Elevation="2">
-            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Elevation="0" Rounded="true" ApplyEffectsToContainer="true" 
+            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Elevation="0" Rounded="true"
+                     ApplyEffectsToContainer="true"
                      PanelClass="pa-6" Color="Color.Primary">
-        
+
                 @* Overview Tab *@
                 <MudTabPanel Text="Pregled" Icon="@Icons.Material.Filled.Business">
-                    <ClientOverview Client="@_clientDetails" />
+                    <ClientOverview Client="@_clientDetails"/>
                 </MudTabPanel>
 
                 @* Contracts Tab *@
                 <MudTabPanel Text="Ugovori" Icon="@Icons.Material.Filled.Description">
-                    <ClientContracts ClientId="@ClientId" />
+                    <ClientContracts ClientId="@ClientId"/>
                 </MudTabPanel>
 
                 @* Certificates Tab *@
                 <MudTabPanel Text="Sertifikati" Icon="@Icons.Material.Filled.VerifiedUser">
-                    <ClientCertificates ClientId="@ClientId" />
+                    <ClientCertificates ClientId="@ClientId"/>
                 </MudTabPanel>
 
                 @* Documents Tab *@
                 <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
-                    <ClientDocuments ClientId="@ClientId" />
+                    <ClientDocuments ClientId="@ClientId"/>
                 </MudTabPanel>
             </MudTabs>
         </MudPaper>

@@ -11,7 +11,7 @@ namespace LumiumPortal.Web.Components.Pages.Certificates;
 public partial class Certificates : SecureComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    
+
     private List<CertificateDto> _certificates = [];
     private bool _isLoading = true;
 
@@ -27,11 +27,8 @@ public partial class Certificates : SecureComponentBase
         _isLoading = false;
     }
 
-    private async Task LoadCertificates()
-    {
-        _certificates = await Mediator.Send(new GetCertificatesQuery());
-    }
-    
+    private async Task LoadCertificates() => _certificates = await Mediator.Send(new GetCertificatesQuery());
+
     private async Task OpenAddCertificateDialog()
     {
         var options = new DialogOptions
@@ -50,15 +47,15 @@ public partial class Certificates : SecureComponentBase
             await LoadCertificates();
         }
     }
-    
+
     private async Task OpenDeleteDialog(CertificateDto certificate)
     {
         var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
-            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
+            $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
+            "Potvrda brisanja",
+            "Obriši",
+            Color.Error
         );
 
         if (confirmed)
@@ -66,7 +63,7 @@ public partial class Certificates : SecureComponentBase
             await DeleteCertificate(certificate.Id);
         }
     }
-    
+
     private async Task DeleteCertificate(Guid id)
     {
         var result = await Mediator.Send(new DeleteCertificateCommand(id));
@@ -82,11 +79,12 @@ public partial class Certificates : SecureComponentBase
         }
     }
 
-    private string GetRowStyle(CertificateDto cert, int index) => cert.Status switch
-    {
-        CertificateStatus.Expired => "background-color: var(--mud-palette-error-hover);",
-        CertificateStatus.AboutToExpire => "background-color: var(--mud-palette-warning-hover);",
-        CertificateStatus.ExpiringSoon => "background-color: var(--mud-palette-info-hover);",
-        _ => string.Empty
-    };
+    private string GetRowStyle(CertificateDto cert, int index) =>
+        cert.Status switch
+        {
+            CertificateStatus.Expired => "background-color: var(--mud-palette-error-hover);",
+            CertificateStatus.AboutToExpire => "background-color: var(--mud-palette-warning-hover);",
+            CertificateStatus.ExpiringSoon => "background-color: var(--mud-palette-info-hover);",
+            _ => string.Empty
+        };
 }

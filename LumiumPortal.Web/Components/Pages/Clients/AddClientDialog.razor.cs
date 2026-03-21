@@ -16,15 +16,13 @@ public partial class AddClientDialog : ComponentBase
     private readonly CreateClientDtoValidator _validator = new();
     private bool _isSubmitting;
 
-    protected override void OnInitialized()
-    {
+    protected override void OnInitialized() =>
         _model = new ClientDto
         {
             Country = "Srbija",
             RiskLevel = RiskLevel.Low,
             IsActive = true
         };
-    }
 
     private async Task HandleSubmit()
     {
@@ -35,7 +33,7 @@ public partial class AddClientDialog : ComponentBase
             Snackbar.Add("Molimo popunite sva obavezna polja", Severity.Warning);
             return;
         }
-        
+
         try
         {
             _isSubmitting = true;
@@ -64,8 +62,5 @@ public partial class AddClientDialog : ComponentBase
         }
     }
 
-    private void Cancel()
-    {
-        MudDialog.Cancel();
-    }
+    private void Cancel() => MudDialog.Cancel();
 }

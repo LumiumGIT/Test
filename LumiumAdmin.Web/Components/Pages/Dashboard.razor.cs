@@ -11,7 +11,7 @@ public partial class Dashboard : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         var token = await AuthService.GetTokenAsync();
-        
+
         if (string.IsNullOrEmpty(token))
         {
             Navigation.NavigateTo("/login");

@@ -5,12 +5,12 @@
 
 @if (_isLoading)
 {
-    <LoadingIndicator Text="Učitavam dashboard..." />
+    <LoadingIndicator Text="Učitavam dashboard..."/>
 }
 else
 {
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-3">
-        
+
         @* Header *@
         <MudText Typo="Typo.h3" GutterBottom="true">Dashboard</MudText>
         <MudText Class="mb-4" Color="Color.Default">
@@ -18,10 +18,10 @@ else
         </MudText>
 
         @* Stats Cards *@
-        <DashboardStats Stats="_data.Stats" />
-        
+        <DashboardStats Stats="_data.Stats"/>
+
         @* Upcoming Deadlines *@
-        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines" />
+        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines"/>
 
         @* Alerts + statusi Grid *@
         @if (HasAlerts || HasStatusDistribution)
@@ -30,14 +30,14 @@ else
                 @if (HasAlerts)
                 {
                     <MudItem xs="12" md="6">
-                        <DashboardAlerts Alerts="_data.Alerts" />
+                        <DashboardAlerts Alerts="_data.Alerts"/>
                     </MudItem>
                 }
 
                 @if (HasStatusDistribution)
                 {
                     <MudItem xs="12" md="6">
-                        <ClientStatusDistribution StatusDistribution="_data.ClientsByStatus" />
+                        <ClientStatusDistribution StatusDistribution="_data.ClientsByStatus"/>
                     </MudItem>
                 }
             </MudGrid>
@@ -50,14 +50,14 @@ else
                 @if (HasRecentClients)
                 {
                     <MudItem xs="12" md="6">
-                        <RecentClients Clients="_data.RecentClients" />
+                        <RecentClients Clients="_data.RecentClients"/>
                     </MudItem>
                 }
 
                 @if (HasAcquisitions)
                 {
                     <MudItem xs="12" md="6">
-                        <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear" />
+                        <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear"/>
                     </MudItem>
                 }
             </MudGrid>

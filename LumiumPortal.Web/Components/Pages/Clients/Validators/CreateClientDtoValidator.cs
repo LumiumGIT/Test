@@ -6,7 +6,7 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Validators;
 public class CreateClientDtoValidator : AbstractValidator<ClientDto>
 {
     private const string RequiredFieldMessage = "Ovo polje je obavezno!";
-    
+
     public CreateClientDtoValidator()
     {
         RuleFor(x => x.Name)
@@ -45,7 +45,7 @@ public class CreateClientDtoValidator : AbstractValidator<ClientDto>
     {
         var result = await ValidateAsync(
             ValidationContext<ClientDto>.CreateWithOptions(
-                (ClientDto)model, 
+                (ClientDto)model,
                 x => x.IncludeProperties(propertyName)));
 
         return result.IsValid ? [] : result.Errors.Select(e => e.ErrorMessage);

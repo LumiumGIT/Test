@@ -12,9 +12,8 @@ public class GetDocumentsQuery : IRequest<List<DocumentDto>>;
 public class GetDocumentsQueryHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<GetDocumentsQuery, List<DocumentDto>>
 {
-    public async Task<List<DocumentDto>> Handle(GetDocumentsQuery request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<List<DocumentDto>> Handle(GetDocumentsQuery request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             var documents = await context.Documents
                 .Include(d => d.Client)
@@ -23,5 +22,4 @@ public class GetDocumentsQueryHandler(IApplicationDbContextFactory contextFactor
 
             return mapper.Map<List<DocumentDto>>(documents);
         }, cancellationToken);
-    }
 }

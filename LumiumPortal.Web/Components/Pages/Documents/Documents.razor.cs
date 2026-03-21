@@ -20,7 +20,7 @@ public partial class Documents : SecureComponentBase
     private int OfficialCount => _documents.Count(d => (int)d.Category < 10);
     private int SupportingCount => _documents.Count(d => (int)d.Category >= 10 && (int)d.Category < 99);
     private int RecentCount => _documents.Count(d => d.UploadedAt >= DateTime.Now.AddDays(-7));
-    
+
     protected override async Task OnSecureInitializedAsync()
     {
         _isLoading = true;
@@ -64,23 +64,22 @@ public partial class Documents : SecureComponentBase
     {
         var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
-            message: $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
+            $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
+            "Potvrda brisanja",
+            "Obriši",
+            Color.Error
         );
 
         if (confirmed)
         {
             var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
-            
+
             await HandleResult(result);
         }
     }
-    
+
     private async Task HandleResult(Result result)
     {
-
         if (result.IsSuccess)
         {
             await LoadDocuments();
@@ -91,9 +90,6 @@ public partial class Documents : SecureComponentBase
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-    
-    private async Task OpenDocument(string url)
-    {
-        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
-    }
+
+    private async Task OpenDocument(string url) => await JsRuntime.InvokeVoidAsync("open", url, "_blank");
 }

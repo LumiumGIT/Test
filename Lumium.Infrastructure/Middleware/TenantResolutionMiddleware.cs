@@ -19,7 +19,7 @@ public class TenantResolutionMiddleware(RequestDelegate next)
         if (context.User.Identity?.IsAuthenticated == true)
         {
             var claimValue = context.User.FindFirst("tenant_id")?.Value;
-            
+
             if (!string.IsNullOrEmpty(claimValue) && Guid.TryParse(claimValue, out var parsedId))
             {
                 tenantId = parsedId;
@@ -59,7 +59,7 @@ public class TenantResolutionMiddleware(RequestDelegate next)
                     // Ako nije GUID, probaj kao identifier
                     var tenant = await masterDb.Tenants
                         .FirstOrDefaultAsync(t => t.Identifier == headerValue.ToString() && t.IsActive);
-                
+
                     if (tenant != null)
                     {
                         tenantId = tenant.Id;

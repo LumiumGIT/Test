@@ -45,13 +45,11 @@ public class SrpskiLocalizationInterceptor : ILocalizationInterceptor
         { "MudDataGrid_Ungroup", "Razgrupiši" },
         { "MudDataGrid_CollapseAllGroups", "Skupi sve" },
         { "MudDataGrid_ExpandAllGroups", "Proširi sve" },
-        { "MudDataGrid_RefreshData", "Osveži" },
+        { "MudDataGrid_RefreshData", "Osveži" }
     };
 
-    public LocalizedString Handle(string key, params object[] arguments)
-    {
-        return _translations.TryGetValue(key, out var value)
+    public LocalizedString Handle(string key, params object[] arguments) =>
+        _translations.TryGetValue(key, out var value)
             ? new LocalizedString(key, value, false)
             : new LocalizedString(key, key, true);
-    }
 }

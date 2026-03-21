@@ -24,9 +24,9 @@ builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<AdminAuthService>();
 builder.Services.AddScoped<AuthenticationStateProvider, AdminAuthenticationStateProvider>();
-builder.Services.AddScoped(sp => new HttpClient 
-{ 
-    BaseAddress = new Uri("http://localhost:5207")  // LumiumPortal.API URL
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("http://localhost:5207") // LumiumPortal.API URL
 });
 
 var app = builder.Build();

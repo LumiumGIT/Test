@@ -9,7 +9,7 @@ public class ContractConfiguration : TenantEntityConfiguration<Contract>
     public override void Configure(EntityTypeBuilder<Contract> builder)
     {
         base.Configure(builder);
-        
+
         builder.ToTable("contracts");
 
         builder.Property(c => c.ContractNumber).HasColumnName("contract_number");
@@ -21,7 +21,7 @@ public class ContractConfiguration : TenantEntityConfiguration<Contract>
         builder.Property(c => c.StartDate).HasColumnName("start_date");
         builder.Property(c => c.EndDate).HasColumnName("end_date");
         builder.Property(c => c.ClientId).HasColumnName("client_id");
-        
+
         builder.HasOne(c => c.Client).WithMany(cl => cl.Contracts).HasForeignKey(c => c.ClientId);
     }
 }

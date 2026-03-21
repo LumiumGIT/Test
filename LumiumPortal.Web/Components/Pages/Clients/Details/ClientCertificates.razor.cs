@@ -12,18 +12,18 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 public partial class ClientCertificates : ComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
-    
+
     private List<CertificateDto> _certificates = [];
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCertificates();
-        
+
         await base.OnInitializedAsync();
     }
-    
+
     private async Task LoadCertificates()
     {
         try
@@ -36,14 +36,14 @@ public partial class ClientCertificates : ComponentBase
             Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
         }
     }
-    
+
     private async Task OpenAddCertificateDialog()
     {
         var parameters = new DialogParameters
         {
-            { nameof(AddCertificateDialog.ClientId), ClientId}
+            { nameof(AddCertificateDialog.ClientId), ClientId }
         };
-        
+
         var options = new DialogOptions
         {
             MaxWidth = MaxWidth.Medium,
@@ -60,25 +60,25 @@ public partial class ClientCertificates : ComponentBase
             await LoadCertificates();
         }
     }
-    
+
     private async Task DeleteCertificate(CertificateDto certificate)
     {
         var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
-            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
+            $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
+            "Potvrda brisanja",
+            "Obriši",
+            Color.Error
         );
 
         if (confirmed)
         {
             var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
-            
+
             await HandleResult(result);
         }
     }
-    
+
     private async Task HandleResult(Result result)
     {
         if (result.IsSuccess)

@@ -23,12 +23,12 @@ public partial class Login : ComponentBase
             try
             {
                 var (_, lastCompanyName) = await AuthService.GetLastCompanyAsync();
-                
+
                 if (!string.IsNullOrEmpty(lastCompanyName))
                 {
                     _companyName = lastCompanyName;
                     StateHasChanged();
-                    
+
                     if (_form != null)
                     {
                         await _form.Validate();
@@ -42,10 +42,7 @@ public partial class Login : ComponentBase
         }
     }
 
-    private void ClearError()
-    {
-        _errorMessage = null;
-    }
+    private void ClearError() => _errorMessage = null;
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {

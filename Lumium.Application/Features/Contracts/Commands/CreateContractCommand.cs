@@ -13,9 +13,8 @@ public record CreateContractCommand(CreateContractDto ContractDto) : IRequest<Re
 public class CreateContractCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateContractCommand, Result>
 {
-    public async Task<Result> Handle(CreateContractCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateContractCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -34,5 +33,4 @@ public class CreateContractCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure($"Greška pri kreiranju ugovora: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

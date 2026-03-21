@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumium.Application.Features.Clients.Commands;
 
 public record DeleteClientsCommand(HashSet<Guid> ClientIds) : IRequest<Result<int>>;
+
 public class DeleteClientsCommandHandler(IApplicationDbContextFactory contextFactory)
     : IRequestHandler<DeleteClientsCommand, Result<int>>
 {
-    public async Task<Result<int>> Handle(DeleteClientsCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result<int>> Handle(DeleteClientsCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -42,5 +42,4 @@ public class DeleteClientsCommandHandler(IApplicationDbContextFactory contextFac
                 return Result<int>.Failure($"Greška pri brisanju: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

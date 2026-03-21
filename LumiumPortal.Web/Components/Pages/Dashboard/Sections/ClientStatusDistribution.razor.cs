@@ -11,14 +11,10 @@ public partial class ClientStatusDistribution : ComponentBase
 
     private ClientStatus? _expandedStatus;
 
-    private void ToggleStatus(ClientStatus status)
-    {
-        _expandedStatus = _expandedStatus == status ? null : status;
-    }
-    
-    private string GetColorHex(Color color)
-    {
-        return color switch
+    private void ToggleStatus(ClientStatus status) => _expandedStatus = _expandedStatus == status ? null : status;
+
+    private string GetColorHex(Color color) =>
+        color switch
         {
             Color.Success => "var(--mud-palette-success)",
             Color.Info => "var(--mud-palette-info)",
@@ -27,5 +23,4 @@ public partial class ClientStatusDistribution : ComponentBase
             Color.Error => "var(--mud-palette-error)",
             _ => "var(--mud-palette-text-secondary)"
         };
-    }
 }

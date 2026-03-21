@@ -16,7 +16,7 @@
                 @foreach (var item in StatusDistribution)
                 {
                     var totalClients = StatusDistribution.Sum(d => d.Count);
-                    var percentage = totalClients > 0 ? (item.Count * 100.0 / totalClients) : 0;
+                    var percentage = totalClients > 0 ? item.Count * 100.0 / totalClients : 0;
                     var isExpanded = _expandedStatus == item.Status;
 
                     @* STATUS ROW *@
@@ -59,7 +59,7 @@
                                   Style="background-color: var(--mud-palette-table-striped); border-bottom: 1px solid var(--mud-palette-divider);">
                             @foreach (var subStatus in item.SubStatuses)
                             {
-                                var subPercentage = item.Count > 0 ? (subStatus.Count * 100.0 / item.Count) : 0;
+                                var subPercentage = item.Count > 0 ? subStatus.Count * 100.0 / item.Count : 0;
 
                                 <MudGrid Class="py-1">
                                     <MudItem xs="1"></MudItem>

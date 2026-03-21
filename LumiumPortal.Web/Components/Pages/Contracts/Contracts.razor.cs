@@ -64,23 +64,22 @@ public partial class Contracts : SecureComponentBase
     {
         var confirmed = await DialogHelpers.ShowConfirmDialog(
             DialogService,
-            message: $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
+            $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
+            "Potvrda brisanja",
+            "Obriši",
+            Color.Error
         );
 
         if (confirmed)
         {
             var result = await Mediator.Send(new DeleteContractCommand(contract.Id));
-            
+
             await HandleResult(result);
         }
     }
-    
+
     private async Task HandleResult(Result result)
     {
-
         if (result.IsSuccess)
         {
             await LoadContracts();

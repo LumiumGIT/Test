@@ -12,9 +12,9 @@ namespace LumiumPortal.Web.Components.Pages.Certificates;
 public partial class AddCertificateDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
-    
+
     private List<(Guid Id, string Name)> _clients = [];
     private List<RegulatoryBodyDto> _regulatoryBodies = [];
     private CreateCertificateDto _model = new();
@@ -25,7 +25,7 @@ public partial class AddCertificateDialog : ComponentBase
 
     private DateTime? _issueDate = DateTime.Today;
     private DateTime? _expiryDate = DateTime.Today.AddYears(1);
-    
+
     protected override async Task OnInitializedAsync()
     {
         _model = new CreateCertificateDto
@@ -33,12 +33,12 @@ public partial class AddCertificateDialog : ComponentBase
             IssueDate = DateTime.Today,
             ExpiryDate = DateTime.Today.AddYears(1)
         };
-        
+
         await LoadRegulatoryBodies();
         await LoadClients();
         PreselectClient();
     }
-    
+
     private async Task LoadClients()
     {
         try
@@ -51,7 +51,7 @@ public partial class AddCertificateDialog : ComponentBase
             Console.WriteLine($"[ERROR] Load clients failed: {ex}");
         }
     }
-    
+
     private async Task LoadRegulatoryBodies()
     {
         try
@@ -76,10 +76,14 @@ public partial class AddCertificateDialog : ComponentBase
     protected override void OnParametersSet()
     {
         if (_issueDate.HasValue)
+        {
             _model.IssueDate = _issueDate.Value;
+        }
 
         if (_expiryDate.HasValue)
+        {
             _model.ExpiryDate = _expiryDate.Value;
+        }
     }
 
     private async Task HandleSubmit()
@@ -93,7 +97,7 @@ public partial class AddCertificateDialog : ComponentBase
         {
             _model.ExpiryDate = _expiryDate.Value;
         }
-        
+
         if (!_issueDate.HasValue || !_expiryDate.HasValue)
         {
             Snackbar.Add("Datumi su obavezni", Severity.Warning);
@@ -136,17 +140,16 @@ public partial class AddCertificateDialog : ComponentBase
         }
     }
 
-    private void Cancel()
-    {
-        MudDialog.Cancel();
-    }
-    
+    private void Cancel() => MudDialog.Cancel();
+
     private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
+        }
 
-        return Task.FromResult(_clients.Where(c => 
+        return Task.FromResult(_clients.Where(c =>
             c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));
     }
 }

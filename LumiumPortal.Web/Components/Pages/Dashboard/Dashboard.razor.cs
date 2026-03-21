@@ -28,15 +28,15 @@ public partial class Dashboard : SecureComponentBase
             Console.WriteLine($"[ERROR] Load dashboard failed: {ex}");
         }
     }
-    
+
     private bool HasAlerts =>
         _data.Alerts.ExpiredCertificates.Count != 0 ||
         _data.Alerts.ExpiredContracts.Count != 0 ||
         _data.Alerts.ClientsWithoutDocuments.Count != 0;
-    
+
     private bool HasRecentClients => _data.RecentClients.Count != 0;
-    
+
     private bool HasAcquisitions => _data.AcquisitionsThisYear.Count != 0;
-    
+
     private bool HasStatusDistribution => _data.ClientsByStatus.Count != 0;
 }

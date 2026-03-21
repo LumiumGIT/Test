@@ -13,9 +13,8 @@ public record CreateDocumentCommand(CreateDocumentDto DocumentDto) : IRequest<Re
 public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateDocumentCommand, Result>
 {
-    public async Task<Result> Handle(CreateDocumentCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateDocumentCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -35,5 +34,4 @@ public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure($"Greška pri dodavanju dokumenta: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

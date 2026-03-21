@@ -32,7 +32,7 @@ else
                 </MudStack>
             </MudPaper>
         </MudItem>
-        
+
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="1" Class="pa-4">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
@@ -102,7 +102,7 @@ else
         <MudDataGrid T="ContractDto"
                      Items="@_contracts"
                      Class="center-table"
-                     Striped="true" 
+                     Striped="true"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -114,21 +114,21 @@ else
                      Hideable="false"
                      Bordered="true">
             <Columns>
-                <PropertyColumn Property="c => c.ClientName" 
+                <PropertyColumn Property="c => c.ClientName"
                                 Title="Klijent"
                                 HeaderStyle="white-space: nowrap; min-width: 300px;"
                                 CellStyle="min-width: 300px;">
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.ContractNumber" 
+                <PropertyColumn Property="c => c.ContractNumber"
                                 Title="Broj ugovora"
                                 HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;" />
+                                CellStyle="min-width: 200px;"/>
 
-                <PropertyColumn Property="c => c.MonthlyFee" 
+                <PropertyColumn Property="c => c.MonthlyFee"
                                 Title="Mesečna obaveza"
                                 HeaderStyle="white-space: nowrap; min-width: 220px;"
-                                CellStyle="min-width: 220px;" >
+                                CellStyle="min-width: 220px;">
                     <CellTemplate>
                         €@context.Item.MonthlyFee.ToString("N2")
                     </CellTemplate>
@@ -149,7 +149,7 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.Type" 
+                <PropertyColumn Property="c => c.Type"
                                 Title="Tip"
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 Sortable="false">
@@ -165,13 +165,15 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.StartDate" Title="Datum početka" Filterable="false" HeaderStyle="white-space: nowrap; min-width: 200px;">
+                <PropertyColumn Property="c => c.StartDate" Title="Datum početka" Filterable="false"
+                                HeaderStyle="white-space: nowrap; min-width: 200px;">
                     <CellTemplate>
                         @context.Item.StartDate.ToString("dd.MM.yyyy")
                     </CellTemplate>
                 </PropertyColumn>
 
-                <TemplateColumn Title="Važenje do" Filterable="false" HeaderStyle="white-space: nowrap; min-width: 150px;">
+                <TemplateColumn Title="Važenje do" Filterable="false"
+                                HeaderStyle="white-space: nowrap; min-width: 150px;">
                     <CellTemplate>
                         @if (context.Item.Duration == ContractDuration.Indefinite)
                         {
@@ -199,7 +201,7 @@ else
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
-            
+
             <PagerContent>
                 <MudDataGridPager T="ContractDto"
                                   InfoFormat="{first_item}-{last_item} od {all_items}"

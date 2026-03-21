@@ -7,10 +7,10 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Clients;
 
-public partial class Clients : SecureComponentBase 
+public partial class Clients : SecureComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    
+
     private MudDataGrid<ClientDto>? _dataGrid;
     private List<ClientDto> _clients = [];
     private readonly HashSet<Guid> _selectedClients = [];
@@ -23,11 +23,8 @@ public partial class Clients : SecureComponentBase
         _isLoading = false;
     }
 
-    private async Task LoadClients()
-    {
-        _clients = await Mediator.Send(new GetClientsQuery());
-    }
-    
+    private async Task LoadClients() => _clients = await Mediator.Send(new GetClientsQuery());
+
     private async Task OpenAddClientDialog()
     {
         var options = new DialogOptions
@@ -46,7 +43,7 @@ public partial class Clients : SecureComponentBase
             await LoadClients();
         }
     }
-    
+
     private async Task DeleteSelectedClients()
     {
         if (_selectedClients.Count == 0)
@@ -57,7 +54,10 @@ public partial class Clients : SecureComponentBase
 
         var confirmed = await DialogService.ShowDeleteConfirmAsync("klijenta", _selectedClients.Count);
 
-        if (!confirmed) return;
+        if (!confirmed)
+        {
+            return;
+        }
 
         try
         {
@@ -67,7 +67,7 @@ public partial class Clients : SecureComponentBase
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-            
+
                 _selectedClients.Clear();
                 await LoadClients();
             }
@@ -88,9 +88,9 @@ public partial class Clients : SecureComponentBase
         {
             return false;
         }
-    
+
         var filteredClients = _dataGrid.FilteredItems.ToList();
-        
+
         return filteredClients.Count != 0 && filteredClients.All(c => _selectedClients.Contains(c.Id));
     }
 
@@ -102,7 +102,7 @@ public partial class Clients : SecureComponentBase
         }
 
         var filteredClients = _dataGrid.FilteredItems.ToList();
-    
+
         if (IsAllSelected())
         {
             foreach (var client in filteredClients)

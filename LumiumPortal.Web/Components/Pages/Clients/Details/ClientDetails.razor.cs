@@ -8,7 +8,7 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 public partial class ClientDetails : ComponentBase
 {
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
 
     private ClientDetailsDto? _clientDetails;
@@ -20,12 +20,12 @@ public partial class ClientDetails : ComponentBase
     {
         var uri = new Uri(NavigationManager.Uri);
         var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        
+
         if (int.TryParse(queryParams["tab"], out var tabIndex))
         {
             _activeTabIndex = tabIndex;
         }
-        
+
         await LoadClientDetails();
     }
 
@@ -50,19 +50,10 @@ public partial class ClientDetails : ComponentBase
 
         _isLoading = false;
     }
-    
-    private void HandleAddContract()
-    {
-        Snackbar.Add("Funkcionalnost 'Novi ugovor' - uskoro", Severity.Info);
-    }
 
-    private void HandleAddCertificate()
-    {
-        Snackbar.Add("Funkcionalnost 'Dodaj sertifikat' - uskoro", Severity.Info);
-    }
+    private void HandleAddContract() => Snackbar.Add("Funkcionalnost 'Novi ugovor' - uskoro", Severity.Info);
 
-    private void HandleUploadDocument()
-    {
-        Snackbar.Add("Funkcionalnost 'Otpremi dokument' - uskoro", Severity.Info);
-    }
+    private void HandleAddCertificate() => Snackbar.Add("Funkcionalnost 'Dodaj sertifikat' - uskoro", Severity.Info);
+
+    private void HandleUploadDocument() => Snackbar.Add("Funkcionalnost 'Otpremi dokument' - uskoro", Severity.Info);
 }

@@ -9,13 +9,14 @@ using MediatR;
 namespace Lumium.Application.Features.Certificates.Commands;
 
 public record CreateCertificateCommand(CreateCertificateDto CertificateDto) : IRequest<Result>;
+
 public class CreateCertificateCommandHandler(
-    IApplicationDbContextFactory contextFactory, IMapper mapper)
+    IApplicationDbContextFactory contextFactory,
+    IMapper mapper)
     : IRequestHandler<CreateCertificateCommand, Result>
 {
-    public async Task<Result> Handle(CreateCertificateCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateCertificateCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -34,5 +35,4 @@ public class CreateCertificateCommandHandler(
                 return Result.Failure($"Greška pri kreiranju sertifikata: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

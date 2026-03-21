@@ -32,7 +32,7 @@
                                   Immediate="true"
                                   Required="true"/>
                 </MudItem>
-                
+
                 <MudItem xs="12">
                     <MudSelect @bind-Value="_model.Category"
                                Label="Kategorija"
@@ -40,37 +40,44 @@
                                For="@(() => _model.Category)"
                                Immediate="true"
                                Required="true">
-        
+
                         @* Zvanična dokumentacija (0-9) *@
                         <MudSelectItem T="DocumentCategory" Disabled="true" Value="default(DocumentCategory)">
-                            <MudText Typo="Typo.caption" Color="Color.Primary" Style="font-weight: 600;">ZVANIČNA DOKUMENTACIJA</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Primary" Style="font-weight: 600;">ZVANIČNA
+                                DOKUMENTACIJA
+                            </MudText>
                         </MudSelectItem>
                         @foreach (var category in Enum.GetValues<DocumentCategory>().Where(c => (int)c < 10))
                         {
-                            <MudSelectItem T="DocumentCategory" Value="@category">@category.GetDescription()</MudSelectItem>
+                            <MudSelectItem T="DocumentCategory"
+                                           Value="@category">@category.GetDescription()</MudSelectItem>
                         }
-        
+
                         @* Razdvajač *@
                         <MudSelectItem T="DocumentCategory" Disabled="true" Value="default(DocumentCategory)">
-                            <MudDivider />
+                            <MudDivider/>
                         </MudSelectItem>
-        
+
                         @* Prateća dokumentacija (10-98) *@
                         <MudSelectItem T="DocumentCategory" Disabled="true" Value="default(DocumentCategory)">
-                            <MudText Typo="Typo.caption" Color="Color.Success" Style="font-weight: 600;">PRATEĆA DOKUMENTACIJA</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Success" Style="font-weight: 600;">PRATEĆA
+                                DOKUMENTACIJA
+                            </MudText>
                         </MudSelectItem>
                         @foreach (var category in Enum.GetValues<DocumentCategory>().Where(c => (int)c >= 10 && (int)c < 99))
                         {
-                            <MudSelectItem T="DocumentCategory" Value="@category">@category.GetDescription()</MudSelectItem>
+                            <MudSelectItem T="DocumentCategory"
+                                           Value="@category">@category.GetDescription()</MudSelectItem>
                         }
-        
+
                         @* Ostalo *@
                         @if (Enum.GetValues<DocumentCategory>().Any(c => (int)c == 99))
                         {
                             <MudSelectItem T="DocumentCategory" Disabled="true" Value="default(DocumentCategory)">
-                                <MudDivider />
+                                <MudDivider/>
                             </MudSelectItem>
-                            <MudSelectItem T="DocumentCategory" Value="DocumentCategory.Other">@DocumentCategory.Other.GetDescription()</MudSelectItem>
+                            <MudSelectItem T="DocumentCategory"
+                                           Value="DocumentCategory.Other">@DocumentCategory.Other.GetDescription()</MudSelectItem>
                         }
                     </MudSelect>
                 </MudItem>

@@ -8,18 +8,19 @@ public static class EnumExtensions
     public static string GetDescription(this Enum value)
     {
         var field = value.GetType().GetField(value.ToString());
-        
+
         if (field == null)
+        {
             return value.ToString();
+        }
 
         var attribute = field.GetCustomAttribute<DescriptionAttribute>();
-        
+
         return attribute?.Description ?? value.ToString();
     }
 
-    public static List<EnumItem<T>> GetEnumItems<T>() where T : struct, Enum
-    {
-        return Enum.GetValues<T>()
+    public static List<EnumItem<T>> GetEnumItems<T>() where T : struct, Enum =>
+        Enum.GetValues<T>()
             .Select(value => new EnumItem<T>
             {
                 Value = value,
@@ -27,7 +28,6 @@ public static class EnumExtensions
                 Description = value.GetDescription()
             })
             .ToList();
-    }
 }
 
 public class EnumItem<T> where T : Enum

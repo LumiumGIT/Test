@@ -4,8 +4,5 @@ namespace LumiumAdmin.Web.Components.Pages.Login;
 
 public partial class RedirectToLogin : ComponentBase
 {
-    protected override void OnInitialized()
-    {
-        Navigation.NavigateTo("/login", forceLoad: true);
-    }
+    protected override void OnInitialized() => Navigation.NavigateTo("/login", true);
 }

@@ -13,9 +13,8 @@ public record CreateClientCommand(ClientDto ClientDto) : IRequest<Result>;
 public class CreateClientCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateClientCommand, Result>
 {
-    public async Task<Result> Handle(CreateClientCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateClientCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -34,5 +33,4 @@ public class CreateClientCommandHandler(IApplicationDbContextFactory contextFact
                 return Result.Failure($"Greška pri kreiranju klijenta: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }
