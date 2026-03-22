@@ -1,4 +1,9 @@
 <MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @(IsEditMode ? "Izmeni sertifikat" : "Dodaj novi sertifikat")
+        </MudText>
+    </TitleContent>
     <DialogContent>
         <MudForm @ref="_form" Model="@_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
             <MudGrid>

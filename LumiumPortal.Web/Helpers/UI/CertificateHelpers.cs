@@ -1,6 +1,7 @@
 using Domain.Enums.Certificates;
+using Lumium.Application.Features.Certificates.DTOs;
 
-namespace LumiumPortal.Web.Helpers;
+namespace LumiumPortal.Web.Helpers.UI;
 
 public static class CertificateHelpers
 {
@@ -37,6 +38,15 @@ public static class CertificateHelpers
                 "border-color: var(--mud-palette-warning); color: var(--mud-palette-warning);",
             CertificateStatus.ExpiringSoon => "border-color: var(--mud-palette-info); color: var(--mud-palette-info);",
             CertificateStatus.Valid => "border-color: var(--mud-palette-success); color: var(--mud-palette-success);",
+            _ => string.Empty
+        };
+    
+    public static string GetRowStyle(CertificateDto cert, int index) =>
+        cert.Status switch
+        {
+            CertificateStatus.Expired => "background-color: var(--mud-palette-error-hover);",
+            CertificateStatus.AboutToExpire => "background-color: var(--mud-palette-warning-hover);",
+            CertificateStatus.ExpiringSoon => "background-color: var(--mud-palette-info-hover);",
             _ => string.Empty
         };
 }

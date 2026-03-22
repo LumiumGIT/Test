@@ -4,9 +4,9 @@ using Lumium.Application.Features.Contracts.DTOs;
 
 namespace LumiumPortal.Web.Components.Pages.Contracts.Validators;
 
-public class CreateContractDtoValidator : AbstractValidator<CreateContractDto>
+public class ContractFormDtoValidator : AbstractValidator<ContractFormDto>
 {
-    public CreateContractDtoValidator()
+    public ContractFormDtoValidator()
     {
         RuleFor(x => x.SelectedClient)
             .Must(c => c.Id != Guid.Empty)
@@ -43,8 +43,8 @@ public class CreateContractDtoValidator : AbstractValidator<CreateContractDto>
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
         var result = await ValidateAsync(
-            ValidationContext<CreateContractDto>.CreateWithOptions(
-                (CreateContractDto)model,
+            ValidationContext<ContractFormDto>.CreateWithOptions(
+                (ContractFormDto)model,
                 x => x.IncludeProperties(propertyName)));
 
         return result.IsValid ? [] : result.Errors.Select(e => e.ErrorMessage);

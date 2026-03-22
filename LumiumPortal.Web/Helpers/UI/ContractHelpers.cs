@@ -1,7 +1,7 @@
 using Domain.Enums.Contracts;
 using MudBlazor;
 
-namespace LumiumPortal.Web.Helpers;
+namespace LumiumPortal.Web.Helpers.UI;
 
 public static class ContractHelpers
 {

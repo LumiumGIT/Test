@@ -3,11 +3,11 @@ using Lumium.Application.Features.Certificates.DTOs;
 
 namespace LumiumPortal.Web.Components.Pages.Certificates.Validators;
 
-public class CreateCertificateDtoValidator : AbstractValidator<CreateCertificateDto>
+public class CertificateFormDtoValidator : AbstractValidator<CertificateFormDto>
 {
     private const string RequiredFieldMessage = "Ovo polje je obavezno!";
 
-    public CreateCertificateDtoValidator()
+    public CertificateFormDtoValidator()
     {
         RuleFor(x => x.SelectedClient)
             .Must(c => c.Id != Guid.Empty)
@@ -34,8 +34,8 @@ public class CreateCertificateDtoValidator : AbstractValidator<CreateCertificate
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
         var result = await ValidateAsync(
-            ValidationContext<CreateCertificateDto>.CreateWithOptions(
-                (CreateCertificateDto)model,
+            ValidationContext<CertificateFormDto>.CreateWithOptions(
+                (CertificateFormDto)model,
                 x => x.IncludeProperties(propertyName)));
 
         return result.IsValid ? [] : result.Errors.Select(e => e.ErrorMessage);

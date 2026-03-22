@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Lumium.Application.Features.Contracts.Commands;
 
-public record CreateContractCommand(CreateContractDto ContractDto) : IRequest<Result>;
+public record CreateContractCommand(ContractFormDto ContractFormDto) : IRequest<Result>;
 
 public class CreateContractCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateContractCommand, Result>
@@ -18,7 +18,7 @@ public class CreateContractCommandHandler(IApplicationDbContextFactory contextFa
         {
             try
             {
-                var newContract = mapper.Map<Contract>(request.ContractDto);
+                var newContract = mapper.Map<Contract>(request.ContractFormDto);
                 newContract.Id = Guid.NewGuid();
 
                 context.Contracts.Add(newContract);

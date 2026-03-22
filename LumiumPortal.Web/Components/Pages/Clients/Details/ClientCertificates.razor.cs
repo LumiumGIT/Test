@@ -1,9 +1,7 @@
-using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
-using LumiumPortal.Web.Components.Pages.Certificates;
-using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -39,52 +37,36 @@ public partial class ClientCertificates : ComponentBase
 
     private async Task OpenAddCertificateDialog()
     {
-        var parameters = new DialogParameters
-        {
-            { nameof(AddCertificateDialog.ClientId), ClientId }
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+        if (await DialogService.ShowAddCertificateDialog(ClientId))
         {
             await LoadCertificates();
         }
     }
 
+    private async Task OpenEditCertificateDialog(CertificateDto certificate)
+    {
+        if (await DialogService.ShowEditCertificateDialog(certificate))
+        {
+            await LoadCertificates();
+        }
+    }
+    
     private async Task DeleteCertificate(CertificateDto certificate)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
-            "Potvrda brisanja",
-            "Obriši",
-            Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
         {
-            var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
-
-            await HandleResult(result);
+            await HandleDeleteCertificate(certificate.Id);
         }
     }
 
-    private async Task HandleResult(Result result)
+    private async Task HandleDeleteCertificate(Guid id)
     {
+        var result = await Mediator.Send(new DeleteCertificateCommand(id));
+
         if (result.IsSuccess)
         {
-            await LoadCertificates();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadCertificates();
         }
         else
         {

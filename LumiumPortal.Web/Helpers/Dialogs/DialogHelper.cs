@@ -1,9 +1,9 @@
 using LumiumPortal.Web.Components.Shared;
 using MudBlazor;
 
-namespace LumiumPortal.Web.Helpers;
+namespace LumiumPortal.Web.Helpers.Dialogs;
 
-public static class DialogHelpers
+public static class DialogHelper
 {
     public static async Task<bool> ShowConfirmDialog(
         IDialogService dialogService,

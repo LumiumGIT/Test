@@ -97,14 +97,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         foreach (var entry in ChangeTracker.Entries<TenantEntity>())
         {
-            if (entry.State == EntityState.Added && entry.Entity.TenantId == Guid.Empty)
+            switch (entry.State)
             {
-                if (tenantContext.TenantId == Guid.Empty)
+                case EntityState.Added when entry.Entity.TenantId == Guid.Empty:
                 {
-                    throw new InvalidOperationException("TenantId nije setovan u tenant context-u");
-                }
+                    if (tenantContext.TenantId == Guid.Empty)
+                    {
+                        throw new InvalidOperationException("TenantId nije setovan u tenant context-u");
+                    }
 
-                entry.Entity.TenantId = tenantContext.TenantId;
+                    entry.Entity.TenantId = tenantContext.TenantId;
+                    break;
+                }
+                case EntityState.Modified:
+                    entry.Entity.UpdatedAt = DateTime.Now;
+                    break;
             }
         }
 

@@ -1,7 +1,7 @@
 namespace Lumium.Application.Common.Models;
 
 /// <summary>
-/// Generički Result wrapper za Command/Query rezultate
+/// Generic Result wrapper for Command/Query results
 /// </summary>
 public class Result
 {
@@ -26,13 +26,13 @@ public class Result
 }
 
 /// <summary>
-/// Generički Result sa payload-om (data)
+/// Generic Result with payload (data)
 /// </summary>
 public class Result<T> : Result
 {
     public T? Data { get; }
 
-    protected Result(bool isSuccess, string message, T? data = default, List<string>? errors = null)
+    private Result(bool isSuccess, string message, T? data = default, List<string>? errors = null)
         : base(isSuccess, message, errors) =>
         Data = data;
 

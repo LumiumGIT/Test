@@ -2,7 +2,7 @@ using Domain.Enums.Contracts;
 
 namespace Lumium.Application.Features.Contracts.DTOs;
 
-public class CreateContractDto
+public class ContractFormDto
 {
     public (Guid Id, string Name) SelectedClient { get; set; }
 

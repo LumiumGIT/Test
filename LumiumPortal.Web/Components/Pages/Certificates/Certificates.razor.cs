@@ -2,7 +2,7 @@ using Domain.Enums.Certificates;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
-using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -29,42 +29,31 @@ public partial class Certificates : SecureComponentBase
 
     private async Task LoadCertificates() => _certificates = await Mediator.Send(new GetCertificatesQuery());
 
-    private async Task OpenAddCertificateDialog()
+    private async Task AddCertificate()
     {
-        var options = new DialogOptions
+        if (await DialogService.ShowAddCertificateDialog())
         {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+            await LoadCertificates();
+        }
+    }
+    
+    private async Task EditCertificate(CertificateDto certificate)
+    {
+        if (await DialogService.ShowEditCertificateDialog(certificate))
         {
             await LoadCertificates();
         }
     }
 
-    private async Task OpenDeleteDialog(CertificateDto certificate)
+    private async Task DeleteCertificate(CertificateDto certificate)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
-            "Potvrda brisanja",
-            "Obriši",
-            Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
         {
-            await DeleteCertificate(certificate.Id);
+            await HandleDeleteCertificate(certificate.Id);
         }
     }
 
-    private async Task DeleteCertificate(Guid id)
+    private async Task HandleDeleteCertificate(Guid id)
     {
         var result = await Mediator.Send(new DeleteCertificateCommand(id));
 
@@ -78,13 +67,4 @@ public partial class Certificates : SecureComponentBase
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-
-    private string GetRowStyle(CertificateDto cert, int index) =>
-        cert.Status switch
-        {
-            CertificateStatus.Expired => "background-color: var(--mud-palette-error-hover);",
-            CertificateStatus.AboutToExpire => "background-color: var(--mud-palette-warning-hover);",
-            CertificateStatus.ExpiringSoon => "background-color: var(--mud-palette-info-hover);",
-            _ => string.Empty
-        };
 }

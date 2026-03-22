@@ -4,6 +4,7 @@ using Lumium.Application.Features.Documents.DTOs;
 using Lumium.Application.Features.Documents.Queries;
 using LumiumPortal.Web.Components.Pages.Documents;
 using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -65,7 +66,7 @@ public partial class ClientDocuments : ComponentBase
 
     private async Task DeleteDocument(DocumentDto document)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
+        var confirmed = await DialogHelper.ShowConfirmDialog(
             DialogService,
             $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
             "Potvrda brisanja",

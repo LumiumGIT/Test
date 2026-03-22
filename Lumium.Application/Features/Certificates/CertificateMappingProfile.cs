@@ -17,7 +17,7 @@ public class CertificateMappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
-        CreateMap<CreateCertificateDto, Certificate>()
+        CreateMap<CertificateFormDto, Certificate>()
             .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.SelectedClient.Id));
     }
 }

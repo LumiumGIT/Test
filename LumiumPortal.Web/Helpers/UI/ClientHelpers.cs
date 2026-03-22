@@ -2,7 +2,7 @@ using Domain.Enums.Clients;
 using Lumium.Application.Common.Extensions;
 using MudBlazor;
 
-namespace LumiumPortal.Web.Helpers;
+namespace LumiumPortal.Web.Helpers.UI;
 
 public static class ClientHelpers
 {

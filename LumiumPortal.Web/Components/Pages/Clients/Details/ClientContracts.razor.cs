@@ -4,6 +4,7 @@ using Lumium.Application.Features.Contracts.DTOs;
 using Lumium.Application.Features.Contracts.Queries;
 using LumiumPortal.Web.Components.Pages.Contracts;
 using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -23,31 +24,7 @@ public partial class ClientContracts : ComponentBase
 
         await base.OnInitializedAsync();
     }
-
-    private async Task OpenAddContractDialog()
-    {
-        var parameters = new DialogParameters
-        {
-            { nameof(AddContractDialog.ClientId), ClientId }
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddContractDialog>("Dodaj ugovor", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
-        {
-            await LoadContracts();
-        }
-    }
-
+    
     private async Task LoadContracts()
     {
         try
@@ -61,30 +38,38 @@ public partial class ClientContracts : ComponentBase
         }
     }
 
-    private async Task DeleteContract(ContractDto contract)
+    private async Task AddContract()
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
-            "Potvrda brisanja",
-            "Obriši",
-            Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowAddContractDialog(ClientId))
         {
-            var result = await Mediator.Send(new DeleteContractCommand(contract.Id));
-
-            await HandleResult(result);
+            await LoadContracts();
+        }
+    }
+    
+    private async Task EditContract(ContractDto contract)
+    {
+        if (await DialogService.ShowEditContractDialog(contract))
+        {
+            await LoadContracts();
         }
     }
 
-    private async Task HandleResult(Result result)
+    private async Task DeleteContract(ContractDto contract)
     {
+        if (await DialogService.ShowDeleteCertificateConfirmation(contract.ContractNumber))
+        {
+            await HandleDeleteCertificate(contract.Id);
+        }
+    }
+    
+    private async Task HandleDeleteCertificate(Guid id)
+    {
+        var result = await Mediator.Send(new DeleteContractCommand(id));
+
         if (result.IsSuccess)
         {
-            await LoadContracts();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadContracts();
         }
         else
         {

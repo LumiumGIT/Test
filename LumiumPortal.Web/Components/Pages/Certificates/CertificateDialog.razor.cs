@@ -1,3 +1,4 @@
+using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Clients.Queries;
@@ -9,34 +10,59 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Certificates;
 
-public partial class AddCertificateDialog : ComponentBase
+public partial class CertificateDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public Guid ClientId { get; set; }
+    [Parameter] public CertificateDto? ExistingCertificate  { get; set; } = new();
+    [Parameter] public bool IsEditMode { get; set; }
 
     private List<(Guid Id, string Name)> _clients = [];
     private List<RegulatoryBodyDto> _regulatoryBodies = [];
-    private CreateCertificateDto _model = new();
+    private CertificateFormDto _model = new();
     private MudForm? _form;
-    private readonly CreateCertificateDtoValidator _validator = new();
+    private readonly CertificateFormDtoValidator _validator = new();
     private bool _isSubmitting;
-    private bool DisableClientSelection => ClientId != Guid.Empty;
+    private bool DisableClientSelection => ClientId != Guid.Empty || ExistingCertificate?.ClientId != Guid.Empty;
 
     private DateTime? _issueDate = DateTime.Today;
     private DateTime? _expiryDate = DateTime.Today.AddYears(1);
 
     protected override async Task OnInitializedAsync()
     {
-        _model = new CreateCertificateDto
-        {
-            IssueDate = DateTime.Today,
-            ExpiryDate = DateTime.Today.AddYears(1)
-        };
-
         await LoadRegulatoryBodies();
         await LoadClients();
-        PreselectClient();
+        
+        if (IsEditMode && ExistingCertificate != null)
+        {
+            _model = new CertificateFormDto
+            {
+                CertificateName = ExistingCertificate.CertificateName,
+                CertificateNumber = ExistingCertificate.CertificateNumber,
+                IssueDate = ExistingCertificate.IssueDate,
+                ExpiryDate = ExistingCertificate.ExpiryDate,
+                RegulatoryBodyId = ExistingCertificate.RegulatoryBodyId,
+                SelectedClient = _clients.FirstOrDefault(c => c.Id == ExistingCertificate.ClientId)
+            };
+
+            _issueDate = ExistingCertificate.IssueDate;
+            _expiryDate = ExistingCertificate.ExpiryDate;
+        }
+        else
+        {
+            // Create mode
+            _model = new CertificateFormDto
+            {
+                IssueDate = DateTime.Today,
+                ExpiryDate = DateTime.Today.AddYears(1)
+            };
+
+            _issueDate = DateTime.Today;
+            _expiryDate = DateTime.Today.AddYears(1);
+
+            PreselectClient();
+        }
     }
 
     private async Task LoadClients()
@@ -116,8 +142,20 @@ public partial class AddCertificateDialog : ComponentBase
         {
             _isSubmitting = true;
 
-            var command = new CreateCertificateCommand(_model);
-            var result = await Mediator.Send(command);
+            Result result;
+
+            if (IsEditMode && ExistingCertificate != null)
+            {
+                // EDIT
+                var updateCommand = new UpdateCertificateCommand(ExistingCertificate.Id, _model);
+                result = await Mediator.Send(updateCommand);
+            }
+            else
+            {
+                // CREATE
+                var createCommand = new CreateCertificateCommand(_model);
+                result = await Mediator.Send(createCommand);
+            }
 
             if (result.IsSuccess)
             {

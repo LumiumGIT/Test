@@ -3,7 +3,7 @@
 @using Domain.Enums.Certificates
 @using Lumium.Application.Features.Certificates.DTOs
 @using LumiumPortal.Web.Components.Shared
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 
 @if (_isLoading)
 {
@@ -90,7 +90,7 @@ else
     @* Toolbar *@
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddCertificateDialog"
+            <MudButton OnClick="@AddCertificate"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add">
@@ -115,7 +115,7 @@ else
                      FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
                      Hideable="false"
                      Bordered="true"
-                     RowStyleFunc="GetRowStyle">
+                     RowStyleFunc="@CertificateHelpers.GetRowStyle">
             <Columns>
 
                 @* Status *@
@@ -214,25 +214,31 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                @* Akcije *@
-                <TemplateColumn Title="Akcije"
+                @* Izmeni *@
+                <TemplateColumn Title="Izmeni"
                                 Sortable="false"
                                 Filterable="false"
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 CellStyle="min-width: 100px;">
                     <CellTemplate>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexEnd">
-                            <MudIconButton Icon="@Icons.Material.Filled.Autorenew"
-                                           Size="Size.Small"
-                                           Disabled="true"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Size="Size.Small"
-                                           Disabled="true"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => EditCertificate(context.Item))"/>
+                    </CellTemplate>
+                </TemplateColumn>
+                
+                @* Obriši *@
+                <TemplateColumn Title="Obriši"
+                                Sortable="false"
+                                Filterable="false"
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                CellStyle="min-width: 100px;">
+                    <CellTemplate>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                            Color="Color.Error"
                                            Size="Size.Small"
-                                           OnClick="@(() => OpenDeleteDialog(context.Item))"/>
-                        </MudStack>
+                                           OnClick="@(() => DeleteCertificate(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>

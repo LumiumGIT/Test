@@ -1,5 +1,6 @@
 @using Lumium.Application.Common.Extensions
 @using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
@@ -10,7 +11,7 @@
                    Size="Size.Small"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
-                   OnClick="@OpenAddContractDialog">
+                   OnClick="@AddContract">
             Dodaj ugovor
         </MudButton>
     </MudStack>
@@ -31,6 +32,7 @@
                 <MudTh Style="text-align: right">Vrednost</MudTh>
                 <MudTh>Status</MudTh>
                 <MudTh>Napomena</MudTh>
+                <MudTh>Izmeni</MudTh>
                 <MudTh>Obriši</MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -58,6 +60,12 @@
                 </MudTd>
                 <MudTd DataLabel="Napomena">
                     <MudText Typo="Typo.body2">@context.Notes</MudText>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(() => EditContract(context))"/>
                 </MudTd>
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"

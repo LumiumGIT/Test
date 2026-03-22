@@ -4,6 +4,7 @@ using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
 using Lumium.Application.Features.Contracts.Queries;
 using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -41,20 +42,17 @@ public partial class Contracts : SecureComponentBase
         }
     }
 
-    private async Task OpenAddContractDialog()
+    private async Task AddContract()
     {
-        var options = new DialogOptions
+        if (await DialogService.ShowAddContractDialog())
         {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddContractDialog>("Dodaj ugovor", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+            await LoadContracts();
+        }
+    }
+    
+    private async Task EditContract(ContractDto contract)
+    {
+        if (await DialogService.ShowEditContractDialog(contract))
         {
             await LoadContracts();
         }
@@ -62,28 +60,20 @@ public partial class Contracts : SecureComponentBase
 
     private async Task DeleteContract(ContractDto contract)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            $"Da li ste sigurni da želite da obrišete ugovor '{contract.ContractNumber}'?",
-            "Potvrda brisanja",
-            "Obriši",
-            Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowDeleteCertificateConfirmation(contract.ContractNumber))
         {
-            var result = await Mediator.Send(new DeleteContractCommand(contract.Id));
-
-            await HandleResult(result);
+            await HandleDeleteCertificate(contract.Id);
         }
     }
-
-    private async Task HandleResult(Result result)
+    
+    private async Task HandleDeleteCertificate(Guid id)
     {
+        var result = await Mediator.Send(new DeleteContractCommand(id));
+
         if (result.IsSuccess)
         {
-            await LoadContracts();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadContracts();
         }
         else
         {
