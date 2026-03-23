@@ -3,7 +3,6 @@
 @using Lumium.Application.Common.Extensions
 @using Lumium.Application.Features.Documents.DTOs
 @using LumiumPortal.Web.Components.Shared
-@using LumiumPortal.Web.Helpers
 @using LumiumPortal.Web.Helpers.UI
 @inherits SecureComponentBase
 
@@ -91,7 +90,7 @@ else
     @* Toolbar *@
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddDocumentDialog"
+            <MudButton OnClick="@AddDocument"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add">
@@ -155,13 +154,22 @@ else
                         </MudButton>
                     </CellTemplate>
                 </TemplateColumn>
+                
+                <TemplateColumn Title="Izmeni" Filterable="false" Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => EditDocument(context.Item))"/>
+                    </CellTemplate>
+                </TemplateColumn>
 
                 <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
                     <CellTemplate>
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"
                                        Size="Size.Small"
-                                       OnClick="@(() => OpenDeleteDialog(context.Item))"/>
+                                       OnClick="@(() => DeleteDocument(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>

@@ -14,7 +14,7 @@ public partial class ContractDialog : ComponentBase
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public Guid ClientId { get; set; }
-    [Parameter] public ContractDto? ExistingContract { get; set; } = new();
+    [Parameter] public ContractDto? ExistingContract { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 
     private ContractFormDto _model = new();
@@ -25,7 +25,7 @@ public partial class ContractDialog : ComponentBase
     private List<(Guid Id, string Name)> _clients = [];
     private DateTime? _startDate = DateTime.Today;
     private DateTime? _endDate = DateTime.Today.AddYears(1);
-    private bool DisableClientSelection => ClientId != Guid.Empty || ExistingContract?.ClientId != Guid.Empty;
+    private bool DisableClientSelection => ClientId != Guid.Empty || IsEditMode;
 
     protected override async Task OnInitializedAsync()
     {

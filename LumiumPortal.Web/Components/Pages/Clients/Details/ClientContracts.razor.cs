@@ -1,9 +1,6 @@
-using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
 using Lumium.Application.Features.Contracts.Queries;
-using LumiumPortal.Web.Components.Pages.Contracts;
-using LumiumPortal.Web.Helpers;
 using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -56,15 +53,12 @@ public partial class ClientContracts : ComponentBase
 
     private async Task DeleteContract(ContractDto contract)
     {
-        if (await DialogService.ShowDeleteCertificateConfirmation(contract.ContractNumber))
+        if (!await DialogService.ShowDeleteContractConfirmation(contract.ContractNumber))
         {
-            await HandleDeleteCertificate(contract.Id);
+            return;
         }
-    }
-    
-    private async Task HandleDeleteCertificate(Guid id)
-    {
-        var result = await Mediator.Send(new DeleteContractCommand(id));
+
+        var result = await Mediator.Send(new DeleteContractCommand(contract.Id));
 
         if (result.IsSuccess)
         {

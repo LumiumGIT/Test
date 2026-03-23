@@ -25,7 +25,7 @@ public class UpdateContractCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure("Ugovor nije pronađen.");
             }
             
-            mapper.Map(request.ContractFormDto,  contract);
+            mapper.Map(request.ContractFormDto, contract);
 
             await context.SaveChangesAsync(cancellationToken);
 

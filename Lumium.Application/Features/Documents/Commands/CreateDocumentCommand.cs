@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Lumium.Application.Features.Documents.Commands;
 
-public record CreateDocumentCommand(CreateDocumentDto DocumentDto) : IRequest<Result>;
+public record CreateDocumentCommand(DocumentFormDto DocumentFormDto) : IRequest<Result>;
 
 public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateDocumentCommand, Result>
@@ -18,7 +18,7 @@ public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFa
         {
             try
             {
-                var newDocument = mapper.Map<Document>(request.DocumentDto);
+                var newDocument = mapper.Map<Document>(request.DocumentFormDto);
                 newDocument.Id = Guid.NewGuid();
                 newDocument.UploadedAt = DateTime.UtcNow;
 

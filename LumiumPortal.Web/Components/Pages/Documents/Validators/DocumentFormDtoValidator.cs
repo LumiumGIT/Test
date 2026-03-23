@@ -3,9 +3,9 @@ using Lumium.Application.Features.Documents.DTOs;
 
 namespace LumiumPortal.Web.Components.Pages.Documents.Validators;
 
-public class CreateDocumentDtoValidator : AbstractValidator<CreateDocumentDto>
+public class DocumentFormDtoValidator : AbstractValidator<DocumentFormDto>
 {
-    public CreateDocumentDtoValidator()
+    public DocumentFormDtoValidator()
     {
         RuleFor(x => x.SelectedClient)
             .Must(c => c.Id != Guid.Empty)
@@ -31,8 +31,8 @@ public class CreateDocumentDtoValidator : AbstractValidator<CreateDocumentDto>
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
         var result = await ValidateAsync(
-            ValidationContext<CreateDocumentDto>.CreateWithOptions(
-                (CreateDocumentDto)model,
+            ValidationContext<DocumentFormDto>.CreateWithOptions(
+                (DocumentFormDto)model,
                 x => x.IncludeProperties(propertyName)));
 
         return result.IsValid ? [] : result.Errors.Select(e => e.ErrorMessage);

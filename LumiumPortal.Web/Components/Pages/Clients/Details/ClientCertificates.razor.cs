@@ -55,13 +55,10 @@ public partial class ClientCertificates : ComponentBase
     {
         if (await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
         {
-            await HandleDeleteCertificate(certificate.Id);
+            return;
         }
-    }
 
-    private async Task HandleDeleteCertificate(Guid id)
-    {
-        var result = await Mediator.Send(new DeleteCertificateCommand(id));
+        var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
 
         if (result.IsSuccess)
         {

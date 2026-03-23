@@ -1,4 +1,5 @@
 using Domain.Enums.Documents;
+using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Clients.Queries;
 using Lumium.Application.Features.Documents.Commands;
 using Lumium.Application.Features.Documents.DTOs;
@@ -8,28 +9,45 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Documents;
 
-public partial class AddDocumentDialog : ComponentBase
+public partial class DocumentDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public Guid ClientId { get; set; }
+    [Parameter] public DocumentDto? ExistingDocument { get; set; }
+    [Parameter] public bool IsEditMode { get; set; }
 
-    private CreateDocumentDto _model = new();
+    private DocumentFormDto _model = new();
     private MudForm? _form;
-    private readonly CreateDocumentDtoValidator _validator = new();
+    private readonly DocumentFormDtoValidator _validator = new();
     private bool _isSubmitting;
     private List<(Guid Id, string Name)> _clients = [];
-    private bool DisableClientSelection => ClientId != Guid.Empty;
+    private bool DisableClientSelection => ClientId != Guid.Empty || IsEditMode;
 
     protected override async Task OnInitializedAsync()
     {
-        _model = new CreateDocumentDto
-        {
-            Category = DocumentCategory.Other
-        };
-
         await LoadClients();
-        PreselectClient();
+
+        if (IsEditMode && ExistingDocument != null)
+        {
+            _model = new DocumentFormDto
+            {
+                Name = ExistingDocument.Name,
+                Category = ExistingDocument.Category,
+                Url = ExistingDocument.Url,
+                Description = ExistingDocument.Description,
+                SelectedClient = _clients.FirstOrDefault(c => c.Id == ExistingDocument.ClientId)
+            };
+        }
+        else
+        {
+            _model = new DocumentFormDto
+            {
+                Category = DocumentCategory.Other
+            };
+
+            PreselectClient();
+        }
     }
 
     private async Task LoadClients()
@@ -72,7 +90,18 @@ public partial class AddDocumentDialog : ComponentBase
 
         try
         {
-            var result = await Mediator.Send(new CreateDocumentCommand(_model));
+            Result result;
+
+            if (IsEditMode && ExistingDocument != null)
+            {
+                var updateCommand = new UpdateDocumentCommand(ExistingDocument.Id, _model);
+                result = await Mediator.Send(updateCommand);
+            }
+            else
+            {
+                var createCommand = new CreateDocumentCommand(_model);
+                result = await Mediator.Send(createCommand);
+            }
 
             if (result.IsSuccess)
             {

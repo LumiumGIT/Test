@@ -1,8 +1,6 @@
-using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Documents.Commands;
 using Lumium.Application.Features.Documents.DTOs;
 using Lumium.Application.Features.Documents.Queries;
-using LumiumPortal.Web.Helpers;
 using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -42,49 +40,35 @@ public partial class Documents : SecureComponentBase
         }
     }
 
-    private async Task OpenAddDocumentDialog()
+    private async Task AddDocument()
     {
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddDocumentDialog>("Dodaj dokument", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+        if (await DialogService.ShowAddDocumentDialog())
         {
             await LoadDocuments();
         }
     }
 
-    private async Task OpenDeleteDialog(DocumentDto document)
+    private async Task EditDocument(DocumentDto document)
     {
-        var confirmed = await DialogHelper.ShowConfirmDialog(
-            DialogService,
-            $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
-            "Potvrda brisanja",
-            "Obriši",
-            Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowEditDocumentDialog(document))
         {
-            var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
-
-            await HandleResult(result);
+            await LoadDocuments();
         }
     }
-
-    private async Task HandleResult(Result result)
+    
+    private async Task DeleteDocument(DocumentDto document)
     {
+        if (!await DialogService.ShowDeleteDocumentConfirmation(document.Name))
+        {
+            return;
+        }
+        
+        var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
+
         if (result.IsSuccess)
         {
-            await LoadDocuments();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadDocuments();
         }
         else
         {

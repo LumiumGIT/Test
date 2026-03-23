@@ -15,7 +15,7 @@ public partial class CertificateDialog : ComponentBase
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public Guid ClientId { get; set; }
-    [Parameter] public CertificateDto? ExistingCertificate  { get; set; } = new();
+    [Parameter] public CertificateDto? ExistingCertificate  { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 
     private List<(Guid Id, string Name)> _clients = [];
@@ -24,7 +24,7 @@ public partial class CertificateDialog : ComponentBase
     private MudForm? _form;
     private readonly CertificateFormDtoValidator _validator = new();
     private bool _isSubmitting;
-    private bool DisableClientSelection => ClientId != Guid.Empty || ExistingCertificate?.ClientId != Guid.Empty;
+    private bool DisableClientSelection => ClientId != Guid.Empty || IsEditMode;
 
     private DateTime? _issueDate = DateTime.Today;
     private DateTime? _expiryDate = DateTime.Today.AddYears(1);
