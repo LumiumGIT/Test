@@ -61,7 +61,9 @@ public static class CertificateDialogHelper
         {
             return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificateName}'?"
+                message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificateName}'?",
+                requireTextMatch: "DA",
+                matchPlaceholder: "Unesite 'DA' velikim slovima"
             );
         }
     }

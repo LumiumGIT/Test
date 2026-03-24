@@ -62,7 +62,9 @@ public static class ContractDialogHelper
         {
             return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                message: $"Da li ste sigurni da želite da obrišete ugovor '{contractNumber}'?"
+                message: $"Da li ste sigurni da želite da obrišete ugovor '{contractNumber}'?",
+                requireTextMatch: "DA",
+                matchPlaceholder: "Unesite 'DA' velikim slovima"
             );
         }
     }

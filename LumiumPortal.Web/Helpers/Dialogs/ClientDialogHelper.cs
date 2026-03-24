@@ -61,7 +61,9 @@ public static class ClientDialogHelper
         {
             return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                message: $"Da li ste sigurni da želite da obrišete klijenta '{clientName}'?"
+                message: $"Da li ste sigurni da želite da obrišete klijenta '{clientName}'?",
+                requireTextMatch: "DA",
+                matchPlaceholder: "Unesite 'DA' velikim slovima"
             );
         }
     }

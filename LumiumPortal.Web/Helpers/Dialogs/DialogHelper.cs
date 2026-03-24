@@ -10,13 +10,17 @@ public static class DialogHelper
         string message,
         string title = "Potvrda",
         string confirmText = "Potvrdi",
-        Color confirmColor = Color.Primary)
+        Color confirmColor = Color.Primary,
+        string? requireTextMatch = null,
+        string? matchPlaceholder = null)
     {
         var parameters = new DialogParameters
         {
             { nameof(ConfirmDialog.Message), message },
             { nameof(ConfirmDialog.ConfirmText), confirmText },
-            { nameof(ConfirmDialog.ConfirmColor), confirmColor }
+            { nameof(ConfirmDialog.ConfirmColor), confirmColor },
+            { nameof(ConfirmDialog.RequireTextMatch), requireTextMatch },
+            { nameof(ConfirmDialog.MatchPlaceholder), matchPlaceholder }
         };
 
         var options = new DialogOptions
@@ -32,7 +36,11 @@ public static class DialogHelper
         return result is { Canceled: false };
     }
     
-    public static async Task<bool> ShowDeleteConfirmDialog(IDialogService dialogService, string message)
+    public static async Task<bool> ShowDeleteConfirmDialog(
+        IDialogService dialogService, 
+        string message,
+        string? requireTextMatch = null,
+        string? matchPlaceholder = null)
     {
         var parameters = new DialogParameters
         {
@@ -42,7 +50,9 @@ public static class DialogHelper
             { nameof(ConfirmDialog.ConfirmText), "Obriši" },
             { nameof(ConfirmDialog.ConfirmColor), Color.Error },
             { nameof(ConfirmDialog.Icon), Icons.Material.Filled.DeleteForever },
-            { nameof(ConfirmDialog.IconColor), Color.Error }
+            { nameof(ConfirmDialog.IconColor), Color.Error },
+            { nameof(ConfirmDialog.RequireTextMatch), requireTextMatch },
+            { nameof(ConfirmDialog.MatchPlaceholder), matchPlaceholder }
         };
 
         var options = new DialogOptions

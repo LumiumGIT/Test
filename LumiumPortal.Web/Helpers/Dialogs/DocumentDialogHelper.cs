@@ -62,7 +62,9 @@ public static class DocumentDialogHelper
         {
             return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                message: $"Da li ste sigurni da želite da obrišete dokument '{documentName}'?"
+                message: $"Da li ste sigurni da želite da obrišete dokument '{documentName}'?",
+                requireTextMatch: "DA",
+                matchPlaceholder: "Unesite 'DA' velikim slovima"
             );
         }
     }
