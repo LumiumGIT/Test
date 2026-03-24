@@ -12,7 +12,6 @@
 else
 {
     <MudText Typo="Typo.h3" GutterBottom="true">Sertifikati</MudText>
-    <MudText Class="mb-4" Color="Color.Default">Pratite rokove važenja sertifikata i upravljajte obnovama</MudText>
 
     @* Stats Cards *@
     <MudGrid Class="mb-4">
@@ -99,6 +98,8 @@ else
         </MudStack>
     </MudPaper>
 
+    @if (_certificates.Any())
+    {
     @* Data Grid *@
     <MudPaper Elevation="1">
         <MudDataGrid T="CertificateDto"
@@ -235,10 +236,10 @@ else
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 CellStyle="min-width: 100px;">
                     <CellTemplate>
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error"
-                                           Size="Size.Small"
-                                           OnClick="@(() => DeleteCertificate(context.Item))"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteCertificate(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
@@ -250,4 +251,22 @@ else
             </PagerContent>
         </MudDataGrid>
     </MudPaper>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema sertifikata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 }
