@@ -50,7 +50,8 @@ else
                 <PropertyColumn Property="x => x.Name"
                                 Title="Naziv klijenta"
                                 HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;">
+                                CellStyle="min-width: 200px;"
+                                StickyLeft="true">
                     <CellTemplate>
                         <MudLink Href="@($"/clients/{context.Item.Id}")"
                                  Typo="Typo.body2"
