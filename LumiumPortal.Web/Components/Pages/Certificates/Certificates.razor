@@ -3,16 +3,15 @@
 @using Domain.Enums.Certificates
 @using Lumium.Application.Features.Certificates.DTOs
 @using LumiumPortal.Web.Components.Shared
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 
 @if (_isLoading)
 {
-    <LoadingIndicator />
+    <LoadingIndicator/>
 }
 else
 {
     <MudText Typo="Typo.h3" GutterBottom="true">Sertifikati</MudText>
-    <MudText Class="mb-4" Color="Color.Default">Pratite rokove važenja sertifikata i upravljajte obnovama</MudText>
 
     @* Stats Cards *@
     <MudGrid Class="mb-4">
@@ -90,7 +89,7 @@ else
     @* Toolbar *@
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddCertificateDialog"
+            <MudButton OnClick="@AddCertificate"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add">
@@ -99,12 +98,14 @@ else
         </MudStack>
     </MudPaper>
 
+    @if (_certificates.Any())
+    {
     @* Data Grid *@
     <MudPaper Elevation="1">
         <MudDataGrid T="CertificateDto"
                      Items="@_certificates"
                      Class="certificates-grid"
-                     Striped="true" 
+                     Striped="true"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -115,7 +116,7 @@ else
                      FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
                      Hideable="false"
                      Bordered="true"
-                     RowStyleFunc="GetRowStyle">
+                     RowStyleFunc="@CertificateHelpers.GetRowStyle">
             <Columns>
 
                 @* Status *@
@@ -214,25 +215,31 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                @* Akcije *@
-                <TemplateColumn Title="Akcije"
+                @* Izmeni *@
+                <TemplateColumn Title="Izmeni"
                                 Sortable="false"
                                 Filterable="false"
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 CellStyle="min-width: 100px;">
                     <CellTemplate>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexEnd">
-                            <MudIconButton Icon="@Icons.Material.Filled.Autorenew"
-                                           Size="Size.Small"
-                                           Disabled="true"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Size="Size.Small"
-                                           Disabled="true"/>
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error"
-                                           Size="Size.Small"
-                                           OnClick="@(() => OpenDeleteDialog(context.Item))" />
-                        </MudStack>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => EditCertificate(context.Item))"/>
+                    </CellTemplate>
+                </TemplateColumn>
+                
+                @* Obriši *@
+                <TemplateColumn Title="Obriši"
+                                Sortable="false"
+                                Filterable="false"
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                CellStyle="min-width: 100px;">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteCertificate(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
@@ -244,4 +251,22 @@ else
             </PagerContent>
         </MudDataGrid>
     </MudPaper>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema sertifikata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 }

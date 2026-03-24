@@ -11,9 +11,8 @@ public record DeleteContractCommand(Guid Id) : IRequest<Result>;
 public class DeleteContractCommandHandler(IApplicationDbContextFactory contextFactory)
     : IRequestHandler<DeleteContractCommand, Result>
 {
-    public async Task<Result> Handle(DeleteContractCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(DeleteContractCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -36,5 +35,4 @@ public class DeleteContractCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure($"Greška pri brisanju ugovora: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

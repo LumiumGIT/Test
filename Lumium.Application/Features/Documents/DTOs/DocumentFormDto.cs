@@ -2,7 +2,7 @@ using Domain.Enums.Documents;
 
 namespace Lumium.Application.Features.Documents.DTOs;
 
-public class CreateDocumentDto
+public class DocumentFormDto
 {
     public (Guid Id, string Name) SelectedClient { get; set; }
     public string Name { get; set; } = string.Empty;

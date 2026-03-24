@@ -1,4 +1,5 @@
 using Domain.Enums.Contracts;
+using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Clients.Queries;
 using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
@@ -8,35 +9,62 @@ using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Contracts;
 
-public partial class AddContractDialog : ComponentBase
+public partial class ContractDialog : ComponentBase
 {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
-    
-    [Parameter] public Guid ClientId { get; set; }
 
-    private CreateContractDto _model = new();
+    [Parameter] public Guid ClientId { get; set; }
+    [Parameter] public ContractDto? ExistingContract { get; set; }
+    [Parameter] public bool IsEditMode { get; set; }
+
+    private ContractFormDto _model = new();
     private MudForm? _form;
-    private readonly CreateContractDtoValidator _validator = new();
+    private readonly ContractFormDtoValidator _validator = new();
     private bool _isSubmitting;
 
     private List<(Guid Id, string Name)> _clients = [];
     private DateTime? _startDate = DateTime.Today;
     private DateTime? _endDate = DateTime.Today.AddYears(1);
-    private bool DisableClientSelection => ClientId != Guid.Empty;
+    private bool DisableClientSelection => ClientId != Guid.Empty || IsEditMode;
 
     protected override async Task OnInitializedAsync()
     {
-        _model = new CreateContractDto
-        {
-            StartDate = DateTime.Today,
-            EndDate = DateTime.Today.AddYears(1),
-            Status = ContractStatus.Active,
-            Type = ContractType.Recurring,
-            Duration = ContractDuration.Fixed
-        };
-
         await LoadClients();
-        PreselectClient();
+
+        if (IsEditMode && ExistingContract != null)
+        {
+            _model = new ContractFormDto
+            {
+                ContractNumber = ExistingContract.ContractNumber,
+                MonthlyFee = ExistingContract.MonthlyFee,
+                Notes = ExistingContract.Notes,
+                Status = ExistingContract.Status,
+                Type = ExistingContract.Type,
+                Duration = ExistingContract.Duration,
+                StartDate = ExistingContract.StartDate,
+                EndDate = ExistingContract.EndDate,
+                SelectedClient = _clients.FirstOrDefault(c => c.Id == ExistingContract.ClientId)
+            };
+
+            _startDate = ExistingContract.StartDate;
+            _endDate = ExistingContract.EndDate;
+        }
+        else
+        {
+            _model = new ContractFormDto
+            {
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                Status = ContractStatus.Active,
+                Type = ContractType.Recurring,
+                Duration = ContractDuration.Fixed
+            };
+
+            _startDate = DateTime.Today;
+            _endDate = DateTime.Today.AddYears(1);
+
+            PreselectClient();
+        }
     }
 
     private async Task LoadClients()
@@ -51,7 +79,7 @@ public partial class AddContractDialog : ComponentBase
             Console.WriteLine($"[ERROR] Load clients failed: {ex}");
         }
     }
-    
+
     private void PreselectClient()
     {
         if (ClientId != Guid.Empty)
@@ -62,7 +90,10 @@ public partial class AddContractDialog : ComponentBase
 
     private async Task HandleSubmit()
     {
-        if (_form == null) return;
+        if (_form == null)
+        {
+            return;
+        }
 
         await _form.Validate();
 
@@ -88,7 +119,20 @@ public partial class AddContractDialog : ComponentBase
                 _ => _model.EndDate
             };
 
-            var result = await Mediator.Send(new CreateContractCommand(_model));
+            Result result;
+
+            if (IsEditMode && ExistingContract != null)
+            {
+                // UPDATE
+                var updateCommand = new UpdateContractCommand(ExistingContract.Id, _model);
+                result = await Mediator.Send(updateCommand);
+            }
+            else
+            {
+                // CREATE
+                var createCommand = new CreateContractCommand(_model);
+                result = await Mediator.Send(createCommand);
+            }
 
             if (result.IsSuccess)
             {
@@ -112,13 +156,15 @@ public partial class AddContractDialog : ComponentBase
     }
 
     private void Cancel() => MudDialog.Cancel();
-    
+
     private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
+        }
 
-        return Task.FromResult(_clients.Where(c => 
+        return Task.FromResult(_clients.Where(c =>
             c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));
     }
 }

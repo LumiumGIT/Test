@@ -1,8 +1,7 @@
-using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Documents.Commands;
 using Lumium.Application.Features.Documents.DTOs;
 using Lumium.Application.Features.Documents.Queries;
-using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -20,7 +19,7 @@ public partial class Documents : SecureComponentBase
     private int OfficialCount => _documents.Count(d => (int)d.Category < 10);
     private int SupportingCount => _documents.Count(d => (int)d.Category >= 10 && (int)d.Category < 99);
     private int RecentCount => _documents.Count(d => d.UploadedAt >= DateTime.Now.AddDays(-7));
-    
+
     protected override async Task OnSecureInitializedAsync()
     {
         _isLoading = true;
@@ -41,59 +40,41 @@ public partial class Documents : SecureComponentBase
         }
     }
 
-    private async Task OpenAddDocumentDialog()
+    private async Task AddDocument()
     {
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddDocumentDialog>("Dodaj dokument", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+        if (await DialogService.ShowAddDocumentDialog())
         {
             await LoadDocuments();
         }
     }
 
-    private async Task OpenDeleteDialog(DocumentDto document)
+    private async Task EditDocument(DocumentDto document)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            message: $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowEditDocumentDialog(document))
         {
-            var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
-            
-            await HandleResult(result);
+            await LoadDocuments();
         }
     }
     
-    private async Task HandleResult(Result result)
+    private async Task DeleteDocument(DocumentDto document)
     {
+        if (!await DialogService.ShowDeleteDocumentConfirmation(document.Name))
+        {
+            return;
+        }
+        
+        var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
 
         if (result.IsSuccess)
         {
-            await LoadDocuments();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadDocuments();
         }
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-    
-    private async Task OpenDocument(string url)
-    {
-        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
-    }
+
+    private async Task OpenDocument(string url) => await JsRuntime.InvokeVoidAsync("open", url, "_blank");
 }

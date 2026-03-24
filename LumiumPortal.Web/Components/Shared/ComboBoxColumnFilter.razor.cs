@@ -5,8 +5,8 @@ namespace LumiumPortal.Web.Components.Shared;
 
 public partial class ComboBoxColumnFilter<T> : ComponentBase
 {
-    [Parameter, EditorRequired] public FilterContext<T> Context { get; set; } = null!;
-    [Parameter, EditorRequired] public Func<T, string> ValueSelector { get; set; } = null!;
+    [Parameter] [EditorRequired] public FilterContext<T> Context { get; set; } = null!;
+    [Parameter] [EditorRequired] public Func<T, string> ValueSelector { get; set; } = null!;
     [Parameter] public int PopoverWidth { get; set; } = 200;
 
     private bool _isInitialized;
@@ -31,7 +31,7 @@ public partial class ComboBoxColumnFilter<T> : ComponentBase
         {
             return;
         }
-        
+
         _availableValues = Context.Items
             .Select(ValueSelector)
             .Where(v => !string.IsNullOrEmpty(v))
@@ -48,15 +48,9 @@ public partial class ComboBoxColumnFilter<T> : ComponentBase
         _isInitialized = true;
     }
 
-    private void OpenFilter()
-    {
-        _isOpen = true;
-    }
+    private void OpenFilter() => _isOpen = true;
 
-    private void CloseFilter()
-    {
-        _isOpen = false;
-    }
+    private void CloseFilter() => _isOpen = false;
 
     private void HandleValueChanged(bool isChecked, string value)
     {

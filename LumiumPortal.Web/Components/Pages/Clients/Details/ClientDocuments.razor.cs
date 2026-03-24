@@ -1,9 +1,7 @@
-using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Documents.Commands;
 using Lumium.Application.Features.Documents.DTOs;
 using Lumium.Application.Features.Documents.Queries;
-using LumiumPortal.Web.Components.Pages.Documents;
-using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -14,18 +12,18 @@ public partial class ClientDocuments : ComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
-    
+
     private List<DocumentDto> _documents = [];
-    
+
     protected override async Task OnInitializedAsync()
     {
         await LoadDocuments();
-        
+
         await base.OnInitializedAsync();
     }
-    
+
     private async Task LoadDocuments()
     {
         try
@@ -38,26 +36,18 @@ public partial class ClientDocuments : ComponentBase
             Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
         }
     }
-    
-    private async Task OpenAddDocumentDialog()
+
+    private async Task AddDocument()
     {
-        var parameters = new DialogParameters
+        if (await DialogService.ShowAddDocumentDialog(ClientId))
         {
-            { nameof(AddDocumentDialog.ClientId), ClientId}
-        };
-        
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
+            await LoadDocuments();
+        }
+    }
 
-        var dialog = await DialogService.ShowAsync<AddDocumentDialog>("Dodaj dokument", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+    private async Task EditDocument(DocumentDto document)
+    {
+        if (await DialogService.ShowEditDocumentDialog(document))
         {
             await LoadDocuments();
         }
@@ -65,38 +55,23 @@ public partial class ClientDocuments : ComponentBase
     
     private async Task DeleteDocument(DocumentDto document)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            message: $"Da li ste sigurni da želite da obrišete dokument '{document.Name}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
-        );
-
-        if (confirmed)
+        if (!await DialogService.ShowDeleteDocumentConfirmation(document.Name))
         {
-            var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
-            
-            await HandleResult(result);
+            return;
         }
-    }
-    
-    private async Task HandleResult(Result result)
-    {
+        
+        var result = await Mediator.Send(new DeleteDocumentCommand(document.Id));
 
         if (result.IsSuccess)
         {
-            await LoadDocuments();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadDocuments();
         }
         else
         {
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-    
-    private async Task OpenDocument(string url)
-    {
-        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
-    }
+
+    private async Task OpenDocument(string url) => await JsRuntime.InvokeVoidAsync("open", url, "_blank");
 }

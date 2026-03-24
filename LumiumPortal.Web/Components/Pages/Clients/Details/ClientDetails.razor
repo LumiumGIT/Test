@@ -1,6 +1,6 @@
 @page "/clients/{ClientId:guid}"
 @using Lumium.Application.Common.Extensions
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 @inject NavigationManager Navigation
 
 <PageTitle>Detalji klijenta - @_clientDetails?.Name</PageTitle>
@@ -48,8 +48,16 @@ else
                 </MudStack>
                 <MudStack Row="true" Spacing="2">
                     <MudButton StartIcon="@Icons.Material.Filled.Edit"
-                               Variant="Variant.Outlined">
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               OnClick="@EditClient">
                         Izmeni
+                    </MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Delete"
+                               Variant="Variant.Filled"
+                               Color="Color.Error"
+                               OnClick="@DeleteClient">
+                        Obriši
                     </MudButton>
                 </MudStack>
             </MudStack>
@@ -150,27 +158,28 @@ else
         </MudGrid>
 
         <MudPaper Elevation="2">
-            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Elevation="0" Rounded="true" ApplyEffectsToContainer="true" 
+            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Elevation="0" Rounded="true"
+                     ApplyEffectsToContainer="true"
                      PanelClass="pa-6" Color="Color.Primary">
-        
+
                 @* Overview Tab *@
                 <MudTabPanel Text="Pregled" Icon="@Icons.Material.Filled.Business">
-                    <ClientOverview Client="@_clientDetails" />
+                    <ClientOverview Client="@_clientDetails"/>
                 </MudTabPanel>
 
                 @* Contracts Tab *@
                 <MudTabPanel Text="Ugovori" Icon="@Icons.Material.Filled.Description">
-                    <ClientContracts ClientId="@ClientId" />
+                    <ClientContracts ClientId="@ClientId"/>
                 </MudTabPanel>
 
                 @* Certificates Tab *@
                 <MudTabPanel Text="Sertifikati" Icon="@Icons.Material.Filled.VerifiedUser">
-                    <ClientCertificates ClientId="@ClientId" />
+                    <ClientCertificates ClientId="@ClientId"/>
                 </MudTabPanel>
 
                 @* Documents Tab *@
                 <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
-                    <ClientDocuments ClientId="@ClientId" />
+                    <ClientDocuments ClientId="@ClientId"/>
                 </MudTabPanel>
             </MudTabs>
         </MudPaper>

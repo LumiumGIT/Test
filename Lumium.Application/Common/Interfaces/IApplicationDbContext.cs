@@ -14,7 +14,7 @@ public interface IApplicationDbContext : IAsyncDisposable
 
     // Shared lookup (public schema)
     DbSet<RegulatoryBody> RegulatoryBodies { get; }
-    
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task SetSearchPathAsync(string schemaName);
 }

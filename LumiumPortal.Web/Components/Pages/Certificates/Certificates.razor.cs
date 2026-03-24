@@ -2,7 +2,7 @@ using Domain.Enums.Certificates;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
-using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ namespace LumiumPortal.Web.Components.Pages.Certificates;
 public partial class Certificates : SecureComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    
+
     private List<CertificateDto> _certificates = [];
     private bool _isLoading = true;
 
@@ -27,49 +27,32 @@ public partial class Certificates : SecureComponentBase
         _isLoading = false;
     }
 
-    private async Task LoadCertificates()
-    {
-        _certificates = await Mediator.Send(new GetCertificatesQuery());
-    }
-    
-    private async Task OpenAddCertificateDialog()
-    {
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
+    private async Task LoadCertificates() => _certificates = await Mediator.Send(new GetCertificatesQuery());
 
-        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+    private async Task AddCertificate()
+    {
+        if (await DialogService.ShowAddCertificateDialog())
         {
             await LoadCertificates();
         }
     }
     
-    private async Task OpenDeleteDialog(CertificateDto certificate)
+    private async Task EditCertificate(CertificateDto certificate)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowEditCertificateDialog(certificate))
         {
-            await DeleteCertificate(certificate.Id);
+            await LoadCertificates();
         }
     }
-    
-    private async Task DeleteCertificate(Guid id)
+
+    private async Task DeleteCertificate(CertificateDto certificate)
     {
-        var result = await Mediator.Send(new DeleteCertificateCommand(id));
+        if (!await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
+        {
+            return;
+        }
+
+        var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
 
         if (result.IsSuccess)
         {
@@ -81,12 +64,4 @@ public partial class Certificates : SecureComponentBase
             Snackbar.Add(result.Message, Severity.Error);
         }
     }
-
-    private string GetRowStyle(CertificateDto cert, int index) => cert.Status switch
-    {
-        CertificateStatus.Expired => "background-color: var(--mud-palette-error-hover);",
-        CertificateStatus.AboutToExpire => "background-color: var(--mud-palette-warning-hover);",
-        CertificateStatus.ExpiringSoon => "background-color: var(--mud-palette-info-hover);",
-        _ => string.Empty
-    };
 }

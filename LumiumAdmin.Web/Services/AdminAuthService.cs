@@ -4,18 +4,23 @@ using Microsoft.JSInterop;
 
 namespace LumiumAdmin.Web.Services;
 
-public class AdminAuthService(HttpClient httpClient, IJSRuntime jsRuntime, AuthenticationStateProvider authStateProvider)
+public class AdminAuthService(
+    HttpClient httpClient,
+    IJSRuntime jsRuntime,
+    AuthenticationStateProvider authStateProvider)
 {
     public async Task<AdminLoginResponse?> LoginAsync(string email, string password)
     {
         try
         {
             var response = await httpClient.PostAsJsonAsync(
-                "/api/auth/admin/login", 
+                "/api/auth/admin/login",
                 new AdminLoginRequest(email, password));
 
             if (!response.IsSuccessStatusCode)
+            {
                 return null;
+            }
 
             return await response.Content.ReadFromJsonAsync<AdminLoginResponse>();
         }

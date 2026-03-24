@@ -1,37 +1,79 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Shared;
 
 public partial class ConfirmDialog : ComponentBase
 {
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = null!;
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter]
-    public string Title { get; set; } = "Potvrdite akciju";
+    [Parameter] public string Title { get; set; } = "Potvrdite akciju";
+    [Parameter] public string Message { get; set; } = "Da li ste sigurni da želite da nastavite?";
+    [Parameter] public string? WarningText { get; set; }
+    [Parameter] public string ConfirmText { get; set; } = "Potvrdi";
+    [Parameter] public string CancelText { get; set; } = "Otkaži";
+    [Parameter] public Color ConfirmColor { get; set; } = Color.Primary;
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public Color IconColor { get; set; } = Color.Default;
+    [Parameter] public string? RequireTextMatch { get; set; }
+    [Parameter] public string? MatchPlaceholder { get; set; }
 
-    [Parameter]
-    public string Message { get; set; } = "Da li ste sigurni da želite da nastavite?";
+    private string _confirmInput = string.Empty;
 
-    [Parameter]
-    public string? WarningText { get; set; }
+    private bool IsConfirmInputValid =>
+        string.IsNullOrEmpty(RequireTextMatch) ||
+        _confirmInput.Trim().Equals(RequireTextMatch, StringComparison.Ordinal);
 
-    [Parameter]
-    public string ConfirmText { get; set; } = "Potvrdi";
+    private bool IsConfirmEnabled =>
+        string.IsNullOrEmpty(RequireTextMatch) || IsConfirmInputValid;
 
-    [Parameter]
-    public string CancelText { get; set; } = "Otkaži";
+    private string GetValidationIcon()
+    {
+        if (string.IsNullOrEmpty(_confirmInput)) 
+            return Icons.Material.Outlined.Circle;
+        
+        return IsConfirmInputValid 
+            ? Icons.Material.Filled.CheckCircle 
+            : Icons.Material.Filled.Cancel;
+    }
 
-    [Parameter]
-    public Color ConfirmColor { get; set; } = Color.Primary;
+    private Color GetValidationColor()
+    {
+        if (string.IsNullOrEmpty(_confirmInput)) 
+            return Color.Default;
+        
+        return IsConfirmInputValid 
+            ? Color.Success 
+            : Color.Error;
+    }
 
-    [Parameter]
-    public string? Icon { get; set; }
+    private string GetConfirmButtonStyle()
+    {
+        if (!IsConfirmEnabled)
+            return "opacity: 0.5;";
 
-    [Parameter]
-    public Color IconColor { get; set; } = Color.Default;
+        if (ConfirmColor == Color.Error)
+            return "box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);";
 
-    private void Confirm() => MudDialog.Close(DialogResult.Ok(true));
+        return "";
+    }
+
+    private void Confirm()
+    {
+        if (IsConfirmEnabled)
+        {
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+    }
+
     private void Cancel() => MudDialog.Cancel();
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && IsConfirmEnabled)
+        {
+            Confirm();
+        }
+    }
 }

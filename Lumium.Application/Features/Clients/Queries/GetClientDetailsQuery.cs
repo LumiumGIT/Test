@@ -12,9 +12,8 @@ public record GetClientDetailsQuery(Guid ClientId) : IRequest<ClientDetailsDto?>
 public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<GetClientDetailsQuery, ClientDetailsDto?>
 {
-    public async Task<ClientDetailsDto?> Handle(GetClientDetailsQuery request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<ClientDetailsDto?> Handle(GetClientDetailsQuery request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             var client = await context.Clients
                 .Include(c => c.Certificates)
@@ -23,7 +22,9 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
                 .FirstOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
 
             if (client == null)
+            {
                 return null;
+            }
 
             var regulatoryBodies = await context.RegulatoryBodies
                 .ToDictionaryAsync(r => r.Id, r => r.Name, cancellationToken);
@@ -38,5 +39,4 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
 
             return clientDto;
         }, cancellationToken);
-    }
 }

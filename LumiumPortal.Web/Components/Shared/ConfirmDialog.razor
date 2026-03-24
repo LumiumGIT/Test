@@ -1,41 +1,103 @@
 <MudDialog>
     <DialogContent>
-        <MudStack Spacing="3">
-            @if (!string.IsNullOrEmpty(Icon))
-            {
-                <div style="text-align: center;">
-                    <MudIcon Icon="@Icon" 
-                             Color="@IconColor" 
-                             Size="Size.Large" 
-                             Style="font-size: 64px;" />
+        <MudStack Spacing="4">
+            <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+                @if (!string.IsNullOrEmpty(Icon))
+                {
+                    <MudAvatar Color="@IconColor" 
+                               Size="Size.Large" 
+                               Variant="Variant.Filled"
+                               Style="width: 48px; height: 48px;">
+                        <MudIcon Icon="@Icon" Size="Size.Medium"/>
+                    </MudAvatar>
+                }
+                <div>
+                    <MudText Typo="Typo.h6" Style="font-weight: 600; margin: 0;">
+                        @Title
+                    </MudText>
+                    @if (!string.IsNullOrEmpty(WarningText))
+                    {
+                        <MudText Typo="Typo.caption" Color="@IconColor" Style="font-weight: 500; margin-top: 2px;">
+                            @WarningText
+                        </MudText>
+                    }
                 </div>
-            }
-            
-            <MudText Typo="Typo.h6" Align="Align.Center">
-                @Title
-            </MudText>
-            
-            <MudText Typo="Typo.body1" Align="Align.Center">
-                @Message
-            </MudText>
-            
-            @if (!string.IsNullOrEmpty(WarningText))
+            </MudStack>
+
+            @* ✅ GLAVNI MESSAGE - naglašen *@
+            <MudPaper Elevation="0" 
+                      Class="pa-4" 
+                      Style="background-color: var(--mud-palette-background-grey); border-left: 4px solid var(--mud-palette-error); border-radius: 4px;">
+                <MudText Typo="Typo.body1" Style="font-size: 16px; font-weight: 500; line-height: 1.6;">
+                    @Message
+                </MudText>
+            </MudPaper>
+
+            @if (!string.IsNullOrEmpty(RequireTextMatch))
             {
-                <MudAlert Severity="Severity.Warning" Dense="true">
-                    @WarningText
-                </MudAlert>
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.body2" Style="font-weight: 500;">
+                        Da biste potvrdili ovu akciju, unesite: 
+                        <MudChip T="string"
+                                 Color="Color.Default" 
+                                 Size="Size.Small" 
+                                 Style="font-family: 'Courier New', monospace; font-weight: 700; margin-left: 8px;">
+                            @RequireTextMatch
+                        </MudChip>
+                    </MudText>
+                    
+                    <MudTextField @bind-Value="_confirmInput"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  AutoFocus="true"
+                                  OnKeyDown="@HandleKeyDown"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@GetValidationIcon()"
+                                  AdornmentColor="@GetValidationColor()"
+                                  Style="font-family: 'Courier New', monospace; font-size: 14px;"/>
+
+                    @* Validation feedback - samo ako je nešto upisano *@
+                    @if (!string.IsNullOrEmpty(_confirmInput) && !IsConfirmInputValid)
+                    {
+                        <MudAlert Severity="Severity.Error" 
+                                  Dense="true" 
+                                  NoIcon="false"
+                                  Class="pa-2">
+                            <MudText Typo="Typo.caption">
+                                Tekst se ne poklapa. Unesite tačno: <strong>@RequireTextMatch</strong>
+                            </MudText>
+                        </MudAlert>
+                    }
+                    else if (IsConfirmInputValid && !string.IsNullOrEmpty(_confirmInput))
+                    {
+                        <MudAlert Severity="Severity.Success" 
+                                  Dense="true" 
+                                  NoIcon="false"
+                                  Class="pa-2">
+                            <MudText Typo="Typo.caption" Style="font-weight: 500;">
+                                Potvrda uspešna
+                            </MudText>
+                        </MudAlert>
+                    }
+                </MudStack>
             }
         </MudStack>
     </DialogContent>
-    
+
     <DialogActions>
-        <MudButton OnClick="@Cancel" 
-                   Variant="Variant.Text">
+        <MudButton OnClick="@Cancel"
+                   Variant="Variant.Text"
+                   Size="Size.Medium"
+                   Style="text-transform: uppercase;">
             @CancelText
         </MudButton>
-        <MudButton OnClick="@Confirm" 
+        <MudButton OnClick="@Confirm"
                    Variant="Variant.Filled"
-                   Color="@ConfirmColor">
+                   Color="@ConfirmColor"
+                   Disabled="@(!IsConfirmEnabled)"
+                   Size="Size.Medium"
+                   StartIcon="@(ConfirmColor == Color.Error && IsConfirmEnabled ? Icons.Material.Filled.Warning : null)"
+                   Style="text-transform: uppercase;">
             @ConfirmText
         </MudButton>
     </DialogActions>

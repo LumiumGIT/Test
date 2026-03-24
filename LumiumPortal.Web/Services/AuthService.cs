@@ -12,7 +12,7 @@ public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime, Authentica
         PropertyNameCaseInsensitive = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-    
+
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
         var response = await httpClient.PostAsJsonAsync("/api/auth/login", request);
@@ -31,10 +31,8 @@ public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime, Authentica
         ((CustomAuthenticationStateProvider)authStateProvider).NotifyUserAuthentication(token);
     }
 
-    public async Task<string?> GetTokenAsync()
-    {
-        return await jsRuntime.InvokeAsync<string?>("localStorage.getItem", "jwt_token");
-    }
+    public async Task<string?> GetTokenAsync() =>
+        await jsRuntime.InvokeAsync<string?>("localStorage.getItem", "jwt_token");
 
     public async Task RemoveTokenAsync()
     {
@@ -48,7 +46,7 @@ public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime, Authentica
         {
             var company = new CompanyInfo(identifier, name);
             var json = JsonSerializer.Serialize(company, JsonOptions);
-            
+
             await jsRuntime.InvokeVoidAsync("localStorage.setItem", "last_company", json);
         }
         catch (Exception ex)

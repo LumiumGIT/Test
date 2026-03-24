@@ -9,9 +9,9 @@ public class UserConfiguration : TenantEntityConfiguration<User>
     public override void Configure(EntityTypeBuilder<User> builder)
     {
         base.Configure(builder);
-        
+
         builder.ToTable("users");
-        
+
         builder.Property(e => e.Email).HasColumnName("email");
         builder.Property(e => e.PasswordHash).HasColumnName("password_hash");
         builder.Property(e => e.FirstName).HasColumnName("first_name");

@@ -1,5 +1,5 @@
 @using Lumium.Application.Common.Extensions
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
@@ -10,7 +10,7 @@
                    Size="Size.Small"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
-                   OnClick="@OpenAddDocumentDialog">
+                   OnClick="@AddDocument">
             Dodaj dokument
         </MudButton>
     </MudStack>
@@ -30,6 +30,7 @@
                 <MudTh>Datum dodavanja</MudTh>
                 <MudTh>Opis</MudTh>
                 <MudTh>Otvori dokument</MudTh>
+                <MudTh>Izmeni</MudTh>
                 <MudTh>Obriši</MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -59,6 +60,12 @@
                                OnClick="@(() => OpenDocument(context.Url))">
                         Otvori
                     </MudButton>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(() => EditDocument(context))"/>
                 </MudTd>
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"

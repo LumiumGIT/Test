@@ -1,5 +1,5 @@
 @using Lumium.Application.Common.Extensions
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 
 <MudPaper Elevation="1" Class="pa-4">
     <MudStack Spacing="3">
@@ -12,37 +12,80 @@
 
         @if (StatusDistribution.Any())
         {
-            <MudStack Spacing="2">
+            <MudStack Spacing="0">
                 @foreach (var item in StatusDistribution)
                 {
-                    var status = item.Status;
                     var totalClients = StatusDistribution.Sum(d => d.Count);
-                    var percentage = totalClients > 0 ? (item.Count * 100.0 / totalClients) : 0;
+                    var percentage = totalClients > 0 ? item.Count * 100.0 / totalClients : 0;
+                    var isExpanded = _expandedStatus == item.Status;
 
-                    <MudStack Spacing="1">
-                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                <MudIcon Icon="@ClientHelpers.GetStatusIcon(status)"
-                                         Color="@ClientHelpers.GetStatusColor(status)"
-                                         Size="Size.Small"/>
-                                <MudText Typo="Typo.body2">@item.Status.GetDescription()</MudText>
-                            </MudStack>
-                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                <MudText Typo="Typo.body2" Color="Color.Default">
-                                    @percentage.ToString("F0")%
-                                </MudText>
-                                <MudChip T="string"
+                    @* STATUS ROW *@
+                    <MudPaper Elevation="0"
+                              Class="pa-3 status-row hover"
+                              Style=@($"cursor: pointer; transition: all 0.2s; border-left: 4px solid {GetColorHex(ClientHelpers.GetStatusColor(item.Status))}; border-bottom: 1px solid var(--mud-palette-divider);")
+                              @onclick="@(() => ToggleStatus(item.Status))">
+                        <MudGrid>
+                            <MudItem xs="1" Class="d-flex align-center">
+                                @if (item.SubStatuses.Any())
+                                {
+                                    <MudIcon
+                                        Icon="@(isExpanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                        Size="Size.Small"/>
+                                }
+                            </MudItem>
+                            <MudItem xs="6" Class="d-flex align-center">
+                                <MudIcon Icon="@ClientHelpers.GetStatusIcon(item.Status)"
+                                         Color="@ClientHelpers.GetStatusColor(item.Status)"
                                          Size="Size.Small"
-                                         Color="@ClientHelpers.GetStatusColor(status)">
+                                         Class="mr-2"/>
+                                <MudText Typo="Typo.body1">@item.Status.GetDescription()</MudText>
+                            </MudItem>
+                            <MudItem xs="3" Class="d-flex align-center justify-end">
+                                <MudText Typo="Typo.body2" Color="Color.Default">@percentage.ToString("F0")%</MudText>
+                            </MudItem>
+                            <MudItem xs="2" Class="d-flex align-center justify-end">
+                                <MudChip T="string" Size="Size.Small"
+                                         Color="@ClientHelpers.GetStatusColor(item.Status)">
                                     @item.Count
                                 </MudChip>
-                            </MudStack>
-                        </MudStack>
-                        <MudProgressLinear Color="@ClientHelpers.GetStatusColor(status)"
-                                           Value="@percentage"
-                                           Size="Size.Small"
-                                           Rounded="true"/>
-                    </MudStack>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+
+                    @* SUBSTATUSES *@
+                    @if (isExpanded && item.SubStatuses.Any())
+                    {
+                        <MudPaper Elevation="0" Class="ml-8 pa-2"
+                                  Style="background-color: var(--mud-palette-table-striped); border-bottom: 1px solid var(--mud-palette-divider);">
+                            @foreach (var subStatus in item.SubStatuses)
+                            {
+                                var subPercentage = item.Count > 0 ? subStatus.Count * 100.0 / item.Count : 0;
+
+                                <MudGrid Class="py-1">
+                                    <MudItem xs="1"></MudItem>
+                                    <MudItem xs="5" Class="d-flex align-center">
+                                        <MudIcon Icon="@Icons.Material.Filled.Circle"
+                                                 Color="@ClientHelpers.GetSubStatusColor(subStatus.SubStatus)"
+                                                 Size="Size.Small"
+                                                 Style="font-size: 8px;"
+                                                 Class="mr-2"/>
+                                        <MudText Typo="Typo.body2">@subStatus.SubStatus.GetDescription()</MudText>
+                                    </MudItem>
+                                    <MudItem xs="3" Class="d-flex align-center justify-end">
+                                        <MudText Typo="Typo.body2"
+                                                 Color="Color.Default">@subPercentage.ToString("F0")%
+                                        </MudText>
+                                    </MudItem>
+                                    <MudItem xs="2" Class="d-flex align-center justify-end">
+                                        <MudText Typo="Typo.body2"
+                                                 Color="@ClientHelpers.GetSubStatusColor(subStatus.SubStatus)">
+                                            @subStatus.Count
+                                        </MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            }
+                        </MudPaper>
+                    }
                 }
             </MudStack>
         }

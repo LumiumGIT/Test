@@ -11,7 +11,7 @@ public class Certificate : TenantEntity
     public DateTime ExpiryDate { get; set; }
     public int RegulatoryBodyId { get; set; }
     public string? Notes { get; set; }
-    
+
     // Navigation
     public Client Client { get; set; } = null!;
 }

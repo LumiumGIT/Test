@@ -13,14 +13,12 @@ public class GetRegulatoryBodiesQueryHandler(IApplicationDbContextFactory contex
 {
     public async Task<List<RegulatoryBodyDto>> Handle(
         GetRegulatoryBodiesQuery request,
-        CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+        CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             return await context.RegulatoryBodies
                 .OrderBy(r => r.Name)
                 .Select(r => new RegulatoryBodyDto { Id = r.Id, Name = r.Name })
                 .ToListAsync(cancellationToken);
         }, cancellationToken);
-    }
 }

@@ -11,24 +11,24 @@ public class Client : TenantEntity
     public string TaxNumber { get; set; } = string.Empty;
     public string TaxIdentificationNumber { get; set; } = string.Empty;
     public bool IsPdv { get; set; }
-    
+
     // Responsible Persons
     public string ResponsiblePerson { get; set; } = string.Empty;
     public string BackupPerson { get; set; } = string.Empty;
-    
+
     // Contact Info
     public string Address { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    
+
     // Status Management
     public ClientStatus Status { get; set; } = ClientStatus.Active;
     public ClientSubStatus SubStatus { get; set; } = ClientSubStatus.Standard;
-    
+
     // DEPRECATED - zadržaj za backward compatibility, ali koristi Status
     public bool IsActive { get; set; } = true;
-    
+
     // Flags/Checkboxes
     public bool EcoTax { get; set; }
     public bool BeneficialOwners { get; set; }
@@ -36,11 +36,11 @@ public class Client : TenantEntity
     public bool Pep { get; set; }
     public bool WingsTemplate { get; set; }
     public bool BusinessActivity { get; set; }
-    
+
     // Additional
     public string Country { get; set; } = string.Empty;
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
-    
+
     // Navigation
     public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     public ICollection<Contract> Contracts { get; set; } = new List<Contract>();

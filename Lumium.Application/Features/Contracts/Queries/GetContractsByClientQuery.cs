@@ -12,9 +12,9 @@ public record GetContractsByClientQuery(Guid ClientId) : IRequest<List<ContractD
 public class GetContractsByClientQueryHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<GetContractsByClientQuery, List<ContractDto>>
 {
-    public async Task<List<ContractDto>> Handle(GetContractsByClientQuery request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<List<ContractDto>>
+        Handle(GetContractsByClientQuery request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             var contracts = await context.Contracts
                 .Where(c => c.ClientId == request.ClientId)
@@ -23,5 +23,4 @@ public class GetContractsByClientQueryHandler(IApplicationDbContextFactory conte
 
             return mapper.Map<List<ContractDto>>(contracts);
         }, cancellationToken);
-    }
 }

@@ -9,7 +9,7 @@ public class SuperUserConfiguration : IEntityTypeConfiguration<SuperUser>
     public void Configure(EntityTypeBuilder<SuperUser> builder)
     {
         builder.ToTable("super_users");
-        
+
         builder.Property(su => su.Id).HasColumnName("id").IsRequired();
         builder.Property(su => su.Email).HasColumnName("email").HasMaxLength(255).IsRequired();
         builder.Property(su => su.PasswordHash).HasColumnName("password_hash").HasMaxLength(500).IsRequired();
@@ -19,7 +19,7 @@ public class SuperUserConfiguration : IEntityTypeConfiguration<SuperUser>
         builder.Property(su => su.LastLoginAt).HasColumnName("last_login_at");
         builder.Property(su => su.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(su => su.UpdatedAt).HasColumnName("updated_at");
-        
+
         builder.HasIndex(su => su.Email).IsUnique();
         builder.HasIndex(su => su.IsActive);
     }

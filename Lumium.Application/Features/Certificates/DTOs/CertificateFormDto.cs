@@ -1,6 +1,6 @@
 namespace Lumium.Application.Features.Certificates.DTOs;
 
-public class CreateCertificateDto
+public class CertificateFormDto
 {
     public (Guid Id, string Name) SelectedClient { get; set; }
     public string CertificateName { get; set; } = string.Empty;

@@ -1,3 +1,4 @@
+@page "/"
 @page "/dashboard"
 @inherits SecureComponentBase
 @using LumiumPortal.Web.Components.Shared
@@ -5,12 +6,12 @@
 
 @if (_isLoading)
 {
-    <LoadingIndicator Text="Učitavam dashboard..." />
+    <LoadingIndicator Text="Učitavam dashboard..."/>
 }
 else
 {
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-3">
-        
+
         @* Header *@
         <MudText Typo="Typo.h3" GutterBottom="true">Dashboard</MudText>
         <MudText Class="mb-4" Color="Color.Default">
@@ -18,52 +19,46 @@ else
         </MudText>
 
         @* Stats Cards *@
-        <DashboardStats Stats="_data.Stats" />
-        
-        @* Upcoming Deadlines *@
-        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines" />
+        <DashboardStats Stats="_data.Stats"/>
 
-        @* Alerts + Recent Clients Grid *@
-        @if (HasAlerts || HasRecentClients)
+        @* Upcoming Deadlines *@
+        <UpcomingDeadlines Deadlines="_data.UpcomingDeadlines"/>
+
+        @* Alerts + statusi Grid *@
+        @if (HasAlerts || HasStatusDistribution)
         {
             <MudGrid Class="mb-4">
                 @if (HasAlerts)
                 {
                     <MudItem xs="12" md="6">
-                        <DashboardAlerts Alerts="_data.Alerts" />
+                        <DashboardAlerts Alerts="_data.Alerts"/>
                     </MudItem>
                 }
 
-                @if (HasRecentClients)
+                @if (HasStatusDistribution)
                 {
-                    <MudItem xs="12" md="@(HasAlerts ? 6 : 12)">
-                        <RecentClients Clients="_data.RecentClients" />
+                    <MudItem xs="12" md="6">
+                        <ClientStatusDistribution StatusDistribution="_data.ClientsByStatus"/>
                     </MudItem>
                 }
             </MudGrid>
         }
 
-        @* Akvizicije u godini *@
-        @if (HasAcquisitions)
-        {
-            <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear" />
-        }
-
-        @* Status & SubStatus Distribution Grid *@
-        @if (HasStatusDistribution || HasSubStatusDistribution)
+        @* Novi klijenti i Akvizicije u godini *@
+        @if (HasRecentClients || HasAcquisitions)
         {
             <MudGrid Class="mb-4">
-                @if (HasStatusDistribution)
+                @if (HasRecentClients)
                 {
                     <MudItem xs="12" md="6">
-                        <ClientStatusDistribution StatusDistribution="_data.ClientsByStatus" />
+                        <RecentClients Clients="_data.RecentClients"/>
                     </MudItem>
                 }
 
-                @if (HasSubStatusDistribution)
+                @if (HasAcquisitions)
                 {
                     <MudItem xs="12" md="6">
-                        <ClientSubStatusDistribution SubStatusDistribution="_data.ClientsBySubStatus" />
+                        <ClientAcquisitions Acquisitions="_data.AcquisitionsThisYear"/>
                     </MudItem>
                 }
             </MudGrid>

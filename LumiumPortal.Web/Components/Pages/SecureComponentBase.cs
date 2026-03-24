@@ -9,7 +9,7 @@ public abstract class SecureComponentBase : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
 
     private bool IsAuthenticated { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
@@ -17,15 +17,12 @@ public abstract class SecureComponentBase : ComponentBase
 
         if (!IsAuthenticated)
         {
-            Navigation.NavigateTo("/login", forceLoad: false);
+            Navigation.NavigateTo("/login", false);
             return;
         }
 
         await OnSecureInitializedAsync();
     }
 
-    protected virtual Task OnSecureInitializedAsync()
-    {
-        return Task.CompletedTask;
-    }
+    protected virtual Task OnSecureInitializedAsync() => Task.CompletedTask;
 }

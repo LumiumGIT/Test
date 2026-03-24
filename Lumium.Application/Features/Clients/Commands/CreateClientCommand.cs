@@ -8,19 +8,17 @@ using MediatR;
 
 namespace Lumium.Application.Features.Clients.Commands;
 
-public record CreateClientCommand(ClientDto ClientDto) : IRequest<Result>;
+public record CreateClientCommand(ClientFormDto ClientFormDto) : IRequest<Result>;
 
 public class CreateClientCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateClientCommand, Result>
 {
-    public async Task<Result> Handle(CreateClientCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateClientCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
-                var newClient = mapper.Map<Client>(request.ClientDto);
-                newClient.Id = Guid.NewGuid();
+                var newClient = mapper.Map<Client>(request.ClientFormDto);
 
                 context.Clients.Add(newClient);
                 var savedCount = await context.SaveChangesAsync(cancellationToken);
@@ -34,5 +32,4 @@ public class CreateClientCommandHandler(IApplicationDbContextFactory contextFact
                 return Result.Failure($"Greška pri kreiranju klijenta: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

@@ -13,9 +13,8 @@ public class DeleteCertificateCommandHandler(IApplicationDbContextFactory contex
 {
     public async Task<Result> Handle(
         DeleteCertificateCommand request,
-        CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+        CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
@@ -39,5 +38,4 @@ public class DeleteCertificateCommandHandler(IApplicationDbContextFactory contex
                 return Result.Failure($"Greška pri brisanju sertifikata: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

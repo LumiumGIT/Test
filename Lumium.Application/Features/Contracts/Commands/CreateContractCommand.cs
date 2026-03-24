@@ -8,19 +8,17 @@ using MediatR;
 
 namespace Lumium.Application.Features.Contracts.Commands;
 
-public record CreateContractCommand(CreateContractDto ContractDto) : IRequest<Result>;
+public record CreateContractCommand(ContractFormDto ContractFormDto) : IRequest<Result>;
 
 public class CreateContractCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateContractCommand, Result>
 {
-    public async Task<Result> Handle(CreateContractCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateContractCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
-                var newContract = mapper.Map<Contract>(request.ContractDto);
-                newContract.Id = Guid.NewGuid();
+                var newContract = mapper.Map<Contract>(request.ContractFormDto);
 
                 context.Contracts.Add(newContract);
                 var savedCount = await context.SaveChangesAsync(cancellationToken);
@@ -34,5 +32,4 @@ public class CreateContractCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure($"Greška pri kreiranju ugovora: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

@@ -13,9 +13,8 @@ public class GetCertificatesByClientQueryHandler(IApplicationDbContextFactory co
     : IRequestHandler<GetCertificatesByClientQuery, List<CertificateDto>>
 {
     public async Task<List<CertificateDto>> Handle(GetCertificatesByClientQuery request,
-        CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+        CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             var certificates = await context.Certificates
                 .Where(c => c.ClientId == request.ClientId)
@@ -34,5 +33,4 @@ public class GetCertificatesByClientQueryHandler(IApplicationDbContextFactory co
 
             return certificateDtos;
         }, cancellationToken);
-    }
 }

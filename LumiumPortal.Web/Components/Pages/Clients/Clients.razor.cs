@@ -1,19 +1,18 @@
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
-using LumiumPortal.Web.Extensions;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace LumiumPortal.Web.Components.Pages.Clients;
 
-public partial class Clients : SecureComponentBase 
+public partial class Clients : SecureComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    
+
     private MudDataGrid<ClientDto>? _dataGrid;
     private List<ClientDto> _clients = [];
-    private readonly HashSet<Guid> _selectedClients = [];
     private bool _isLoading = true;
 
     protected override async Task OnSecureInitializedAsync()
@@ -23,107 +22,41 @@ public partial class Clients : SecureComponentBase
         _isLoading = false;
     }
 
-    private async Task LoadClients()
-    {
-        _clients = await Mediator.Send(new GetClientsQuery());
-    }
-    
-    private async Task OpenAddClientDialog()
-    {
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
+    private async Task LoadClients() => _clients = await Mediator.Send(new GetClientsQuery());
 
-        var dialog = await DialogService.ShowAsync<AddClientDialog>("Dodaj klijenta", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+    private async Task AddClient()
+    {
+        if (await DialogService.ShowAddClientDialog())
         {
             await LoadClients();
         }
     }
     
-    private async Task DeleteSelectedClients()
+    private async Task EditClient(ClientDto client)
     {
-        if (_selectedClients.Count == 0)
+        if (await DialogService.ShowEditClientDialog(client))
         {
-            Snackbar.Add("Nema selektovanih klijenata", Severity.Warning);
-            return;
-        }
-
-        var confirmed = await DialogService.ShowDeleteConfirmAsync("klijenta", _selectedClients.Count);
-
-        if (!confirmed) return;
-
-        try
-        {
-            var command = new DeleteClientsCommand(_selectedClients);
-            var result = await Mediator.Send(command);
-
-            if (result.IsSuccess)
-            {
-                Snackbar.Add(result.Message, Severity.Success);
-            
-                _selectedClients.Clear();
-                await LoadClients();
-            }
-            else
-            {
-                Snackbar.Add(result.Message, Severity.Error);
-            }
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
+            await LoadClients();
         }
     }
 
-    private bool IsAllSelected()
+    private async Task DeleteClient(ClientDto client)
     {
-        if (_dataGrid?.FilteredItems == null)
-        {
-            return false;
-        }
-    
-        var filteredClients = _dataGrid.FilteredItems.ToList();
-        
-        return filteredClients.Count != 0 && filteredClients.All(c => _selectedClients.Contains(c.Id));
-    }
-
-    private void ToggleSelectAll()
-    {
-        if (_dataGrid?.FilteredItems == null)
+        if (!await DialogService.ShowDeleteClientConfirmation(client.Name))
         {
             return;
         }
 
-        var filteredClients = _dataGrid.FilteredItems.ToList();
-    
-        if (IsAllSelected())
+        var result = await Mediator.Send(new DeleteClientCommand(client.Id));
+
+        if (result.IsSuccess)
         {
-            foreach (var client in filteredClients)
-            {
-                _selectedClients.Remove(client.Id);
-            }
+            Snackbar.Add(result.Message, Severity.Success);
+            await LoadClients();
         }
         else
         {
-            foreach (var client in filteredClients)
-            {
-                _selectedClients.Add(client.Id);
-            }
-        }
-    }
-
-    private void ToggleSelectClient(Guid id)
-    {
-        if (!_selectedClients.Add(id))
-        {
-            _selectedClients.Remove(id);
+            Snackbar.Add(result.Message, Severity.Error);
         }
     }
 }

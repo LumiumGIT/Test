@@ -8,13 +8,11 @@ namespace LumiumPortal.API.Controllers;
 public class TestController(ITenantContext tenantContext) : ControllerBase
 {
     [HttpGet("tenant-info")]
-    public IActionResult GetTenantInfo()
-    {
-        return Ok(new
+    public IActionResult GetTenantInfo() =>
+        Ok(new
         {
             IsResolved = tenantContext.IsResolved,
             TenantId = tenantContext.TenantId,
             SchemaName = tenantContext.SchemaName
         });
-    }
 }

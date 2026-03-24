@@ -10,11 +10,12 @@ public abstract class TenantEntityConfiguration<T> : IEntityTypeConfiguration<T>
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {
         builder.HasKey(e => e.Id);
-        
+
         builder.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever();
 
         builder.Property(e => e.TenantId).HasColumnName("tenant_id");
-        builder.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
         builder.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp");
     }
 }

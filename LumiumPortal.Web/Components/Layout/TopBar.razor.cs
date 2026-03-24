@@ -7,12 +7,13 @@ public partial class TopBar : ComponentBase
 {
     [Inject] private CustomAuthenticationStateProvider AuthStateProvider { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-    
+
     [Parameter] public EventCallback OnDrawerToggle { get; set; }
     [Parameter] public EventCallback OnThemeToggle { get; set; }
-    [Parameter] public bool IsDarkMode { get; set; } 
+    [Parameter] public bool IsDarkMode { get; set; }
 
     private async Task ToggleDrawer() => await OnDrawerToggle.InvokeAsync();
+
     private async Task ToggleTheme() => await OnThemeToggle.InvokeAsync();
 
     private string GetUserFullName(System.Security.Claims.ClaimsPrincipal user)
@@ -31,11 +32,8 @@ public partial class TopBar : ComponentBase
     private async Task HandleLogout()
     {
         await AuthStateProvider.Logout();
-        Navigation.NavigateTo("/login", forceLoad: true);
+        Navigation.NavigateTo("/login", true);
     }
-    
-    private void HandleLogin()
-    {
-        Navigation.NavigateTo("/login");
-    }
+
+    private void HandleLogin() => Navigation.NavigateTo("/login");
 }

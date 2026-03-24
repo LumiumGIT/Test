@@ -9,9 +9,9 @@ public class RegulatoryBodyConfiguration : IEntityTypeConfiguration<RegulatoryBo
     public void Configure(EntityTypeBuilder<RegulatoryBody> builder)
     {
         builder.ToTable("regulatory_bodies", "public");
-        
+
         builder.HasKey(e => e.Id);
-        
+
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.Name).HasColumnName("name");
     }

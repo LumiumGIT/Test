@@ -1,0 +1,123 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Style="font-weight: 600;">
+            @(IsEditMode ? "Izmeni sertifikat" : "Dodaj novi sertifikat")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" Model="@_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+            <MudStack Spacing="3">
+                
+                @* ✅ Klijent selection - sa background *@
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-table-striped); border-radius: 8px;">
+                    <MudAutocomplete T="(Guid Id, string Name)"
+                                     @bind-Value="_model.SelectedClient"
+                                     Label="Klijent"
+                                     SearchFunc="@SearchClients"
+                                     ToStringFunc="@(c => c.Name)"
+                                     For="@(() => _model.SelectedClient)"
+                                     Variant="Variant.Outlined"
+                                     Clearable="true"
+                                     Placeholder="Izaberite klijenta..."
+                                     ResetValueOnEmptyText="true"
+                                     CoerceText="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search"
+                                     AdornmentColor="Color.Primary"
+                                     DebounceInterval="300"
+                                     Immediate="true"
+                                     Required="true"
+                                     Disabled="@DisableClientSelection">
+                    </MudAutocomplete>
+                </MudPaper>
+
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@_model.CertificateName"
+                                          Label="Naziv sertifikata"
+                                          For="@(() => _model.CertificateName)"
+                                          Variant="Variant.Outlined"
+                                          Immediate="true"/>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudTextField @bind-Value="@_model.CertificateNumber"
+                                          Label="Broj sertifikata"
+                                          For="@(() => _model.CertificateNumber)"
+                                          Variant="Variant.Outlined"
+                                          Immediate="true"/>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-table-striped); border-radius: 8px;">
+                    <MudGrid Spacing="2">
+                        <MudItem xs="12" md="6">
+                            <MudDatePicker @bind-Date="@_issueDate"
+                                           Label="Datum izdavanja"
+                                           DateFormat="dd.MM.yyyy"
+                                           Variant="Variant.Outlined"
+                                           MaxDate="DateTime.Today"/>
+                        </MudItem>
+
+                        <MudItem xs="12" md="6">
+                            <MudDatePicker @bind-Date="@_expiryDate"
+                                           Label="Datum isteka"
+                                           DateFormat="dd.MM.yyyy"
+                                           Variant="Variant.Outlined"
+                                           MinDate="_issueDate"/>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">
+                    <MudStack Spacing="2">
+                        <MudSelect @bind-Value="@_model.RegulatoryBodyId"
+                                   Label="Regulatorno telo"
+                                   T="int?"
+                                   For="@(() => _model.RegulatoryBodyId)"
+                                   Variant="Variant.Outlined"
+                                   Immediate="true"
+                                   Clearable="true"
+                                   Placeholder="Izaberite regulatorno telo">
+                            @foreach (var body in _regulatoryBodies)
+                            {
+                                <MudSelectItem T="int?" Value="@((int?)body.Id)">@body.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudTextField @bind-Value="_model.Notes"
+                                      Label="Napomene"
+                                      For="@(() => _model.Notes)"
+                                      Variant="Variant.Outlined"
+                                      Lines="3"
+                                      Immediate="true"/>
+                    </MudStack>
+                </MudPaper>
+
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@Cancel" 
+                   Variant="Variant.Text"
+                   Style="text-transform: uppercase;">
+            Otkaži
+        </MudButton>
+        <MudButton OnClick="@HandleSubmit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="_isSubmitting"
+                   Style="text-transform: uppercase;">
+            @if (_isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2"/>
+                <span>Čuvanje...</span>
+            }
+            else
+            {
+                <span>@(IsEditMode ? "Sačuvaj" : "Dodaj")</span>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

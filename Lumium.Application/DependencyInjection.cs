@@ -6,19 +6,14 @@ namespace Lumium.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static void AddApplication(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(assembly);
-        });
+
+        services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(assembly); });
 
         services.AddValidatorsFromAssembly(assembly);
-        
-        services.AddAutoMapper(_ => { }, assembly);
 
-        return services;
+        services.AddAutoMapper(_ => { }, assembly);
     }
 }

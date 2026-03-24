@@ -10,21 +10,26 @@
         @* ISTEKLI UGOVORI *@
         @if (Alerts.ExpiredContracts.Any())
         {
-            <MudStack Spacing="1">
-                <MudStack Row="true"
-                          AlignItems="AlignItems.Center"
-                          Spacing="2"
-                          Class="alert-header pa-1"
+            <MudStack>
+                <MudPaper Class="hover pa-3"
                           Style="cursor: pointer; transition: background-color 0.2s;"
                           @onclick="@(() => _showExpiredContracts = !_showExpiredContracts)">
-                    <MudIcon
-                        Icon="@(_showExpiredContracts ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                        Size="Size.Small"/>
-                    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
-                    <MudText Typo="Typo.body1">
-                        <strong>@Alerts.ExpiredContracts.Count</strong> isteklih ugovora
-                    </MudText>
-                </MudStack>
+                    <MudGrid>
+                        <MudItem>
+                            <MudIcon
+                                Icon="@(_showExpiredContracts ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                Size="Size.Small"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudText Typo="Typo.body1">
+                                <strong>@Alerts.ExpiredContracts.Count</strong> isteklih ugovora
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
 
                 @if (_showExpiredContracts)
                 {
@@ -63,21 +68,26 @@
         @* ISTEKLI SERTIFIKATI *@
         @if (Alerts.ExpiredCertificates.Any())
         {
-            <MudStack Spacing="1">
-                <MudStack Row="true"
-                          AlignItems="AlignItems.Center"
-                          Spacing="2"
-                          Class="alert-header pa-1"
+            <MudStack>
+                <MudPaper Class="hover pa-3"
                           Style="cursor: pointer; transition: background-color 0.2s;"
                           @onclick="@(() => _showExpiredCertificates = !_showExpiredCertificates)">
-                    <MudIcon
-                        Icon="@(_showExpiredCertificates ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                        Size="Size.Small"/>
-                    <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
-                    <MudText Typo="Typo.body1">
-                        <strong>@Alerts.ExpiredCertificates.Count</strong> isteklih sertifikata
-                    </MudText>
-                </MudStack>
+                    <MudGrid>
+                        <MudItem>
+                            <MudIcon
+                                Icon="@(_showExpiredCertificates ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                Size="Size.Small"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudText Typo="Typo.body1">
+                                <strong>@Alerts.ExpiredCertificates.Count</strong> isteklih sertifikata
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
 
                 @if (_showExpiredCertificates)
                 {
@@ -116,21 +126,26 @@
         @* KLIJENTI BEZ DOKUMENATA *@
         @if (Alerts.ClientsWithoutDocuments.Any())
         {
-            <MudStack Spacing="1">
-                <MudStack Row="true"
-                          AlignItems="AlignItems.Center"
-                          Spacing="2"
-                          Class="alert-header pa-1"
+            <MudStack>
+                <MudPaper Class="hover pa-3"
                           Style="cursor: pointer; transition: background-color 0.2s;"
                           @onclick="@(() => _showClientsWithoutDocs = !_showClientsWithoutDocs)">
-                    <MudIcon
-                        Icon="@(_showClientsWithoutDocs ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
-                        Size="Size.Small"/>
-                    <MudIcon Icon="@Icons.Material.Filled.FolderOff" Color="Color.Default" Size="Size.Small"/>
-                    <MudText Typo="Typo.body1">
-                        <strong>@Alerts.ClientsWithoutDocuments.Count</strong> klijenata bez dokumenata
-                    </MudText>
-                </MudStack>
+                    <MudGrid>
+                        <MudItem>
+                            <MudIcon
+                                Icon="@(_showClientsWithoutDocs ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                Size="Size.Small"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Small"/>
+                        </MudItem>
+                        <MudItem>
+                            <MudText Typo="Typo.body1">
+                                <strong>@Alerts.ClientsWithoutDocuments.Count</strong> klijenata bez dokumenata
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
 
                 @if (_showClientsWithoutDocs)
                 {

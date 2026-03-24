@@ -1,5 +1,5 @@
 using Lumium.Application;
-using Lumium.Infrastructure;   
+using Lumium.Infrastructure;
 using LumiumPortal.Web.Components;
 using LumiumPortal.Web.Localization;
 using LumiumPortal.Web.Services;
@@ -32,7 +32,8 @@ builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthenticationStateProvider>());
+builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+    sp.GetRequiredService<CustomAuthenticationStateProvider>());
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? "http://localhost:5207/";
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });

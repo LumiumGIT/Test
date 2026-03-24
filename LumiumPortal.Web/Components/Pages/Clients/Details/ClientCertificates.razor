@@ -1,20 +1,20 @@
 @using Lumium.Application.Common.Extensions
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.body2" Color="Color.Default">
             Ukupno @_certificates.Count sertifikata
         </MudText>
-        <MudButton StartIcon="@Icons.Material.Filled.Add" 
-                   Size="Size.Small" 
-                   Variant="Variant.Filled" 
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Size="Size.Small"
+                   Variant="Variant.Filled"
                    Color="Color.Primary"
                    OnClick="@OpenAddCertificateDialog">
             Dodaj sertifikat
         </MudButton>
     </MudStack>
-@if (_certificates.Any())
+    @if (_certificates.Any())
     {
         <MudTable Items="@_certificates"
                   Class="center-table"
@@ -32,6 +32,7 @@
                 <MudTh>Datum isteka</MudTh>
                 <MudTh>Preostalo</MudTh>
                 <MudTh>Status</MudTh>
+                <MudTh>Izmeni</MudTh>
                 <MudTh>Obriši</MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -65,6 +66,12 @@
                     </MudChip>
                 </MudTd>
                 <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(() => OpenEditCertificateDialog(context))"/>
+                </MudTd>
+                <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                    Color="Color.Error"
                                    Size="Size.Small"
@@ -73,21 +80,21 @@
             </RowTemplate>
         </MudTable>
     }
-else
-{
-    <MudPaper Elevation="0" Class="pa-8">
-        <MudStack AlignItems="AlignItems.Center" Spacing="2">
-            <MudIcon Icon="@Icons.Material.Filled.Description"
-                     Size="Size.Large"
-                     Color="Color.Default"
-                     Style="font-size: 36px; opacity: 0.3;"/>
-            <MudText Typo="Typo.h6" Color="Color.Default">
-                Nema sertifikata
-            </MudText>
-            <MudText Typo="Typo.body2" Color="Color.Default">
-                Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
-            </MudText>
-        </MudStack>
-    </MudPaper>
-}
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema sertifikata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj sertifikat" da dodate prvi sertifikat
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 </MudStack>

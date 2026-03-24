@@ -1,9 +1,7 @@
-using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Certificates.Commands;
 using Lumium.Application.Features.Certificates.DTOs;
 using Lumium.Application.Features.Certificates.Queries;
-using LumiumPortal.Web.Components.Pages.Certificates;
-using LumiumPortal.Web.Helpers;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,18 +10,18 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 public partial class ClientCertificates : ComponentBase
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    
+
     [Parameter] public Guid ClientId { get; set; }
-    
+
     private List<CertificateDto> _certificates = [];
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCertificates();
-        
+
         await base.OnInitializedAsync();
     }
-    
+
     private async Task LoadCertificates()
     {
         try
@@ -36,26 +34,18 @@ public partial class ClientCertificates : ComponentBase
             Console.WriteLine($"[ERROR] Load contracts failed: {ex}");
         }
     }
-    
+
     private async Task OpenAddCertificateDialog()
     {
-        var parameters = new DialogParameters
+        if (await DialogService.ShowAddCertificateDialog(ClientId))
         {
-            { nameof(AddCertificateDialog.ClientId), ClientId}
-        };
-        
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
+            await LoadCertificates();
+        }
+    }
 
-        var dialog = await DialogService.ShowAsync<AddCertificateDialog>("Dodaj sertifikat", parameters, options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+    private async Task OpenEditCertificateDialog(CertificateDto certificate)
+    {
+        if (await DialogService.ShowEditCertificateDialog(certificate))
         {
             await LoadCertificates();
         }
@@ -63,28 +53,17 @@ public partial class ClientCertificates : ComponentBase
     
     private async Task DeleteCertificate(CertificateDto certificate)
     {
-        var confirmed = await DialogHelpers.ShowConfirmDialog(
-            DialogService,
-            message: $"Da li ste sigurni da želite da obrišete sertifikat '{certificate.CertificateName}'?",
-            title: "Potvrda brisanja",
-            confirmText: "Obriši",
-            confirmColor: Color.Error
-        );
-
-        if (confirmed)
+        if (await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
         {
-            var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
-            
-            await HandleResult(result);
+            return;
         }
-    }
-    
-    private async Task HandleResult(Result result)
-    {
+
+        var result = await Mediator.Send(new DeleteCertificateCommand(certificate.Id));
+
         if (result.IsSuccess)
         {
-            await LoadCertificates();
             Snackbar.Add(result.Message, Severity.Success);
+            await LoadCertificates();
         }
         else
         {

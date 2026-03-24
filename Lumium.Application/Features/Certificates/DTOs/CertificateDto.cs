@@ -12,8 +12,9 @@ public class CertificateDto
     public DateTime IssueDate { get; set; }
     public DateTime ExpiryDate { get; set; }
     public int RegulatoryBodyId { get; set; }
-    public string RegulatoryBodyName { get; set; } = string.Empty; 
+    public string RegulatoryBodyName { get; set; } = string.Empty;
     public string? Notes { get; set; }
+
     public CertificateStatus Status => DaysUntilExpiry < 0
         ? CertificateStatus.Expired
         : DaysUntilExpiry <= 30
@@ -21,5 +22,6 @@ public class CertificateDto
             : DaysUntilExpiry <= 45
                 ? CertificateStatus.ExpiringSoon
                 : CertificateStatus.Valid;
+
     public int DaysUntilExpiry => (ExpiryDate - DateTime.Today).Days;
 }

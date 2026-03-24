@@ -12,18 +12,17 @@ public record GetCertificatesQuery : IRequest<List<CertificateDto>>;
 public class GetCertificatesQueryHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<GetCertificatesQuery, List<CertificateDto>>
 {
-    public async Task<List<CertificateDto>> Handle(GetCertificatesQuery request, CancellationToken cancellationToken)
-    {
-         return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<List<CertificateDto>> Handle(GetCertificatesQuery request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             var certificates = await context.Certificates
                 .Include(c => c.Client)
                 .OrderBy(c => c.Client.Name)
                 .ToListAsync(cancellationToken);
-            
+
             var regulatoryBodies = await context.RegulatoryBodies
                 .ToDictionaryAsync(r => r.Id, r => r.Name, cancellationToken);
-            
+
             var certificateDtOs = mapper.Map<List<CertificateDto>>(certificates);
 
             foreach (var certificate in certificateDtOs.Where(certificate =>
@@ -34,5 +33,4 @@ public class GetCertificatesQueryHandler(IApplicationDbContextFactory contextFac
 
             return certificateDtOs;
         }, cancellationToken);
-    }
 }

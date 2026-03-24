@@ -8,19 +8,19 @@ using MediatR;
 
 namespace Lumium.Application.Features.Certificates.Commands;
 
-public record CreateCertificateCommand(CreateCertificateDto CertificateDto) : IRequest<Result>;
+public record CreateCertificateCommand(CertificateFormDto CertificateFormDto) : IRequest<Result>;
+
 public class CreateCertificateCommandHandler(
-    IApplicationDbContextFactory contextFactory, IMapper mapper)
+    IApplicationDbContextFactory contextFactory,
+    IMapper mapper)
     : IRequestHandler<CreateCertificateCommand, Result>
 {
-    public async Task<Result> Handle(CreateCertificateCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateCertificateCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
-                var newCertificate = mapper.Map<Certificate>(request.CertificateDto);
-                newCertificate.Id = Guid.NewGuid();
+                var newCertificate = mapper.Map<Certificate>(request.CertificateFormDto);
 
                 context.Certificates.Add(newCertificate);
                 var savedCount = await context.SaveChangesAsync(cancellationToken);
@@ -34,5 +34,4 @@ public class CreateCertificateCommandHandler(
                 return Result.Failure($"Greška pri kreiranju sertifikata: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

@@ -2,26 +2,26 @@
 
 @if (_isInitialized)
 {
-    <MudIconButton OnClick="@OpenFilter" Icon="@_currentIcon" Size="@Size.Small" />
-    <MudOverlay Visible="@_isOpen" OnClick="@CloseFilter" />
-    <MudPopover Open="@_isOpen" 
-                AnchorOrigin="Origin.BottomCenter" 
+    <MudIconButton OnClick="@OpenFilter" Icon="@_currentIcon" Size="@Size.Small"/>
+    <MudOverlay Visible="@_isOpen" OnClick="@CloseFilter"/>
+    <MudPopover Open="@_isOpen"
+                AnchorOrigin="Origin.BottomCenter"
                 TransformOrigin="Origin.TopCenter"
                 Style="@($"width:{PopoverWidth}px")">
         <MudStack Spacing="0">
-            <MudCheckBox T="bool" 
-                         Label="Select All" 
-                         Size="@Size.Small" 
-                         Value="@_selectAll" 
-                         ValueChanged="@HandleSelectAll" />
+            <MudCheckBox T="bool"
+                         Label="Select All"
+                         Size="@Size.Small"
+                         Value="@_selectAll"
+                         ValueChanged="@HandleSelectAll"/>
             <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
                 @foreach (var value in _availableValues.OrderBy(x => x))
                 {
-                    <MudCheckBox T="bool" 
-                                 Label="@value" 
-                                 Size="@Size.Small" 
+                    <MudCheckBox T="bool"
+                                 Label="@value"
+                                 Size="@Size.Small"
                                  Value="@(_selectedValues.Contains(value))"
-                                 ValueChanged="@((isChecked) => HandleValueChanged(isChecked, value))" />
+                                 ValueChanged="@((isChecked) => HandleValueChanged(isChecked, value))"/>
                 }
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="px-2 py-2">
@@ -33,5 +33,5 @@
 }
 else
 {
-    <MudIconButton Icon="@Icons.Material.Outlined.FilterAlt" Size="@Size.Small" Disabled="true" />
+    <MudIconButton Icon="@Icons.Material.Outlined.FilterAlt" Size="@Size.Small" Disabled="true"/>
 }

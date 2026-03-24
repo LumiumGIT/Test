@@ -17,7 +17,7 @@
                 @foreach (var acquisition in Acquisitions)
                 {
                     var maxCount = Acquisitions.Max(a => a.Count);
-                    var heightPercentage = maxCount > 0 ? (acquisition.Count * 100.0 / maxCount) : 0;
+                    var heightPercentage = maxCount > 0 ? acquisition.Count * 100.0 / maxCount : 0;
                     var minHeight = 20; // Minimum visina za vizuelni efekat
                     var barHeight = Math.Max(minHeight, heightPercentage);
 

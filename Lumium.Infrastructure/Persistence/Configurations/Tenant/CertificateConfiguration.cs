@@ -9,7 +9,7 @@ public class CertificateConfiguration : TenantEntityConfiguration<Certificate>
     public override void Configure(EntityTypeBuilder<Certificate> builder)
     {
         base.Configure(builder);
-        
+
         builder.ToTable("certificates");
 
         builder.Property(c => c.ClientId).HasColumnName("client_id");

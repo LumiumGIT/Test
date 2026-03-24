@@ -8,19 +8,17 @@ using MediatR;
 
 namespace Lumium.Application.Features.Documents.Commands;
 
-public record CreateDocumentCommand(CreateDocumentDto DocumentDto) : IRequest<Result>;
+public record CreateDocumentCommand(DocumentFormDto DocumentFormDto) : IRequest<Result>;
 
 public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateDocumentCommand, Result>
 {
-    public async Task<Result> Handle(CreateDocumentCommand request, CancellationToken cancellationToken)
-    {
-        return await contextFactory.ExecuteInContextAsync(async context =>
+    public async Task<Result> Handle(CreateDocumentCommand request, CancellationToken cancellationToken) =>
+        await contextFactory.ExecuteInContextAsync(async context =>
         {
             try
             {
-                var newDocument = mapper.Map<Document>(request.DocumentDto);
-                newDocument.Id = Guid.NewGuid();
+                var newDocument = mapper.Map<Document>(request.DocumentFormDto);
                 newDocument.UploadedAt = DateTime.UtcNow;
 
                 context.Documents.Add(newDocument);
@@ -35,5 +33,4 @@ public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFa
                 return Result.Failure($"Greška pri dodavanju dokumenta: {ex.Message}");
             }
         }, cancellationToken);
-    }
 }

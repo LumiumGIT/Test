@@ -2,7 +2,7 @@
 @using Domain.Enums.Contracts
 @using Lumium.Application.Features.Contracts.DTOs
 @using LumiumPortal.Web.Components.Shared
-@using LumiumPortal.Web.Helpers
+@using LumiumPortal.Web.Helpers.UI
 @inherits SecureComponentBase
 
 @if (_isLoading)
@@ -12,7 +12,6 @@
 else
 {
     <MudText Typo="Typo.h3" GutterBottom="true">Ugovori</MudText>
-    <MudText Class="mb-4" Color="Color.Default">Upravljajte ugovorima sa klijentima i pratite mesečne obaveze</MudText>
 
     @* Stats Cards *@
     <MudGrid Class="mb-4">
@@ -32,7 +31,7 @@ else
                 </MudStack>
             </MudPaper>
         </MudItem>
-        
+
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="1" Class="pa-4">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
@@ -88,7 +87,7 @@ else
     @* Toolbar *@
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddContractDialog"
+            <MudButton OnClick="@AddContract"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add">
@@ -97,12 +96,14 @@ else
         </MudStack>
     </MudPaper>
 
+    @if (_contracts.Any())
+    {
     @* DataGrid *@
     <MudPaper Class="pa-4">
         <MudDataGrid T="ContractDto"
                      Items="@_contracts"
                      Class="center-table"
-                     Striped="true" 
+                     Striped="true"
                      Hover="true"
                      Dense="true"
                      ReadOnly="true"
@@ -114,21 +115,21 @@ else
                      Hideable="false"
                      Bordered="true">
             <Columns>
-                <PropertyColumn Property="c => c.ClientName" 
+                <PropertyColumn Property="c => c.ClientName"
                                 Title="Klijent"
                                 HeaderStyle="white-space: nowrap; min-width: 300px;"
                                 CellStyle="min-width: 300px;">
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.ContractNumber" 
+                <PropertyColumn Property="c => c.ContractNumber"
                                 Title="Broj ugovora"
                                 HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;" />
+                                CellStyle="min-width: 200px;"/>
 
-                <PropertyColumn Property="c => c.MonthlyFee" 
+                <PropertyColumn Property="c => c.MonthlyFee"
                                 Title="Mesečna obaveza"
                                 HeaderStyle="white-space: nowrap; min-width: 220px;"
-                                CellStyle="min-width: 220px;" >
+                                CellStyle="min-width: 220px;">
                     <CellTemplate>
                         €@context.Item.MonthlyFee.ToString("N2")
                     </CellTemplate>
@@ -149,7 +150,7 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.Type" 
+                <PropertyColumn Property="c => c.Type"
                                 Title="Tip"
                                 HeaderStyle="white-space: nowrap; min-width: 100px;"
                                 Sortable="false">
@@ -165,13 +166,15 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="c => c.StartDate" Title="Datum početka" Filterable="false" HeaderStyle="white-space: nowrap; min-width: 200px;">
+                <PropertyColumn Property="c => c.StartDate" Title="Datum početka" Filterable="false"
+                                HeaderStyle="white-space: nowrap; min-width: 200px;">
                     <CellTemplate>
                         @context.Item.StartDate.ToString("dd.MM.yyyy")
                     </CellTemplate>
                 </PropertyColumn>
 
-                <TemplateColumn Title="Važenje do" Filterable="false" HeaderStyle="white-space: nowrap; min-width: 150px;">
+                <TemplateColumn Title="Važenje do" Filterable="false"
+                                HeaderStyle="white-space: nowrap; min-width: 150px;">
                     <CellTemplate>
                         @if (context.Item.Duration == ContractDuration.Indefinite)
                         {
@@ -189,6 +192,15 @@ else
                 </TemplateColumn>
 
                 <PropertyColumn Property="c => c.Notes" Title="Komentar"/>
+                
+                <TemplateColumn Title="Izmeni" Filterable="false" Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="@(() => EditContract(context.Item))"/>
+                    </CellTemplate>
+                </TemplateColumn>
 
                 <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
                     <CellTemplate>
@@ -199,7 +211,7 @@ else
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
-            
+
             <PagerContent>
                 <MudDataGridPager T="ContractDto"
                                   InfoFormat="{first_item}-{last_item} od {all_items}"
@@ -207,4 +219,22 @@ else
             </PagerContent>
         </MudDataGrid>
     </MudPaper>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema ugovora
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj ugovor" da dodate prvi ugovor
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 }
