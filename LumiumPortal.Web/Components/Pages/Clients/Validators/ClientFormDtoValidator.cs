@@ -3,11 +3,11 @@ using Lumium.Application.Features.Clients.DTOs;
 
 namespace LumiumPortal.Web.Components.Pages.Clients.Validators;
 
-public class CreateClientDtoValidator : AbstractValidator<ClientDto>
+public class ClientFormDtoValidator : AbstractValidator<ClientFormDto>
 {
     private const string RequiredFieldMessage = "Ovo polje je obavezno!";
 
-    public CreateClientDtoValidator()
+    public ClientFormDtoValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage(RequiredFieldMessage);
@@ -44,8 +44,8 @@ public class CreateClientDtoValidator : AbstractValidator<ClientDto>
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
         var result = await ValidateAsync(
-            ValidationContext<ClientDto>.CreateWithOptions(
-                (ClientDto)model,
+            ValidationContext<ClientFormDto>.CreateWithOptions(
+                (ClientFormDto)model,
                 x => x.IncludeProperties(propertyName)));
 
         return result.IsValid ? [] : result.Errors.Select(e => e.ErrorMessage);

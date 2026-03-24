@@ -17,38 +17,14 @@ else
 
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
-            <MudButton OnClick="@OpenAddClientDialog"
+            <MudButton OnClick="@AddClient"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Add">
                 Dodaj klijenta
             </MudButton>
-
-            <MudStack Row="true" Spacing="2">
-                <MudButton Variant="Variant.Outlined"
-                           StartIcon="@Icons.Material.Filled.Download">
-                    Izvoz
-                </MudButton>
-            </MudStack>
         </MudStack>
     </MudPaper>
-
-    @* Bulk Actions Toolbar *@
-    @if (_selectedClients.Any())
-    {
-        <MudPaper Class="mb-4 pa-4" Elevation="1" Style="background-color: #E3F2FD;">
-            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-                <MudText Typo="Typo.body1" Color="Color.Primary">
-                    <strong>@_selectedClients.Count</strong> klijent(a) selektovano
-                </MudText>
-                <MudSpacer/>
-                <MudButton Variant="Variant.Outlined" Size="Size.Small">Izvezi selektovane</MudButton>
-                <MudButton OnClick="@DeleteSelectedClients" Variant="Variant.Outlined" Size="Size.Small"
-                           Color="Color.Error">Obriši selektovane
-                </MudButton>
-            </MudStack>
-        </MudPaper>
-    }
 
     @* Data Grid *@
     <MudPaper Elevation="1">
@@ -68,23 +44,7 @@ else
                      Hideable="false"
                      Bordered="true">
             <Columns>
-
-                @* Checkbox Column *@
-                <TemplateColumn Sortable="false" Filterable="false">
-                    <HeaderTemplate>
-                        <MudCheckBox T="bool"
-                                     Value="@IsAllSelected()"
-                                     ValueChanged="@((bool val) => ToggleSelectAll())"
-                                     Color="Color.Primary"/>
-                    </HeaderTemplate>
-                    <CellTemplate>
-                        <MudCheckBox T="bool"
-                                     Value="@_selectedClients.Contains(context.Item.Id)"
-                                     ValueChanged="@((bool val) => ToggleSelectClient(context.Item.Id))"
-                                     Color="Color.Primary"/>
-                    </CellTemplate>
-                </TemplateColumn>
-
+                
                 @* Naziv klijenta *@
                 <PropertyColumn Property="x => x.Name"
                                 Title="Naziv klijenta"
@@ -357,8 +317,19 @@ else
                                 CellStyle="min-width: 120px;">
                     <CellTemplate>
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Primary"
                                        Size="Size.Small"
-                                       Disabled="true"/>
+                                       OnClick="@(() => EditClient(context.Item))"/>
+                    </CellTemplate>
+                </TemplateColumn>
+                
+                @* Obrisi *@
+                <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(() => DeleteClient(context.Item))"/>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>

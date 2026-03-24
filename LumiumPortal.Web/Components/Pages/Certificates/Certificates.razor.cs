@@ -47,7 +47,7 @@ public partial class Certificates : SecureComponentBase
 
     private async Task DeleteCertificate(CertificateDto certificate)
     {
-        if (await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
+        if (!await DialogService.ShowDeleteCertificateConfirmation(certificate.CertificateName))
         {
             return;
         }

@@ -99,18 +99,26 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         {
             switch (entry.State)
             {
-                case EntityState.Added when entry.Entity.TenantId == Guid.Empty:
+                case EntityState.Added:
                 {
-                    if (tenantContext.TenantId == Guid.Empty)
+                    if (entry.Entity.Id == Guid.Empty)
                     {
-                        throw new InvalidOperationException("TenantId nije setovan u tenant context-u");
+                        entry.Entity.Id = Guid.NewGuid();
                     }
 
-                    entry.Entity.TenantId = tenantContext.TenantId;
+                    if (entry.Entity.TenantId == Guid.Empty)
+                    {
+                        if (tenantContext.TenantId == Guid.Empty)
+                        {
+                            throw new InvalidOperationException("TenantId nije setovan u tenant context-u");
+                        }
+
+                        entry.Entity.TenantId = tenantContext.TenantId;
+                    }
                     break;
                 }
                 case EntityState.Modified:
-                    entry.Entity.UpdatedAt = DateTime.Now;
+                    entry.Entity.UpdatedAt = DateTime.UtcNow;
                     break;
             }
         }

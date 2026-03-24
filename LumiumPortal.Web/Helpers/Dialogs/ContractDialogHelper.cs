@@ -60,12 +60,9 @@ public static class ContractDialogHelper
 
         public async Task<bool> ShowDeleteContractConfirmation(string contractNumber)
         {
-            return await DialogHelper.ShowConfirmDialog(
+            return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                message: $"Da li ste sigurni da želite da obrišete ugovor '{contractNumber}'?",
-                title: "Potvrda brisanja",
-                confirmText: "Obriši",
-                confirmColor: Color.Error
+                message: $"Da li ste sigurni da želite da obrišete ugovor '{contractNumber}'?"
             );
         }
     }

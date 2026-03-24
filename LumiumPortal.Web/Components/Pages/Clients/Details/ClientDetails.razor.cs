@@ -1,5 +1,8 @@
+using AutoMapper;
+using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -8,6 +11,8 @@ namespace LumiumPortal.Web.Components.Pages.Clients.Details;
 public partial class ClientDetails : ComponentBase
 {
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IMapper Mapper { get; set; } = null!;
 
     [Parameter] public Guid ClientId { get; set; }
 
@@ -33,7 +38,6 @@ public partial class ClientDetails : ComponentBase
     {
         _isLoading = true;
 
-        // Dummy data
         _clientDetails = await Mediator.Send(new GetClientDetailsQuery(ClientId));
 
         if (_clientDetails == null)
@@ -50,10 +54,44 @@ public partial class ClientDetails : ComponentBase
 
         _isLoading = false;
     }
+    
+    private async Task EditClient()
+    {
+        if (_clientDetails == null)
+        {
+            return;
+        }
 
-    private void HandleAddContract() => Snackbar.Add("Funkcionalnost 'Novi ugovor' - uskoro", Severity.Info);
+        var clientDto = Mapper.Map<ClientDto>(_clientDetails);
 
-    private void HandleAddCertificate() => Snackbar.Add("Funkcionalnost 'Dodaj sertifikat' - uskoro", Severity.Info);
+        if (await DialogService.ShowEditClientDialog(clientDto))
+        {
+            await LoadClientDetails();
+        }
+    }
+    
+    private async Task DeleteClient()
+    {
+        if (_clientDetails == null)
+        {
+            return;
+        }
+        
+        if (!await DialogService.ShowDeleteClientConfirmation(_clientDetails.Name))
+        {
+            return;
+        }
 
-    private void HandleUploadDocument() => Snackbar.Add("Funkcionalnost 'Otpremi dokument' - uskoro", Severity.Info);
+        var result = await Mediator.Send(new DeleteClientCommand(_clientDetails.Id));
+
+        if (result.IsSuccess)
+        {
+            Snackbar.Add(result.Message, Severity.Success);
+            Navigation.NavigateTo("/clients");
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
+        }
+    }
 }

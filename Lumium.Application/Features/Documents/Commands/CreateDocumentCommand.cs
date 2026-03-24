@@ -19,7 +19,6 @@ public class CreateDocumentCommandHandler(IApplicationDbContextFactory contextFa
             try
             {
                 var newDocument = mapper.Map<Document>(request.DocumentFormDto);
-                newDocument.Id = Guid.NewGuid();
                 newDocument.UploadedAt = DateTime.UtcNow;
 
                 context.Documents.Add(newDocument);

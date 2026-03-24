@@ -19,7 +19,6 @@ public class CreateContractCommandHandler(IApplicationDbContextFactory contextFa
             try
             {
                 var newContract = mapper.Map<Contract>(request.ContractFormDto);
-                newContract.Id = Guid.NewGuid();
 
                 context.Contracts.Add(newContract);
                 var savedCount = await context.SaveChangesAsync(cancellationToken);

@@ -21,7 +21,6 @@ public class CreateCertificateCommandHandler(
             try
             {
                 var newCertificate = mapper.Map<Certificate>(request.CertificateFormDto);
-                newCertificate.Id = Guid.NewGuid();
 
                 context.Certificates.Add(newCertificate);
                 var savedCount = await context.SaveChangesAsync(cancellationToken);

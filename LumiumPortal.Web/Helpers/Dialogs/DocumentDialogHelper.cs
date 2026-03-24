@@ -60,12 +60,9 @@ public static class DocumentDialogHelper
 
         public async Task<bool> ShowDeleteDocumentConfirmation(string documentName)
         {
-            return await DialogHelper.ShowConfirmDialog(
+            return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                message: $"Da li ste sigurni da želite da obrišete dokument '{documentName}'?",
-                title: "Potvrda brisanja",
-                confirmText: "Obriši",
-                confirmColor: Color.Error
+                message: $"Da li ste sigurni da želite da obrišete dokument '{documentName}'?"
             );
         }
     }

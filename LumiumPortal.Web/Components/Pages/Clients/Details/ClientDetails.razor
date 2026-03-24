@@ -48,8 +48,16 @@ else
                 </MudStack>
                 <MudStack Row="true" Spacing="2">
                     <MudButton StartIcon="@Icons.Material.Filled.Edit"
-                               Variant="Variant.Outlined">
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               OnClick="@EditClient">
                         Izmeni
+                    </MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Delete"
+                               Variant="Variant.Filled"
+                               Color="Color.Error"
+                               OnClick="@DeleteClient">
+                        Obriši
                     </MudButton>
                 </MudStack>
             </MudStack>

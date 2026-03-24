@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Lumium.Application.Features.Clients.Commands;
 
-public record CreateClientCommand(ClientDto ClientDto) : IRequest<Result>;
+public record CreateClientCommand(ClientFormDto ClientFormDto) : IRequest<Result>;
 
 public class CreateClientCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateClientCommand, Result>
@@ -18,8 +18,7 @@ public class CreateClientCommandHandler(IApplicationDbContextFactory contextFact
         {
             try
             {
-                var newClient = mapper.Map<Client>(request.ClientDto);
-                newClient.Id = Guid.NewGuid();
+                var newClient = mapper.Map<Client>(request.ClientFormDto);
 
                 context.Clients.Add(newClient);
                 var savedCount = await context.SaveChangesAsync(cancellationToken);

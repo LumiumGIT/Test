@@ -1,7 +1,7 @@
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
 using Lumium.Application.Features.Clients.Queries;
-using LumiumPortal.Web.Extensions;
+using LumiumPortal.Web.Helpers.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -13,7 +13,6 @@ public partial class Clients : SecureComponentBase
 
     private MudDataGrid<ClientDto>? _dataGrid;
     private List<ClientDto> _clients = [];
-    private readonly HashSet<Guid> _selectedClients = [];
     private bool _isLoading = true;
 
     protected override async Task OnSecureInitializedAsync()
@@ -25,105 +24,39 @@ public partial class Clients : SecureComponentBase
 
     private async Task LoadClients() => _clients = await Mediator.Send(new GetClientsQuery());
 
-    private async Task OpenAddClientDialog()
+    private async Task AddClient()
     {
-        var options = new DialogOptions
+        if (await DialogService.ShowAddClientDialog())
         {
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true,
-            CloseButton = true,
-            CloseOnEscapeKey = true
-        };
-
-        var dialog = await DialogService.ShowAsync<AddClientDialog>("Dodaj klijenta", options);
-        var result = await dialog.Result;
-
-        if (result is { Canceled: false })
+            await LoadClients();
+        }
+    }
+    
+    private async Task EditClient(ClientDto client)
+    {
+        if (await DialogService.ShowEditClientDialog(client))
         {
             await LoadClients();
         }
     }
 
-    private async Task DeleteSelectedClients()
+    private async Task DeleteClient(ClientDto client)
     {
-        if (_selectedClients.Count == 0)
-        {
-            Snackbar.Add("Nema selektovanih klijenata", Severity.Warning);
-            return;
-        }
-
-        var confirmed = await DialogService.ShowDeleteConfirmAsync("klijenta", _selectedClients.Count);
-
-        if (!confirmed)
+        if (!await DialogService.ShowDeleteClientConfirmation(client.Name))
         {
             return;
         }
 
-        try
+        var result = await Mediator.Send(new DeleteClientCommand(client.Id));
+
+        if (result.IsSuccess)
         {
-            var command = new DeleteClientsCommand(_selectedClients);
-            var result = await Mediator.Send(command);
-
-            if (result.IsSuccess)
-            {
-                Snackbar.Add(result.Message, Severity.Success);
-
-                _selectedClients.Clear();
-                await LoadClients();
-            }
-            else
-            {
-                Snackbar.Add(result.Message, Severity.Error);
-            }
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
-        }
-    }
-
-    private bool IsAllSelected()
-    {
-        if (_dataGrid?.FilteredItems == null)
-        {
-            return false;
-        }
-
-        var filteredClients = _dataGrid.FilteredItems.ToList();
-
-        return filteredClients.Count != 0 && filteredClients.All(c => _selectedClients.Contains(c.Id));
-    }
-
-    private void ToggleSelectAll()
-    {
-        if (_dataGrid?.FilteredItems == null)
-        {
-            return;
-        }
-
-        var filteredClients = _dataGrid.FilteredItems.ToList();
-
-        if (IsAllSelected())
-        {
-            foreach (var client in filteredClients)
-            {
-                _selectedClients.Remove(client.Id);
-            }
+            Snackbar.Add(result.Message, Severity.Success);
+            await LoadClients();
         }
         else
         {
-            foreach (var client in filteredClients)
-            {
-                _selectedClients.Add(client.Id);
-            }
-        }
-    }
-
-    private void ToggleSelectClient(Guid id)
-    {
-        if (!_selectedClients.Add(id))
-        {
-            _selectedClients.Remove(id);
+            Snackbar.Add(result.Message, Severity.Error);
         }
     }
 }
