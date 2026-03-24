@@ -3,204 +3,267 @@
 
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h6">
+        <MudText Typo="Typo.h6" Style="font-weight: 600;">
             @(IsEditMode ? "Izmeni klijenta" : "Dodaj klijenta")
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm @ref="_form" Model="@_model" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-2">
-                        <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Small" Class="mr-2"/>
-                        <strong>Osnovni podaci</strong>
-                    </MudText>
-                    <MudDivider/>
-                </MudItem>
+            <MudStack Spacing="3">
+                
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Business" 
+                                     Color="Color.Primary" 
+                                     Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600; margin: 0;">
+                                Osnovni podaci
+                            </MudText>
+                        </MudStack>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="_model.Name"
-                                  Label="Naziv klijenta"
-                                  For="@(() => _model.Name)"
-                                  Immediate="true"/>
-                </MudItem>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@_model.Name"
+                                              Label="Naziv klijenta"
+                                              For="@(() => _model.Name)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="6">
-                    <MudSelect @bind-Value="_model.LegalForm"
-                               Label="Pravni tip"
-                               For="@(() => _model.LegalForm)">
-                        @foreach (var form in Enum.GetValues<LegalForm>())
-                        {
-                            <MudSelectItem Value="@form">@form.GetDescription()</MudSelectItem>
-                        }
-                    </MudSelect>
-                </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudSelect @bind-Value="@_model.LegalForm"
+                                           Label="Pravni tip"
+                                           For="@(() => _model.LegalForm)"
+                                           Variant="Variant.Outlined">
+                                    @foreach (var form in Enum.GetValues<LegalForm>())
+                                    {
+                                        <MudSelectItem Value="@form">@form.GetDescription()</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
 
-                <MudItem xs="12" md="4">
-                    <MudTextField @bind-Value="_model.TaxNumber"
-                                  Label="Matični broj"
-                                  For="@(() => _model.TaxNumber)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="4">
+                                <MudTextField @bind-Value="@_model.TaxNumber"
+                                              Label="Matični broj"
+                                              For="@(() => _model.TaxNumber)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="4">
-                    <MudTextField @bind-Value="_model.TaxIdentificationNumber"
-                                  Label="PIB"
-                                  For="@(() => _model.TaxIdentificationNumber)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="4">
+                                <MudTextField @bind-Value="@_model.TaxIdentificationNumber"
+                                              Label="PIB"
+                                              For="@(() => _model.TaxIdentificationNumber)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="4">
-                    <MudSwitch @bind-Value="_model.IsPdv"
-                               Label="PDV"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="12" md="4" Class="d-flex align-center">
+                                <MudSwitch @bind-Value="@_model.IsPdv"
+                                           Label="PDV"
+                                           Color="Color.Primary"/>
+                            </MudItem>
+                        </MudGrid>
+                    </MudStack>
+                </MudPaper>
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
-                        <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" Class="mr-2"/>
-                        <strong>Odgovorna lica</strong>
-                    </MudText>
-                    <MudDivider/>
-                </MudItem>
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-table-striped); border-radius: 8px;">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.People" 
+                                     Color="Color.Primary" 
+                                     Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600; margin: 0;">
+                                Odgovorna lica
+                            </MudText>
+                        </MudStack>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="_model.ResponsiblePerson"
-                                  Label="Zaduženo lice"
-                                  For="@(() => _model.ResponsiblePerson)"
-                                  Immediate="true"/>
-                </MudItem>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@_model.ResponsiblePerson"
+                                              Label="Zaduženo lice"
+                                              For="@(() => _model.ResponsiblePerson)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="_model.BackupPerson"
-                                  Label="Zamena u odsustvu"
-                                  For="@(() => _model.BackupPerson)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@_model.BackupPerson"
+                                              Label="Zamena u odsustvu"
+                                              For="@(() => _model.BackupPerson)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
+                        </MudGrid>
+                    </MudStack>
+                </MudPaper>
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
-                        <MudIcon Icon="@Icons.Material.Filled.ContactMail" Size="Size.Small" Class="mr-2"/>
-                        <strong>Kontakt informacije</strong>
-                    </MudText>
-                    <MudDivider/>
-                </MudItem>
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.ContactMail" 
+                                     Color="Color.Primary" 
+                                     Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600; margin: 0;">
+                                Kontakt informacije
+                            </MudText>
+                        </MudStack>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="_model.Address"
-                                  Label="Adresa"
-                                  For="@(() => _model.Address)"
-                                  Immediate="true"/>
-                </MudItem>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@_model.Address"
+                                              Label="Adresa"
+                                              For="@(() => _model.Address)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="_model.PhoneNumber"
-                                  Label="Telefon"
-                                  For="@(() => _model.PhoneNumber)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="@_model.PhoneNumber"
+                                              Label="Telefon"
+                                              For="@(() => _model.PhoneNumber)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="4">
-                    <MudTextField @bind-Value="_model.Director"
-                                  Label="Direktor"
-                                  For="@(() => _model.Director)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="4">
+                                <MudTextField @bind-Value="@_model.Director"
+                                              Label="Direktor"
+                                              For="@(() => _model.Director)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="4">
-                    <MudTextField @bind-Value="_model.Email"
-                                  Label="Email"
-                                  InputType="InputType.Email"
-                                  For="@(() => _model.Email)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="4">
+                                <MudTextField @bind-Value="@_model.Email"
+                                              Label="Email"
+                                              InputType="InputType.Email"
+                                              For="@(() => _model.Email)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
 
-                <MudItem xs="12" md="4">
-                    <MudTextField @bind-Value="_model.Country"
-                                  Label="Država"
-                                  For="@(() => _model.Country)"
-                                  Immediate="true"/>
-                </MudItem>
+                            <MudItem xs="12" md="4">
+                                <MudTextField @bind-Value="@_model.Country"
+                                              Label="Država"
+                                              For="@(() => _model.Country)"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"/>
+                            </MudItem>
+                        </MudGrid>
+                    </MudStack>
+                </MudPaper>
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
-                        <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Class="mr-2"/>
-                        <strong>Dodatne opcije</strong>
-                    </MudText>
-                    <MudDivider/>
-                </MudItem>
+                @* ✅ SEKCIJA 4 - Dodatne opcije (sa grey background) *@
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-table-striped); border-radius: 8px;">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Settings" 
+                                     Color="Color.Primary" 
+                                     Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600; margin: 0;">
+                                Dodatne opcije
+                            </MudText>
+                        </MudStack>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.EcoTax"
-                               Label="Eko taksa"
-                               Color="Color.Primary"/>
-                </MudItem>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.EcoTax"
+                                           Label="Eko taksa"
+                                           Color="Color.Primary"/>
+                            </MudItem>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.BeneficialOwners"
-                               Label="Stvarni vlasnici"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.BeneficialOwners"
+                                           Label="Stvarni vlasnici"
+                                           Color="Color.Primary"/>
+                            </MudItem>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.Croso"
-                               Label="CROSO"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.Croso"
+                                           Label="CROSO"
+                                           Color="Color.Primary"/>
+                            </MudItem>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.Pep"
-                               Label="PEP"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.Pep"
+                                           Label="PEP"
+                                           Color="Color.Primary"/>
+                            </MudItem>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.WingsTemplate"
-                               Label="Wings šablon"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.WingsTemplate"
+                                           Label="Wings šablon"
+                                           Color="Color.Primary"/>
+                            </MudItem>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.IsActive"
-                               Label="Aktivan"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.IsActive"
+                                           Label="Aktivan"
+                                           Color="Color.Primary"/>
+                            </MudItem>
 
-                <MudItem xs="6" md="3">
-                    <MudSwitch @bind-Value="_model.BusinessActivity"
-                               Label="Oblast rada"
-                               Color="Color.Primary"/>
-                </MudItem>
+                            <MudItem xs="6" md="3">
+                                <MudSwitch @bind-Value="@_model.BusinessActivity"
+                                           Label="Oblast rada"
+                                           Color="Color.Primary"/>
+                            </MudItem>
+                        </MudGrid>
+                    </MudStack>
+                </MudPaper>
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.subtitle1" Class="mb-2 mt-4">
-                        <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Small" Class="mr-2"/>
-                        <strong>Procena rizika</strong>
-                    </MudText>
-                    <MudDivider/>
-                </MudItem>
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Warning" 
+                                     Color="Color.Warning" 
+                                     Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600; margin: 0;">
+                                Procena rizika
+                            </MudText>
+                        </MudStack>
 
-                <MudItem xs="12" md="6">
-                    <MudSelect @bind-Value="_model.RiskLevel"
-                               Label="Nivo rizika"
-                               For="@(() => _model.RiskLevel)">
-                        @foreach (var level in Enum.GetValues<RiskLevel>())
-                        {
-                            <MudSelectItem Value="@level">@level.GetDescription()</MudSelectItem>
-                        }
-                    </MudSelect>
-                </MudItem>
-            </MudGrid>
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12" md="6">
+                                <MudSelect @bind-Value="@_model.RiskLevel"
+                                           Label="Nivo rizika"
+                                           For="@(() => _model.RiskLevel)"
+                                           Variant="Variant.Outlined">
+                                    @foreach (var level in Enum.GetValues<RiskLevel>())
+                                    {
+                                        <MudSelectItem Value="@level">@level.GetDescription()</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudStack>
+                </MudPaper>
+
+            </MudStack>
         </MudForm>
     </DialogContent>
 
     <DialogActions>
-        <MudButton OnClick="@Cancel" Variant="Variant.Text">Otkaži</MudButton>
+        <MudButton OnClick="@Cancel" 
+                   Variant="Variant.Text"
+                   Style="text-transform: uppercase;">
+            Otkaži
+        </MudButton>
         <MudButton OnClick="@HandleSubmit"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
-                   Disabled="_isSubmitting">
-            @(_isSubmitting ? "Čuvanje..." : "Sačuvaj")
+                   Disabled="_isSubmitting"
+                   Style="text-transform: uppercase;">
+            @if (_isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2"/>
+                <span>Čuvanje...</span>
+            }
+            else
+            {
+                <span>@(IsEditMode ? "Sačuvaj" : "Dodaj")</span>
+            }
         </MudButton>
     </DialogActions>
 </MudDialog>
