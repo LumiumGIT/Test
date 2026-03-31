@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Entities.Portal.Public;
 using Domain.Enums.Clients;
 
 namespace Domain.Entities.Portal;
@@ -35,11 +36,17 @@ public class Client : TenantEntity
     public bool Croso { get; set; }
     public bool Pep { get; set; }
     public bool WingsTemplate { get; set; }
-    public bool BusinessActivity { get; set; }
 
     // Additional
-    public string Country { get; set; } = string.Empty;
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
+    
+    // Foreign Keys
+    public int CountryId { get; set; }
+    public int BusinessActivityId { get; set; }
+
+    // Navigation - Public schema references
+    public Country Country { get; set; } = null!;
+    public BusinessActivity BusinessActivity { get; set; } = null!;
 
     // Navigation
     public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();

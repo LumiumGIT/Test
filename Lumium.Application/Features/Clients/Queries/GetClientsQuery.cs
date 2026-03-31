@@ -15,9 +15,12 @@ public class GetClientsQueryHandler(IApplicationDbContextFactory contextFactory,
     public async Task<List<ClientDto>> Handle(GetClientsQuery request, CancellationToken cancellationToken) =>
         await contextFactory.ExecuteInContextAsync(async context =>
         {
-            return await context.Clients
+            var clients = await context.Clients
+                .Include(c => c.Country)
+                .Include(c => c.BusinessActivity)
                 .OrderBy(c => c.Name)
-                .Select(c => mapper.Map(c, new ClientDto()))
                 .ToListAsync(cancellationToken);
+
+            return clients.Select(c => mapper.Map(c, new ClientDto())).ToList();
         }, cancellationToken);
 }

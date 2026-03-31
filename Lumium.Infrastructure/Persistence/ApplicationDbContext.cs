@@ -2,6 +2,7 @@ using System.Data;
 using System.Linq.Expressions;
 using Domain.Common;
 using Domain.Entities.Portal;
+using Domain.Entities.Portal.Public;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     // Shared lookup (public schema)
     public DbSet<RegulatoryBody> RegulatoryBodies { get; set; } = null!;
+    public DbSet<Country> Countries { get; set; } = null!;
+    public DbSet<CountryRiskCategory> CountryRiskCategories { get; set; } = null!;
+    public DbSet<BaRiskCategory> BaRiskCategories { get; set; } = null!;
+    public DbSet<BusinessActivity> BusinessActivities { get; set; } = null!;
 
     public string GetTenantId() => tenantContext.TenantId.ToString();
 

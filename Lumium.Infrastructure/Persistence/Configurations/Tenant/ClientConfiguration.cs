@@ -34,8 +34,11 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
         builder.Property(c => c.SubStatus).HasColumnName("sub_status").HasDefaultValue(ClientSubStatus.Standard)
             .HasConversion<int>();
         builder.Property(c => c.IsActive).HasColumnName("is_active");
-        builder.Property(c => c.BusinessActivity).HasColumnName("business_activity");
-        builder.Property(c => c.Country).HasColumnName("country");
         builder.Property(c => c.RiskLevel).HasColumnName("risk_level").HasConversion<int>();
+        builder.Property(c => c.CountryId).HasColumnName("country_id");
+        builder.Property(c => c.BusinessActivityId).HasColumnName("business_activity_id");
+
+        builder.HasOne(c => c.Country).WithMany().HasForeignKey(c => c.CountryId);
+        builder.HasOne(c => c.BusinessActivity).WithMany().HasForeignKey(c => c.BusinessActivityId);
     }
 }

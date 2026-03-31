@@ -14,6 +14,9 @@ public class ClientFormDtoValidator : AbstractValidator<ClientFormDto>
 
         RuleFor(x => x.TaxNumber)
             .NotEmpty().WithMessage(RequiredFieldMessage);
+        
+        RuleFor(x => x.BusinessActivityId)
+            .NotEmpty().WithMessage(RequiredFieldMessage);
 
         RuleFor(x => x.TaxIdentificationNumber)
             .NotEmpty().WithMessage(RequiredFieldMessage);
@@ -37,7 +40,7 @@ public class ClientFormDtoValidator : AbstractValidator<ClientFormDto>
             .NotEmpty().WithMessage(RequiredFieldMessage)
             .EmailAddress().WithMessage("Email adresa nije validna");
 
-        RuleFor(x => x.Country)
+        RuleFor(x => x.CountryId)
             .NotEmpty().WithMessage(RequiredFieldMessage);
     }
 

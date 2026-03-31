@@ -2,6 +2,10 @@ using Domain.Enums.Clients;
 using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Clients.Commands;
 using Lumium.Application.Features.Clients.DTOs;
+using Lumium.Application.Features.Public.BusinessActivities.DTOs;
+using Lumium.Application.Features.Public.BusinessActivities.Queries;
+using Lumium.Application.Features.Public.Countries.DTOs;
+using Lumium.Application.Features.Public.Countries.Queries;
 using LumiumPortal.Web.Components.Pages.Clients.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -15,13 +19,23 @@ public partial class ClientDialog : ComponentBase
     [Parameter] public ClientDto? ExistingClient { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 
+    private List<CountryDto> _countries = [];
+    private List<BusinessActivityDto> _businessActivities = [];
+    
     private ClientFormDto _model = new();
     private MudForm? _form;
     private readonly ClientFormDtoValidator _validator = new();
     private bool _isSubmitting;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var countriesTask = Mediator.Send(new GetCountriesQuery());
+        var activitiesTask = Mediator.Send(new GetBusinessActivitiesQuery());
+        await Task.WhenAll(countriesTask, activitiesTask);
+
+        _countries = countriesTask.Result;
+        _businessActivities = activitiesTask.Result;
+
         if (IsEditMode && ExistingClient != null)
         {
             _model = new ClientFormDto
@@ -37,14 +51,14 @@ public partial class ClientDialog : ComponentBase
                 PhoneNumber = ExistingClient.PhoneNumber,
                 Director = ExistingClient.Director,
                 Email = ExistingClient.Email,
-                Country = ExistingClient.Country,
+                CountryId = ExistingClient.CountryId,
+                BusinessActivityId = ExistingClient.BusinessActivityId,
                 EcoTax = ExistingClient.EcoTax,
                 BeneficialOwners = ExistingClient.BeneficialOwners,
                 Croso = ExistingClient.Croso,
                 Pep = ExistingClient.Pep,
                 WingsTemplate = ExistingClient.WingsTemplate,
                 IsActive = ExistingClient.IsActive,
-                BusinessActivity = ExistingClient.BusinessActivity,
                 RiskLevel = ExistingClient.RiskLevel
             };
         }
@@ -52,7 +66,6 @@ public partial class ClientDialog : ComponentBase
         {
             _model = new ClientFormDto
             {
-                Country = "Srbija",
                 RiskLevel = RiskLevel.Low,
                 IsActive = true
             };

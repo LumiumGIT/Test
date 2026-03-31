@@ -42,6 +42,18 @@
                                     }
                                 </MudSelect>
                             </MudItem>
+                            
+                            <MudItem xs="12" md="6">
+                                <MudSelect @bind-Value="@_model.BusinessActivityId"
+                                           Label="Oblast rada"
+                                           For="@(() => _model.BusinessActivityId)"
+                                           Variant="Variant.Outlined">
+                                    @foreach (var activity in _businessActivities)
+                                    {
+                                        <MudSelectItem Value="@activity.Id">@activity.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
 
                             <MudItem xs="12" md="4">
                                 <MudTextField @bind-Value="@_model.TaxNumber"
@@ -145,11 +157,15 @@
                             </MudItem>
 
                             <MudItem xs="12" md="4">
-                                <MudTextField @bind-Value="@_model.Country"
-                                              Label="Država"
-                                              For="@(() => _model.Country)"
-                                              Variant="Variant.Outlined"
-                                              Immediate="true"/>
+                                <MudSelect @bind-Value="@_model.CountryId"
+                                           Label="Država"
+                                           For="@(() => _model.CountryId)"
+                                           Variant="Variant.Outlined">
+                                    @foreach (var country in _countries)
+                                    {
+                                        <MudSelectItem Value="@country.Id">@country.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
                             </MudItem>
                         </MudGrid>
                     </MudStack>
@@ -201,12 +217,6 @@
                             <MudItem xs="6" md="3">
                                 <MudSwitch @bind-Value="@_model.IsActive"
                                            Label="Aktivan"
-                                           Color="Color.Primary"/>
-                            </MudItem>
-
-                            <MudItem xs="6" md="3">
-                                <MudSwitch @bind-Value="@_model.BusinessActivity"
-                                           Label="Oblast rada"
                                            Color="Color.Primary"/>
                             </MudItem>
                         </MudGrid>

@@ -14,7 +14,9 @@ public class ClientMappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
-        CreateMap<Client, ClientDto>();
+        CreateMap<Client, ClientDto>()
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+            .ForMember(dest => dest.BusinessActivity, opt => opt.MapFrom(src => src.BusinessActivity));
 
         CreateMap<Client, ClientDetailsDto>()
             .ForMember(dest => dest.Certificates, opt => opt.MapFrom(src => src.Certificates))
