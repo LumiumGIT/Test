@@ -1,8 +1,8 @@
-using Domain.Entities.Portal;
+using Domain.Entities.Portal.Tenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
+namespace Lumium.Infrastructure.Persistence.Configurations.Portal.Tenant;
 
 public class DocumentConfiguration : TenantEntityConfiguration<Document>
 {

@@ -44,7 +44,7 @@
         <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-background-grey);">
             <MudStack Row="true" Spacing="2">
                 <MudIcon Icon="@Icons.Material.Filled.LocationOn" Color="Color.Default"/>
-                <MudText Typo="Typo.body2">@Client.Address, @Client.Country</MudText>
+                <MudText Typo="Typo.body2">@Client.Address, @Client.Country?.Name</MudText>
             </MudStack>
         </MudPaper>
     </div>

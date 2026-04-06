@@ -15,14 +15,14 @@ public class MasterDbContext(DbContextOptions<MasterDbContext> options) : DbCont
         base.OnModelCreating(modelBuilder);
     }
 
-    private void ApplyConfigurations(ModelBuilder modelBuilder)
+    private static void ApplyConfigurations(ModelBuilder modelBuilder)
     {
         var configurationTypes = ReflectionHelper
             .GetAllTypesImplementingOpenGenericType(
                 typeof(IEntityTypeConfiguration<>),
                 typeof(MasterDbContext).Assembly)
             .Where(t => !t.IsAbstract)
-            .Where(t => t.Namespace?.Contains("Configurations.Master") == true);
+            .Where(t => t.Namespace?.Contains("Configurations.Admin") == true);
 
         foreach (var configurationType in configurationTypes)
         {

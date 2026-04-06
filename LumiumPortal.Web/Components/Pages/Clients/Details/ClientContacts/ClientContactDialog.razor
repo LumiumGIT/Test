@@ -1,0 +1,90 @@
+@using Domain.Enums.Clients
+@using Lumium.Application.Common.Extensions
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Style="font-weight: 600;">
+            @(IsEditMode ? "Izmeni kontakt" : "Dodaj kontakt")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" Model="@_model">
+            <MudStack Spacing="3">
+
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">
+                    <MudStack Spacing="2">
+                        <MudTextField @bind-Value="@_model.Name"
+                                      Label="Ime i prezime"
+                                      For="@(() => _model.Name)"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+
+                        <MudSelect @bind-Value="@_model.Type"
+                                   Label="Tip kontakta"
+                                   For="@(() => _model.Type)"
+                                   Variant="Variant.Outlined">
+                            @foreach (var type in Enum.GetValues<ContactType>())
+                            {
+                                <MudSelectItem Value="@type">@type.GetDescription()</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudTextField @bind-Value="@_model.Description"
+                                      Label="Pozicija / Opis"
+                                      For="@(() => _model.Description)"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+                    </MudStack>
+                </MudPaper>
+
+                <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-table-striped); border-radius: 8px;">
+                    <MudStack Spacing="2">
+                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.ContactPhone"
+                                     Color="Color.Primary"
+                                     Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600; margin: 0;">
+                                Kontakt informacije
+                            </MudText>
+                        </MudStack>
+
+                        <MudTextField @bind-Value="@_model.Phone"
+                                      Label="Telefon"
+                                      For="@(() => _model.Phone)"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+
+                        <MudTextField @bind-Value="@_model.Email"
+                                      Label="Email"
+                                      InputType="InputType.Email"
+                                      For="@(() => _model.Email)"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+                    </MudStack>
+                </MudPaper>
+
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@Cancel"
+                   Variant="Variant.Text"
+                   Style="text-transform: uppercase;">
+            Otkaži
+        </MudButton>
+        <MudButton OnClick="@HandleSubmit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="_isSubmitting"
+                   Style="text-transform: uppercase;">
+            @if (_isSubmitting)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2"/>
+                <span>Čuvanje...</span>
+            }
+            else
+            {
+                <span>@(IsEditMode ? "Sačuvaj" : "Dodaj")</span>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>

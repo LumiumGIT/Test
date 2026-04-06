@@ -67,9 +67,13 @@ public partial class ClientDialog : ComponentBase
             _model = new ClientFormDto
             {
                 RiskLevel = RiskLevel.Low,
-                IsActive = true
+                IsActive = true,
+                CountryId = _countries.FirstOrDefault(c => c.Name == "Srbija")!.Id,
+                BusinessActivityId = _businessActivities.FirstOrDefault(ba => ba.Name == "Pravne usluge")!.Id
             };
         }
+        
+        StateHasChanged();
     }
 
     private async Task HandleSubmit()

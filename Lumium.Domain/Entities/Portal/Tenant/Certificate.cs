@@ -1,6 +1,6 @@
 using Domain.Common;
 
-namespace Domain.Entities.Portal;
+namespace Domain.Entities.Portal.Tenant;
 
 public class Certificate : TenantEntity
 {

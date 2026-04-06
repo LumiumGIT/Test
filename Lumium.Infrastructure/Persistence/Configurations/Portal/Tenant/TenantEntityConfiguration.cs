@@ -2,7 +2,7 @@ using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
+namespace Lumium.Infrastructure.Persistence.Configurations.Portal.Tenant;
 
 public abstract class TenantEntityConfiguration<T> : IEntityTypeConfiguration<T>
     where T : TenantEntity

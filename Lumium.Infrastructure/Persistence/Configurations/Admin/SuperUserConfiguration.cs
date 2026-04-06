@@ -2,7 +2,7 @@ using Domain.Entities.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Lumium.Infrastructure.Persistence.Configurations.Master;
+namespace Lumium.Infrastructure.Persistence.Configurations.Admin;
 
 public class SuperUserConfiguration : IEntityTypeConfiguration<SuperUser>
 {

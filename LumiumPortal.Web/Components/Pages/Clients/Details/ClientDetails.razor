@@ -1,5 +1,6 @@
 @page "/clients/{ClientId:guid}"
 @using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Components.Pages.Clients.Details.ClientContacts
 @using LumiumPortal.Web.Helpers.UI
 @inject NavigationManager Navigation
 
@@ -180,6 +181,11 @@ else
                 @* Documents Tab *@
                 <MudTabPanel Text="Dokumenti" Icon="@Icons.Material.Filled.Folder">
                     <ClientDocuments ClientId="@ClientId"/>
+                </MudTabPanel>
+                
+                @* Contacts Tab *@
+                <MudTabPanel Text="Kontakti" Icon="@Icons.Material.Filled.Contacts">
+                    <ClientContacts ClientId="@ClientId"/>
                 </MudTabPanel>
             </MudTabs>
         </MudPaper>

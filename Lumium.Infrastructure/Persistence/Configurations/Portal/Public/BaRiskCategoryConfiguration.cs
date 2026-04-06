@@ -2,7 +2,7 @@ using Domain.Entities.Portal.Public;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Lumium.Infrastructure.Persistence.Configurations.Tenant.Public;
+namespace Lumium.Infrastructure.Persistence.Configurations.Portal.Public;
 
 public class BaRiskCategoryConfiguration : IEntityTypeConfiguration<BaRiskCategory>
 {

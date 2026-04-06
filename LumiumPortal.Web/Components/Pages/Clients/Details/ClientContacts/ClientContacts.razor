@@ -1,0 +1,60 @@
+@using Lumium.Application.Common.Extensions
+<MudStack Spacing="3">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">Kontakti</MudText>
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Size="Size.Small"
+                   OnClick="@OpenAddDialog"
+                   Style="text-transform: uppercase;">
+            Dodaj kontakt
+        </MudButton>
+    </MudStack>
+
+    @if (_isLoading)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
+    }
+    else if (_contacts.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+            Nema kontakata za ovog klijenta.
+        </MudAlert>
+    }
+    else
+    {
+        <MudTable Items="@_contacts" Hover="true" Elevation="0" Striped="true">
+            <HeaderContent>
+                <MudTh>Tip</MudTh>
+                <MudTh>Ime i prezime</MudTh>
+                <MudTh>Pozicija</MudTh>
+                <MudTh>Telefon</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>
+                    <MudChip T="string"
+                             Size="Size.Small"
+                             Style="@($"background-color: {GetTypeColor(context.Type)}; color: white;")">
+                        @context.Type.GetDescription()
+                    </MudChip>
+                </MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Description</MudTd>
+                <MudTd>@context.Phone</MudTd>
+                <MudTd>@context.Email</MudTd>
+                <MudTd Style="text-align: right;">
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit"
+                                   Size="Size.Small"
+                                   OnClick="@(() => OpenEditDialog(context))"/>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Delete"
+                                   Size="Size.Small"
+                                   Color="Color.Error"
+                                   OnClick="@(() => DeleteContact(context))"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+</MudStack>

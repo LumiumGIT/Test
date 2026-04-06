@@ -1,5 +1,6 @@
 using AutoMapper;
 using Domain.Entities.Portal;
+using Domain.Entities.Portal.Tenant;
 using Lumium.Application.Features.Contracts.DTOs;
 
 namespace Lumium.Application.Features.Contracts;

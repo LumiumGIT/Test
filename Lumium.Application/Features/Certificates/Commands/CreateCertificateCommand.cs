@@ -1,5 +1,6 @@
 using AutoMapper;
 using Domain.Entities.Portal;
+using Domain.Entities.Portal.Tenant;
 using Lumium.Application.Common.Extensions;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Application.Common.Models;

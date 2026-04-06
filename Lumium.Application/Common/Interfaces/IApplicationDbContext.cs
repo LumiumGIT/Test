@@ -1,5 +1,6 @@
 using Domain.Entities.Portal;
 using Domain.Entities.Portal.Public;
+using Domain.Entities.Portal.Tenant;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Common.Interfaces;
@@ -12,6 +13,7 @@ public interface IApplicationDbContext : IAsyncDisposable
     public DbSet<Certificate> Certificates { get; }
     public DbSet<Contract> Contracts { get; }
     public DbSet<Document> Documents { get; }
+    public DbSet<ClientContact> ClientContacts { get; }
 
     // Shared lookup (public schema)
     public DbSet<RegulatoryBody> RegulatoryBodies { get; }

@@ -2,7 +2,7 @@ using Domain.Entities.Portal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
+namespace Lumium.Infrastructure.Persistence.Configurations.Portal;
 
 public class RegulatoryBodyConfiguration : IEntityTypeConfiguration<RegulatoryBody>
 {

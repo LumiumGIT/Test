@@ -1,7 +1,7 @@
 using Domain.Common;
 using Domain.Enums.Documents;
 
-namespace Domain.Entities.Portal;
+namespace Domain.Entities.Portal.Tenant;
 
 public class Document : TenantEntity
 {

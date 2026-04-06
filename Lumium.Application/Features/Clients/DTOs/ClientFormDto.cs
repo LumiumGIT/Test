@@ -26,10 +26,8 @@ public class ClientFormDto
     public bool WingsTemplate { get; set; }
     public bool IsActive { get; set; }
 
-    public int CountryId { get; set; }
-    public int BusinessActivityId { get; set; }
+    public int CountryId { get; set; } = 1;
+    public int BusinessActivityId { get; set; } = 1;
     
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
-
-    public DateTime CreatedAt { get; set; }
 }

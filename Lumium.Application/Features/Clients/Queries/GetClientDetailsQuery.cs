@@ -1,4 +1,5 @@
 using AutoMapper;
+using Domain.Entities.Portal.Public;
 using Lumium.Application.Common.Extensions;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Application.Features.Clients.DTOs;
@@ -16,9 +17,8 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
         await contextFactory.ExecuteInContextAsync(async context =>
         {
             var client = await context.Clients
-                .Include(c => c.Certificates)
-                .Include(c => c.Contracts)
-                .Include(c => c.Documents)
+                .Include(c => c.Country)
+                .Include(c => c.BusinessActivity)
                 .FirstOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
 
             if (client == null)
@@ -26,17 +26,8 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
                 return null;
             }
 
-            var regulatoryBodies = await context.RegulatoryBodies
-                .ToDictionaryAsync(r => r.Id, r => r.Name, cancellationToken);
-
             var clientDto = mapper.Map<ClientDetailsDto>(client);
-
-            foreach (var cert in clientDto.Certificates.Where(certificate =>
-                         regulatoryBodies.ContainsKey(certificate.RegulatoryBodyId)))
-            {
-                cert.RegulatoryBodyName = regulatoryBodies[cert.RegulatoryBodyId];
-            }
-
+            
             return clientDto;
         }, cancellationToken);
 }

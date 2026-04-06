@@ -2,7 +2,7 @@ using Domain.Common;
 using Domain.Entities.Portal.Public;
 using Domain.Enums.Clients;
 
-namespace Domain.Entities.Portal;
+namespace Domain.Entities.Portal.Tenant;
 
 public class Client : TenantEntity
 {
@@ -19,10 +19,8 @@ public class Client : TenantEntity
 
     // Contact Info
     public string Address { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-
+    
     // Status Management
     public ClientStatus Status { get; set; } = ClientStatus.Active;
     public ClientSubStatus SubStatus { get; set; } = ClientSubStatus.Standard;
@@ -52,4 +50,5 @@ public class Client : TenantEntity
     public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     public ICollection<Contract> Contracts { get; set; } = new List<Contract>();
     public ICollection<Document> Documents { get; set; } = new List<Document>();
+    public ICollection<ClientContact> Contacts { get; set; } = new List<ClientContact>();
 }

@@ -27,9 +27,9 @@ public class UpdateDocumentCommandHandler(IApplicationDbContextFactory contextFa
 
             mapper.Map(request.DocumentFormDto, document);
 
-            await context.SaveChangesAsync(cancellationToken);
-
-            return Result.Success("Dokument je uspešno ažuriran.");
+            return await context.SaveChangesAsync(cancellationToken) > 0
+                ? Result.Success("Dokument je uspešno ažuriran.")
+                : Result.Failure("Dokument nije ažuriran.");
         }, cancellationToken);
     }
 }

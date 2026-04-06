@@ -1,9 +1,9 @@
-using Domain.Entities.Portal;
+using Domain.Entities.Portal.Tenant;
 using Domain.Enums.Clients;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Lumium.Infrastructure.Persistence.Configurations.Tenant;
+namespace Lumium.Infrastructure.Persistence.Configurations.Portal.Tenant;
 
 public class ClientConfiguration : TenantEntityConfiguration<Client>
 {
@@ -21,9 +21,7 @@ public class ClientConfiguration : TenantEntityConfiguration<Client>
         builder.Property(c => c.ResponsiblePerson).HasColumnName("responsible_person");
         builder.Property(c => c.BackupPerson).HasColumnName("backup_person");
         builder.Property(c => c.Address).HasColumnName("address");
-        builder.Property(c => c.PhoneNumber).HasColumnName("phone_number");
         builder.Property(c => c.Director).HasColumnName("director");
-        builder.Property(c => c.Email).HasColumnName("email");
         builder.Property(c => c.EcoTax).HasColumnName("eco_tax");
         builder.Property(c => c.BeneficialOwners).HasColumnName("beneficial_owners");
         builder.Property(c => c.Croso).HasColumnName("croso");
