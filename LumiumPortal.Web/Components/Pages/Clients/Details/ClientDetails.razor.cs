@@ -46,12 +46,6 @@ public partial class ClientDetails : ComponentBase
             return;
         }
 
-        _clientDetails.Industry = "Informacione tehnologije";
-        _clientDetails.CompanySize = "50-100 zaposlenih";
-        _clientDetails.MonthlyFee = 150000;
-        _clientDetails.BillingContact = "finance@techcorp.rs";
-        _clientDetails.AssignedTo = "Sarah Mitchell";
-
         _isLoading = false;
     }
     

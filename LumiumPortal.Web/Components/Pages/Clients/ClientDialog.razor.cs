@@ -48,7 +48,6 @@ public partial class ClientDialog : ComponentBase
                 ResponsiblePerson = ExistingClient.ResponsiblePerson,
                 BackupPerson = ExistingClient.BackupPerson,
                 Address = ExistingClient.Address,
-                PhoneNumber = ExistingClient.PhoneNumber,
                 Director = ExistingClient.Director,
                 CountryId = ExistingClient.CountryId,
                 BusinessActivityId = ExistingClient.BusinessActivityId,

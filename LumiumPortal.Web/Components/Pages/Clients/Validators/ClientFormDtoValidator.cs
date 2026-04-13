@@ -30,9 +30,6 @@ public class ClientFormDtoValidator : AbstractValidator<ClientFormDto>
         RuleFor(x => x.Address)
             .NotEmpty().WithMessage(RequiredFieldMessage);
 
-        RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage(RequiredFieldMessage);
-
         RuleFor(x => x.Director)
             .NotEmpty().WithMessage(RequiredFieldMessage);
 

@@ -21,7 +21,6 @@ public class ClientDetailsDto
     public string BackupPerson { get; set; } = string.Empty;
 
     public string Address { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
     public ClientContactDto? PrimaryContact { get; set; }
 
@@ -31,13 +30,6 @@ public class ClientDetailsDto
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
 
     public DateTime CreatedAt { get; set; }
-
-    // Dodatni podaci za Details stranicu
-    public string Industry { get; set; } = string.Empty;
-    public string CompanySize { get; set; } = string.Empty;
-    public decimal MonthlyFee { get; set; }
-    public string BillingContact { get; set; } = string.Empty;
-    public string AssignedTo { get; set; } = string.Empty;
 
     // Related data
     public List<ContractDto> Contracts { get; set; } = [];

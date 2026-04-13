@@ -19,7 +19,6 @@ public class ClientDto
     public string BackupPerson { get; set; } = string.Empty;
 
     public string Address { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
     public ClientContactDto? PrimaryContact { get; set; }
 
