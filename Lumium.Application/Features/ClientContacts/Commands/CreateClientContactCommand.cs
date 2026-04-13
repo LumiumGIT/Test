@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Features.ClientContacts.Commands;
 
-public record CreateClientContactCommand(ClientContactFormDto Model) : IRequest<Result>;
+public record CreateClientContactCommand(ClientContactFormDto ClientContactFormDto) : IRequest<Result>;
 
 public class CreateClientContactCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<CreateClientContactCommand, Result>
@@ -19,21 +19,21 @@ public class CreateClientContactCommandHandler(IApplicationDbContextFactory cont
     {
         return await contextFactory.ExecuteInContextAsync(async context =>
         {
-            if (request.Model.Type == ContactType.Primary)
+            if (request.ClientContactFormDto.Type == ContactType.Primary)
             {
                 var primaryExists = await context.ClientContacts
-                    .AnyAsync(c => c.ClientId == request.Model.ClientId 
+                    .AnyAsync(c => c.ClientId == request.ClientContactFormDto.ClientId 
                                    && c.Type == ContactType.Primary, cancellationToken);
 
                 if (primaryExists)
                 {
-                    return Result.Failure("Klijent već ima primarni kontakt.");
+                    return Result.Failure("Klijent već ima glavni kontakt.");
                 }
             }
 
-            var contact = mapper.Map<ClientContact>(request.Model);
+            var contact = mapper.Map<ClientContact>(request.ClientContactFormDto);
 
-            await context.ClientContacts.AddAsync(contact, cancellationToken);
+            context.ClientContacts.Add(contact);
             var savedCount = await context.SaveChangesAsync(cancellationToken);
 
             return savedCount == 0

@@ -7,7 +7,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm @ref="_form" Model="@_model">
+        <MudForm @ref="_form" Model="@_model" Validation="@_validator.ValidateValue">
             <MudStack Spacing="3">
 
                 <MudPaper Elevation="0" Class="pa-4" Style="background-color: transparent;">

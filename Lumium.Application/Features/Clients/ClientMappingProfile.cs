@@ -17,14 +17,16 @@ public class ClientMappingProfile : Profile
 
         CreateMap<Client, ClientDto>()
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
-            .ForMember(dest => dest.BusinessActivity, opt => opt.MapFrom(src => src.BusinessActivity));
+            .ForMember(dest => dest.BusinessActivity, opt => opt.MapFrom(src => src.BusinessActivity))
+            .ForMember(dest => dest.PrimaryContact, opt => opt.MapFrom(src => src.Contacts.FirstOrDefault()));
 
         CreateMap<Client, ClientDetailsDto>()
             .ForMember(dest => dest.Certificates, opt => opt.MapFrom(src => src.Certificates))
             .ForMember(dest => dest.Contracts, opt => opt.MapFrom(src => src.Contracts))
             .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents))
             .ForMember(dest => dest.BusinessActivity, opt => opt.MapFrom(src => src.BusinessActivity))
-            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country));
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+            .ForMember(dest => dest.PrimaryContact, opt => opt.MapFrom(src => src.Contacts.FirstOrDefault()));
 
         CreateMap<ClientFormDto, Client>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())

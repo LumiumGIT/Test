@@ -17,7 +17,14 @@ public partial class ClientContacts : ComponentBase
     private List<ClientContactDto> _contacts = [];
     private bool _isLoading = true;
 
-    private async Task LoadAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadContacts();
+
+        await base.OnInitializedAsync();
+    }
+    
+    private async Task LoadContacts()
     {
         _isLoading = true;
         _contacts = await Mediator.Send(new GetClientContactsQuery(ClientId));
@@ -28,30 +35,36 @@ public partial class ClientContacts : ComponentBase
     private async Task OpenAddDialog()
     {
         var saved = await DialogService.ShowAddContactDialog(ClientId);
-        if (saved) await LoadAsync();
+
+        if (saved)
+        {
+            await LoadContacts();
+        }
     }
 
-    private async Task OpenEditDialog(ClientContactDto contact)
+    private async Task EditContact(ClientContactDto contact)
     {
         var saved = await DialogService.ShowEditContactDialog(contact);
         
         if (saved)
         {
-            await LoadAsync();
+            await LoadContacts();
         }
     }
 
     private async Task DeleteContact(ClientContactDto contact)
     {
-        var confirmed = await DialogService.ShowDeleteContactConfirmation(contact.Name);
-        if (!confirmed) return;
+        if (!await DialogService.ShowDeleteContactConfirmation(contact.Name))
+        {
+            return;
+        }
 
         var result = await Mediator.Send(new DeleteClientContactCommand(contact.Id));
 
         if (result.IsSuccess)
         {
             Snackbar.Add(result.Message, Severity.Success);
-            await LoadAsync();
+            await LoadContacts();
         }
         else
         {

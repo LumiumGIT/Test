@@ -1,5 +1,6 @@
 using AutoMapper;
 using Domain.Entities.Portal.Public;
+using Domain.Enums.Clients;
 using Lumium.Application.Common.Extensions;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Application.Features.Clients.DTOs;
@@ -19,6 +20,7 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
             var client = await context.Clients
                 .Include(c => c.Country)
                 .Include(c => c.BusinessActivity)
+                .Include(c => c.Contacts.Where(contact => contact.Type == ContactType.Primary))
                 .FirstOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
 
             if (client == null)

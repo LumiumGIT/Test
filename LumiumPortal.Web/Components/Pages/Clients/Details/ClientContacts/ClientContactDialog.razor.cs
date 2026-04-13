@@ -2,6 +2,7 @@ using Domain.Enums.Clients;
 using Lumium.Application.Common.Models;
 using Lumium.Application.Features.ClientContacts.Commands;
 using Lumium.Application.Features.ClientContacts.DTOs;
+using LumiumPortal.Web.Components.Pages.Clients.Details.ClientContacts.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -16,6 +17,7 @@ public partial class ClientContactDialog : ComponentBase
     [Parameter] public bool IsEditMode { get; set; }
 
     private MudForm? _form;
+    private readonly ClientContactFormDtoValidator _validator = new();
     private ClientContactFormDto _model = new();
     private bool _isSubmitting;
 

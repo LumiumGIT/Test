@@ -15,7 +15,7 @@ public abstract class TenantEntityConfiguration<T> : IEntityTypeConfiguration<T>
 
         builder.Property(e => e.TenantId).HasColumnName("tenant_id");
         builder.Property(e => e.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp")
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            .HasDefaultValueSql("CURRENT_TIMESTAMP").ValueGeneratedOnAdd();;
         builder.Property(e => e.UpdatedAt).HasColumnName("updated_at").HasColumnType("timestamp");
     }
 }

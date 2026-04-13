@@ -122,6 +122,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
                         entry.Entity.TenantId = tenantContext.TenantId;
                     }
+                    
+                    if (entry.Entity.CreatedAt == default)
+                    {
+                        entry.Entity.CreatedAt = DateTime.Now;
+                    }
                     break;
                 }
                 case EntityState.Modified:

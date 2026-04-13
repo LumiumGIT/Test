@@ -18,7 +18,7 @@ public class ClientContactConfiguration : TenantEntityConfiguration<ClientContac
         builder.Property(x => x.Email).HasColumnName("email");
         builder.Property(x => x.Description).HasColumnName("description");
         builder.Property(x => x.Type).HasColumnName("type").HasConversion<int>();
-        builder.Property(x => x.UpdatedBy).HasColumnName("up_by");
+        builder.Property(x => x.UpdatedBy).HasColumnName("updated_by");
 
         builder.HasOne(x => x.Client)
             .WithMany(c => c.Contacts)

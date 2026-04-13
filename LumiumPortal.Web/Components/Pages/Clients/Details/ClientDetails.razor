@@ -80,7 +80,7 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default"/>
                         <div>
                             <MudText Typo="Typo.caption" Color="Color.Default">Email</MudText>
-                            <MudText Typo="Typo.body2"><strong>@_clientDetails.Email</strong></MudText>
+                            <MudText Typo="Typo.body2"><strong>@_clientDetails?.PrimaryContact?.Email</strong></MudText>
                         </div>
                     </MudStack>
                 </MudItem>

@@ -1,5 +1,6 @@
 using Domain.Entities.Portal.Public;
 using Domain.Enums.Clients;
+using Lumium.Application.Features.ClientContacts.DTOs;
 using Lumium.Application.Features.Public.BusinessActivities.DTOs;
 using Lumium.Application.Features.Public.Countries.DTOs;
 
@@ -20,7 +21,7 @@ public class ClientDto
     public string Address { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public ClientContactDto? PrimaryContact { get; set; }
 
     public bool EcoTax { get; set; }
     public bool BeneficialOwners { get; set; }

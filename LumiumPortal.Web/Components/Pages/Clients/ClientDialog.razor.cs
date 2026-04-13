@@ -50,7 +50,6 @@ public partial class ClientDialog : ComponentBase
                 Address = ExistingClient.Address,
                 PhoneNumber = ExistingClient.PhoneNumber,
                 Director = ExistingClient.Director,
-                Email = ExistingClient.Email,
                 CountryId = ExistingClient.CountryId,
                 BusinessActivityId = ExistingClient.BusinessActivityId,
                 EcoTax = ExistingClient.EcoTax,

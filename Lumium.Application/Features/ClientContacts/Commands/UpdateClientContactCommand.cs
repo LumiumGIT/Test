@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lumium.Application.Features.ClientContacts.Commands;
 
-public record UpdateClientContactCommand(Guid ContactId, ClientContactFormDto Model) : IRequest<Result>;
+public record UpdateClientContactCommand(Guid ContactId, ClientContactFormDto ClientContactFormDto) : IRequest<Result>;
 
 public class UpdateClientContactCommandHandler(IApplicationDbContextFactory contextFactory, IMapper mapper)
     : IRequestHandler<UpdateClientContactCommand, Result>
@@ -26,10 +26,10 @@ public class UpdateClientContactCommandHandler(IApplicationDbContextFactory cont
                 return Result.Failure("Kontakt nije pronađen.");
             }
 
-            if (request.Model.Type == ContactType.Primary && contact.Type != ContactType.Primary)
+            if (request.ClientContactFormDto.Type == ContactType.Primary && contact.Type != ContactType.Primary)
             {
                 var primaryExists = await context.ClientContacts
-                    .AnyAsync(c => c.ClientId == request.Model.ClientId
+                    .AnyAsync(c => c.ClientId == request.ClientContactFormDto.ClientId
                                    && c.Type == ContactType.Primary
                                    && c.Id != request.ContactId, cancellationToken);
 
@@ -39,7 +39,7 @@ public class UpdateClientContactCommandHandler(IApplicationDbContextFactory cont
                 }
             }
 
-            mapper.Map(request.Model, contact);
+            mapper.Map(request.ClientContactFormDto, contact);
 
             await context.SaveChangesAsync(cancellationToken);
 

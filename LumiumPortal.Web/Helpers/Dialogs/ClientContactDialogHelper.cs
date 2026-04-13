@@ -52,7 +52,9 @@ public static class ClientContactDialogHelper
         {
             return await DialogHelper.ShowDeleteConfirmDialog(
                 dialogService,
-                $"Da li ste sigurni da želite da obrišete kontakt '{contactName}'?");
+                $"Da li ste sigurni da želite da obrišete kontakt '{contactName}'?",
+                requireTextMatch: "DA",
+                matchPlaceholder: "Unesite 'DA' velikim slovima");
         }
     }
 }

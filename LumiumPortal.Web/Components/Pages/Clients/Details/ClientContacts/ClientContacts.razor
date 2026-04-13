@@ -18,20 +18,39 @@
     }
     else if (_contacts.Count == 0)
     {
-        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
-            Nema kontakata za ovog klijenta.
-        </MudAlert>
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema kontakata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj kontakt" da dodate prvi kontakt
+                </MudText>
+            </MudStack>
+        </MudPaper>
     }
     else
     {
-        <MudTable Items="@_contacts" Hover="true" Elevation="0" Striped="true">
+        <MudTable Items="@_contacts"
+                  Class="center-table"
+                  Striped="true"
+                  Bordered="true"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm"
+                  Elevation="0"
+                  Dense="true">
             <HeaderContent>
                 <MudTh>Tip</MudTh>
                 <MudTh>Ime i prezime</MudTh>
                 <MudTh>Pozicija</MudTh>
                 <MudTh>Telefon</MudTh>
                 <MudTh>Email</MudTh>
-                <MudTh></MudTh>
+                <MudTh>Izmeni</MudTh>
+                <MudTh>Obriši</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd>
@@ -45,13 +64,16 @@
                 <MudTd>@context.Description</MudTd>
                 <MudTd>@context.Phone</MudTd>
                 <MudTd>@context.Email</MudTd>
-                <MudTd Style="text-align: right;">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Edit"
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary"
                                    Size="Size.Small"
-                                   OnClick="@(() => OpenEditDialog(context))"/>
-                    <MudIconButton Icon="@Icons.Material.Outlined.Delete"
-                                   Size="Size.Small"
+                                   OnClick="@(() => EditContact(context))"/>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                    Color="Color.Error"
+                                   Size="Size.Small"
                                    OnClick="@(() => DeleteContact(context))"/>
                 </MudTd>
             </RowTemplate>
