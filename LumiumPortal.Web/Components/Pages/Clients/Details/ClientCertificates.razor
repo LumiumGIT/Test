@@ -1,4 +1,5 @@
 @using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Components.Shared
 @using LumiumPortal.Web.Helpers.UI
 
 <MudStack Spacing="3">
@@ -14,7 +15,12 @@
             Dodaj sertifikat
         </MudButton>
     </MudStack>
-    @if (_certificates.Any())
+    
+    @if (_isLoading)
+    {
+        <LoadingIndicator/>
+    }
+    else if (_certificates.Count > 0)
     {
         <MudTable Items="@_certificates"
                   Class="center-table"

@@ -26,10 +26,19 @@ public partial class ClientContacts : ComponentBase
     
     private async Task LoadContacts()
     {
-        _isLoading = true;
-        _contacts = await Mediator.Send(new GetClientContactsQuery(ClientId));
-        _isLoading = false;
-        StateHasChanged();
+        try
+        {
+            _isLoading = true;
+            _contacts = await Mediator.Send(new GetClientContactsQuery(ClientId));
+            _isLoading = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška pri učitavanju kontakata: {ex.Message}", Severity.Error);
+            Console.WriteLine($"[ERROR] Load contacts failed: {ex}");
+        }
+        
     }
 
     private async Task OpenAddDialog()

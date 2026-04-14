@@ -16,6 +16,7 @@ public partial class ClientDocuments : ComponentBase
     [Parameter] public Guid ClientId { get; set; }
 
     private List<DocumentDto> _documents = [];
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,7 +29,10 @@ public partial class ClientDocuments : ComponentBase
     {
         try
         {
+            _isLoading = true;
             _documents = await Mediator.Send(new GetDocumentsByClientQuery(ClientId));
+            _isLoading = false;
+            StateHasChanged();
         }
         catch (Exception ex)
         {

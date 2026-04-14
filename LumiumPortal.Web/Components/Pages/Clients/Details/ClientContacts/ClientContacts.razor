@@ -1,4 +1,5 @@
 @using Lumium.Application.Common.Extensions
+@using LumiumPortal.Web.Components.Shared
 <MudStack Spacing="3">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">Kontakti</MudText>
@@ -14,26 +15,9 @@
 
     @if (_isLoading)
     {
-        <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
+        <LoadingIndicator/>
     }
-    else if (_contacts.Count == 0)
-    {
-        <MudPaper Elevation="0" Class="pa-8">
-            <MudStack AlignItems="AlignItems.Center" Spacing="2">
-                <MudIcon Icon="@Icons.Material.Filled.Description"
-                         Size="Size.Large"
-                         Color="Color.Default"
-                         Style="font-size: 36px; opacity: 0.3;"/>
-                <MudText Typo="Typo.h6" Color="Color.Default">
-                    Nema kontakata
-                </MudText>
-                <MudText Typo="Typo.body2" Color="Color.Default">
-                    Kliknite na "Dodaj kontakt" da dodate prvi kontakt
-                </MudText>
-            </MudStack>
-        </MudPaper>
-    }
-    else
+    else if (_contacts.Count > 0)
     {
         <MudTable Items="@_contacts"
                   Class="center-table"
@@ -78,5 +62,22 @@
                 </MudTd>
             </RowTemplate>
         </MudTable>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"
+                         Size="Size.Large"
+                         Color="Color.Default"
+                         Style="font-size: 36px; opacity: 0.3;"/>
+                <MudText Typo="Typo.h6" Color="Color.Default">
+                    Nema kontakata
+                </MudText>
+                <MudText Typo="Typo.body2" Color="Color.Default">
+                    Kliknite na "Dodaj kontakt" da dodate prvi kontakt
+                </MudText>
+            </MudStack>
+        </MudPaper>
     }
 </MudStack>

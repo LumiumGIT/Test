@@ -14,6 +14,7 @@ public partial class ClientCertificates : ComponentBase
     [Parameter] public Guid ClientId { get; set; }
 
     private List<CertificateDto> _certificates = [];
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,7 +27,10 @@ public partial class ClientCertificates : ComponentBase
     {
         try
         {
+            _isLoading = true;
             _certificates = await Mediator.Send(new GetCertificatesByClientQuery(ClientId));
+            _isLoading = false;
+            StateHasChanged();
         }
         catch (Exception ex)
         {
