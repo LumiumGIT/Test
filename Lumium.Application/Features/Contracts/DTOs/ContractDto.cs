@@ -16,12 +16,24 @@ public class ContractDto
     public ContractStatus Status { get; set; }
     public ContractType Type { get; set; }
     public ContractDuration Duration { get; set; }
+    public ContractKind Kind { get; set; }
+    
+    public Guid? ParentContractId { get; set; }
+    public List<ContractDto> Annexes { get; set; } = [];
 
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 
     public DateTime CreatedAt { get; set; }
+    
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool IsHistoryRow { get; set; }
 
+    // Last annex or main contract
+    public ContractDto ActiveVersion => Annexes.Count > 0
+        ? Annexes.OrderByDescending(a => a.CreatedAt).First()
+        : this;
+    
     public string DurationDisplay => Duration == ContractDuration.Indefinite
         ? ContractDuration.Indefinite.GetDescription()
         : EndDate?.ToString("dd.MM.yyyy") ?? "-";

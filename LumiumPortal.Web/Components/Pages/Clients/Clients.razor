@@ -60,6 +60,18 @@ else
                         </MudLink>
                     </CellTemplate>
                 </PropertyColumn>
+                
+                @* Oblast rada *@
+                <PropertyColumn Property="x => x.BusinessActivity.Name"
+                                Title="Oblast rada"
+                                HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                Sortable="false">
+                    <FilterTemplate>
+                        <ComboBoxColumnFilter T="ClientDto"
+                                              Context="@context"
+                                              ValueSelector="@(client => client.BusinessActivity?.Name)"/>
+                    </FilterTemplate>
+                </PropertyColumn>
 
                 @* Legal Form *@
                 <PropertyColumn Property="x => x.LegalForm.GetDescription()"
@@ -120,7 +132,7 @@ else
                                 CellStyle="min-width: 200px;"/>
 
                 @* Telefon *@
-                <PropertyColumn Property="x => x.PhoneNumber"
+                <PropertyColumn Property="x => x.PrimaryContact.Phone"
                                 Title="Telefon"
                                 HeaderStyle="white-space: nowrap; min-width: 200px;"
                                 CellStyle="min-width: 200px;"/>
@@ -132,7 +144,7 @@ else
                                 CellStyle="min-width: 200px;"/>
 
                 @* Email *@
-                <PropertyColumn Property="x => x.Email"
+                <PropertyColumn Property="x => x.PrimaryContact.Email"
                                 Title="Email"
                                 HeaderStyle="white-space: nowrap; min-width: 200px;"
                                 CellStyle="min-width: 200px;"/>
@@ -264,29 +276,8 @@ else
                     </FilterTemplate>
                 </PropertyColumn>
 
-                <PropertyColumn Property="x => x.BusinessActivity"
-                                Title="Oblast rada"
-                                HeaderStyle="white-space: nowrap; min-width: 100px;"
-                                Sortable="false">
-                    <CellTemplate>
-                        @if (context.Item.BusinessActivity)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small"/>
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Error" Size="Size.Small"/>
-                        }
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <ComboBoxColumnFilter T="ClientDto"
-                                              Context="@context"
-                                              ValueSelector="@(client => client.BusinessActivity ? "Da" : "Ne")"/>
-                    </FilterTemplate>
-                </PropertyColumn>
-
                 @* Država *@
-                <PropertyColumn Property="x => x.Country"
+                <PropertyColumn Property="x => x.Country.Name"
                                 Title="Država"
                                 HeaderStyle="white-space: nowrap; min-width: 200px;"
                                 CellStyle="min-width: 200px;"/>

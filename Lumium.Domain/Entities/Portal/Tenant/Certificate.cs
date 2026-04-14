@@ -1,0 +1,17 @@
+using Domain.Common;
+
+namespace Domain.Entities.Portal.Tenant;
+
+public class Certificate : TenantEntity
+{
+    public Guid ClientId { get; set; }
+    public string CertificateName { get; set; } = string.Empty;
+    public string CertificateNumber { get; set; } = string.Empty;
+    public DateTime IssueDate { get; set; }
+    public DateTime ExpiryDate { get; set; }
+    public int RegulatoryBodyId { get; set; }
+    public string? Notes { get; set; }
+
+    // Navigation
+    public Client Client { get; set; } = null!;
+}

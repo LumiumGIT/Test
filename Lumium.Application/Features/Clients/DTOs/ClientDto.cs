@@ -1,4 +1,8 @@
+using Domain.Entities.Portal.Public;
 using Domain.Enums.Clients;
+using Lumium.Application.Features.ClientContacts.DTOs;
+using Lumium.Application.Features.Public.BusinessActivities.DTOs;
+using Lumium.Application.Features.Public.Countries.DTOs;
 
 namespace Lumium.Application.Features.Clients.DTOs;
 
@@ -15,9 +19,8 @@ public class ClientDto
     public string BackupPerson { get; set; } = string.Empty;
 
     public string Address { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public ClientContactDto? PrimaryContact { get; set; }
 
     public bool EcoTax { get; set; }
     public bool BeneficialOwners { get; set; }
@@ -25,10 +28,14 @@ public class ClientDto
     public bool Pep { get; set; }
     public bool WingsTemplate { get; set; }
     public bool IsActive { get; set; }
-    public bool BusinessActivity { get; set; }
-
-    public string Country { get; set; } = string.Empty;
+    
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
+    
+    public int CountryId { get; set; }
+    public CountryDto? Country { get; set; }
+    
+    public int BusinessActivityId { get; set; }
+    public BusinessActivityDto? BusinessActivity { get; set; }
 
     public DateTime CreatedAt { get; set; }
 }

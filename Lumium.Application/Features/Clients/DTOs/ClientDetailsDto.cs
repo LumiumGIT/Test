@@ -1,7 +1,10 @@
 using Domain.Enums.Clients;
 using Lumium.Application.Features.Certificates.DTOs;
+using Lumium.Application.Features.ClientContacts.DTOs;
 using Lumium.Application.Features.Contracts.DTOs;
 using Lumium.Application.Features.Documents.DTOs;
+using Lumium.Application.Features.Public.BusinessActivities.DTOs;
+using Lumium.Application.Features.Public.Countries.DTOs;
 
 namespace Lumium.Application.Features.Clients.DTOs;
 
@@ -18,24 +21,15 @@ public class ClientDetailsDto
     public string BackupPerson { get; set; } = string.Empty;
 
     public string Address { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string Director { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public ClientContactDto? PrimaryContact { get; set; }
 
     public bool IsActive { get; set; }
-    public bool BusinessActivity { get; set; }
-
-    public string Country { get; set; } = string.Empty;
+    public BusinessActivityDto? BusinessActivity { get; set; }
+    public CountryDto? Country { get; set; }
     public RiskLevel RiskLevel { get; set; } = RiskLevel.Low;
 
     public DateTime CreatedAt { get; set; }
-
-    // Dodatni podaci za Details stranicu
-    public string Industry { get; set; } = string.Empty;
-    public string CompanySize { get; set; } = string.Empty;
-    public decimal MonthlyFee { get; set; }
-    public string BillingContact { get; set; } = string.Empty;
-    public string AssignedTo { get; set; } = string.Empty;
 
     // Related data
     public List<ContractDto> Contracts { get; set; } = [];

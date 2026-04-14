@@ -28,7 +28,34 @@ public static class ContractDialogHelper
                 "Dodaj ugovor",
                 parameters,
                 options);
-        
+
+            var result = await dialog.Result;
+            return result is { Canceled: false };
+        }
+
+        public async Task<bool> ShowAddAnnexDialog(ContractDto parentContract)
+        {
+            var parameters = new DialogParameters
+            {
+                { nameof(ContractDialog.ClientId), parentContract.ClientId },
+                { nameof(ContractDialog.ParentContractId), parentContract.Id },
+                { nameof(ContractDialog.ParentContractNumber), parentContract.ContractNumber },
+                { nameof(ContractDialog.IsEditMode), false }
+            };
+
+            var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseButton = true,
+                CloseOnEscapeKey = true
+            };
+
+            var dialog = await dialogService.ShowAsync<ContractDialog>(
+                $"Dodaj aneks — {parentContract.ContractNumber}",
+                parameters,
+                options);
+
             var result = await dialog.Result;
             return result is { Canceled: false };
         }
@@ -53,7 +80,7 @@ public static class ContractDialogHelper
                 "Izmeni ugovor",
                 parameters,
                 options);
-        
+
             var result = await dialog.Result;
             return result is { Canceled: false };
         }

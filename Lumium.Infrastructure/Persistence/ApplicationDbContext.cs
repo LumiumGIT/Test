@@ -2,6 +2,8 @@ using System.Data;
 using System.Linq.Expressions;
 using Domain.Common;
 using Domain.Entities.Portal;
+using Domain.Entities.Portal.Public;
+using Domain.Entities.Portal.Tenant;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +20,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Certificate> Certificates { get; set; } = null!;
     public DbSet<Contract> Contracts { get; set; } = null!;
     public DbSet<Document> Documents { get; set; } = null!;
+    public DbSet<ClientContact> ClientContacts { get; set; } = null!;
 
     // Shared lookup (public schema)
     public DbSet<RegulatoryBody> RegulatoryBodies { get; set; } = null!;
+    public DbSet<Country> Countries { get; set; } = null!;
+    public DbSet<CountryRiskCategory> CountryRiskCategories { get; set; } = null!;
+    public DbSet<BaRiskCategory> BaRiskCategories { get; set; } = null!;
+    public DbSet<BusinessActivity> BusinessActivities { get; set; } = null!;
 
     public string GetTenantId() => tenantContext.TenantId.ToString();
 
@@ -44,7 +51,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 typeof(IEntityTypeConfiguration<>),
                 typeof(ApplicationDbContext).Assembly)
             .Where(t => !t.IsAbstract)
-            .Where(t => t.Namespace?.Contains("Configurations.Tenant") == true);
+            .Where(t => t.Namespace?.Contains("Configurations.Portal") == true);
 
         foreach (var configurationType in configurationTypes)
         {
@@ -114,6 +121,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                         }
 
                         entry.Entity.TenantId = tenantContext.TenantId;
+                    }
+                    
+                    if (entry.Entity.CreatedAt == default)
+                    {
+                        entry.Entity.CreatedAt = DateTime.Now;
                     }
                     break;
                 }

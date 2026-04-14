@@ -1,0 +1,19 @@
+using Domain.Entities.Portal.Public;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Lumium.Infrastructure.Persistence.Configurations.Portal.Public;
+
+public class BaRiskCategoryConfiguration : IEntityTypeConfiguration<BaRiskCategory>
+{
+    public void Configure(EntityTypeBuilder<BaRiskCategory> builder)
+    {
+        builder.ToTable("ba_risk_categories", "public");
+
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Id).HasColumnName("id");
+        builder.Property(x => x.Name).HasColumnName("name");
+        builder.Property(x => x.Score).HasColumnName("score");
+    }
+}

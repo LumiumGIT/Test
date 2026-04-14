@@ -1,4 +1,7 @@
 using AutoMapper;
+using Domain.Entities.Portal.Public;
+using Domain.Enums.Clients;
+using Domain.Enums.Contracts;
 using Lumium.Application.Common.Extensions;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Application.Features.Clients.DTOs;
@@ -16,9 +19,12 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
         await contextFactory.ExecuteInContextAsync(async context =>
         {
             var client = await context.Clients
-                .Include(c => c.Certificates)
-                .Include(c => c.Contracts)
+                .Include(c => c.Contracts.Where(contract => contract.Status == ContractStatus.Active))
+                .Include(c => c.Certificates.Where(certificate => certificate.ExpiryDate > DateTime.Now))
                 .Include(c => c.Documents)
+                .Include(c => c.Country)
+                .Include(c => c.BusinessActivity)
+                .Include(c => c.Contacts.Where(contact => contact.Type == ContactType.Primary))
                 .FirstOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
 
             if (client == null)
@@ -26,17 +32,8 @@ public class GetClientDetailsQueryHandler(IApplicationDbContextFactory contextFa
                 return null;
             }
 
-            var regulatoryBodies = await context.RegulatoryBodies
-                .ToDictionaryAsync(r => r.Id, r => r.Name, cancellationToken);
-
             var clientDto = mapper.Map<ClientDetailsDto>(client);
-
-            foreach (var cert in clientDto.Certificates.Where(certificate =>
-                         regulatoryBodies.ContainsKey(certificate.RegulatoryBodyId)))
-            {
-                cert.RegulatoryBodyName = regulatoryBodies[cert.RegulatoryBodyId];
-            }
-
+            
             return clientDto;
         }, cancellationToken);
 }

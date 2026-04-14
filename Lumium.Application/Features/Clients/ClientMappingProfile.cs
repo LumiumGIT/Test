@@ -1,5 +1,6 @@
 using AutoMapper;
 using Domain.Entities.Portal;
+using Domain.Entities.Portal.Tenant;
 using Lumium.Application.Features.Clients.DTOs;
 
 namespace Lumium.Application.Features.Clients;
@@ -14,12 +15,18 @@ public class ClientMappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
-        CreateMap<Client, ClientDto>();
+        CreateMap<Client, ClientDto>()
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+            .ForMember(dest => dest.BusinessActivity, opt => opt.MapFrom(src => src.BusinessActivity))
+            .ForMember(dest => dest.PrimaryContact, opt => opt.MapFrom(src => src.Contacts.FirstOrDefault()));
 
         CreateMap<Client, ClientDetailsDto>()
             .ForMember(dest => dest.Certificates, opt => opt.MapFrom(src => src.Certificates))
             .ForMember(dest => dest.Contracts, opt => opt.MapFrom(src => src.Contracts))
-            .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents));
+            .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents))
+            .ForMember(dest => dest.BusinessActivity, opt => opt.MapFrom(src => src.BusinessActivity))
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+            .ForMember(dest => dest.PrimaryContact, opt => opt.MapFrom(src => src.Contacts.FirstOrDefault()));
 
         CreateMap<ClientFormDto, Client>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -30,6 +37,8 @@ public class ClientMappingProfile : Profile
             .ForMember(dest => dest.Contracts, opt => opt.Ignore())
             .ForMember(dest => dest.Documents, opt => opt.Ignore());
 
-        CreateMap<ClientDetailsDto, ClientDto>();
+        CreateMap<ClientDetailsDto, ClientDto>()
+            .ForMember(dest => dest.BusinessActivityId, opt => opt.MapFrom(src => src.BusinessActivity!.Id))
+            .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country!.Id));
     }
 }

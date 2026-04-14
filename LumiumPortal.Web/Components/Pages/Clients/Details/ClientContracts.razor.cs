@@ -14,6 +14,7 @@ public partial class ClientContracts : ComponentBase
     [Parameter] public Guid ClientId { get; set; }
 
     private List<ContractDto> _contracts = [];
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,7 +27,10 @@ public partial class ClientContracts : ComponentBase
     {
         try
         {
+            _isLoading = true;
             _contracts = await Mediator.Send(new GetContractsByClientQuery(ClientId));
+            _isLoading = false;
+            StateHasChanged();
         }
         catch (Exception ex)
         {
