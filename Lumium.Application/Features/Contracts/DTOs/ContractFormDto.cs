@@ -5,6 +5,7 @@ namespace Lumium.Application.Features.Contracts.DTOs;
 public class ContractFormDto
 {
     public (Guid Id, string Name) SelectedClient { get; set; }
+    public (Guid Id, string ContractNumber) SelectedParentContract { get; set; }
 
     public string ContractNumber { get; set; } = string.Empty;
     public decimal MonthlyFee { get; set; }
@@ -13,6 +14,7 @@ public class ContractFormDto
     public ContractStatus Status { get; set; } = ContractStatus.Active;
     public ContractType Type { get; set; } = ContractType.Recurring;
     public ContractDuration Duration { get; set; } = ContractDuration.Fixed;
+    public ContractKind Kind { get; set; } = ContractKind.Main;
 
     public DateTime StartDate { get; set; } = DateTime.Today;
     public DateTime? EndDate { get; set; } = DateTime.Today.AddYears(1);

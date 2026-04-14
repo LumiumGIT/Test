@@ -13,16 +13,12 @@ else
 {
     <MudText Typo="Typo.h3" GutterBottom="true">Ugovori</MudText>
 
-    @* Stats Cards *@
     <MudGrid Class="mb-4">
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="1" Class="pa-4">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
-                        <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500;">
-                            Otkazani
-                        </MudText>
+                        <MudText Typo="Typo.caption" Style="text-transform: uppercase; font-weight: 500;">Otkazani</MudText>
                         <MudText Typo="Typo.h4" Color="Color.Error">@CancelledCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
@@ -36,10 +32,7 @@ else
             <MudPaper Elevation="1" Class="pa-4">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
-                        <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500;">
-                            Završeni
-                        </MudText>
+                        <MudText Typo="Typo.caption" Style="text-transform: uppercase; font-weight: 500;">Završeni</MudText>
                         <MudText Typo="Typo.h4" Color="Color.Info">@CompletedCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
@@ -53,10 +46,7 @@ else
             <MudPaper Elevation="1" Class="pa-4">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
-                        <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500;">
-                            Na čekanju
-                        </MudText>
+                        <MudText Typo="Typo.caption" Style="text-transform: uppercase; font-weight: 500;">Na čekanju</MudText>
                         <MudText Typo="Typo.h4" Color="Color.Warning">@PendingCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
@@ -70,10 +60,7 @@ else
             <MudPaper Elevation="1" Class="pa-4">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudStack Spacing="1">
-                        <MudText Typo="Typo.caption"
-                                 Style="text-transform: uppercase; font-weight: 500;">
-                            Aktivni
-                        </MudText>
+                        <MudText Typo="Typo.caption" Style="text-transform: uppercase; font-weight: 500;">Aktivni</MudText>
                         <MudText Typo="Typo.h4" Color="Color.Success">@ActiveCount</MudText>
                     </MudStack>
                     <MudPaper Elevation="0" Class="pa-2" Style="border-radius: 4px;">
@@ -84,13 +71,13 @@ else
         </MudItem>
     </MudGrid>
 
-    @* Toolbar *@
     <MudPaper Class="mb-4 pa-4" Elevation="1">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
             <MudButton OnClick="@AddContract"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.Add">
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Style="text-transform: uppercase;">
                 Dodaj ugovor
             </MudButton>
         </MudStack>
@@ -98,127 +85,262 @@ else
 
     @if (_contracts.Any())
     {
-    @* DataGrid *@
-    <MudPaper Class="pa-4">
-        <MudDataGrid T="ContractDto"
-                     Items="@_contracts"
-                     Class="center-table"
-                     Striped="true"
-                     Hover="true"
-                     Dense="true"
-                     ReadOnly="true"
-                     RowsPerPage="10"
-                     Filterable="true"
-                     SortMode="SortMode.Multiple"
-                     FilterMode="@DataGridFilterMode.ColumnFilterRow"
-                     FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
-                     Hideable="false"
-                     Bordered="true">
-            <Columns>
-                <PropertyColumn Property="c => c.ClientName"
-                                Title="Klijent"
-                                HeaderStyle="white-space: nowrap; min-width: 300px;"
-                                CellStyle="min-width: 300px;">
-                </PropertyColumn>
+        <MudPaper Class="pa-4">
+            <MudDataGrid T="ContractDto"
+                         Items="@_flatContracts"
+                         Class="center-table"
+                         Striped="false"
+                         Hover="true"
+                         Dense="true"
+                         ReadOnly="true"
+                         RowsPerPage="10"
+                         Filterable="true"
+                         SortMode="SortMode.Multiple"
+                         FilterMode="@DataGridFilterMode.ColumnFilterRow"
+                         FilterCaseSensitivity="@DataGridFilterCaseSensitivity.CaseInsensitive"
+                         Hideable="false"
+                         Bordered="true"
+                         RowStyleFunc="@GetRowStyle">
+                <Columns>
 
-                <PropertyColumn Property="c => c.ContractNumber"
-                                Title="Broj ugovora"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;"
-                                CellStyle="min-width: 200px;"/>
+                    @* Expand *@
+                    <TemplateColumn Filterable="false" Sortable="false" HeaderStyle="width: 48px;">
+                        <CellTemplate>
+                            @if (!IsAnnex(context.Item) && !context.Item.IsHistoryRow && context.Item.Annexes.Count > 0)
+                            {
+                                <MudIconButton Icon="@(IsExpanded(context.Item.Id) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+                                               Size="Size.Small"
+                                               OnClick="@(() => ToggleRow(context.Item.Id))"/>
+                            }
+                            else if (context.Item.IsHistoryRow)
+                            {
+                                <MudTooltip Text="Osnovni ugovor">
+                                    <MudIcon Icon="@Icons.Material.Filled.Article"
+                                             Size="Size.Small"
+                                             Style="opacity: 0.5;"/>
+                                </MudTooltip>
+                            }
+                            else if (IsAnnex(context.Item))
+                            {
+                                <MudTooltip Text="Aneks">
+                                    <MudIcon Icon="@Icons.Material.Filled.SubdirectoryArrowRight"
+                                             Size="Size.Small"
+                                             Style="opacity: 0.5;"/>
+                                </MudTooltip>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
 
-                <PropertyColumn Property="c => c.MonthlyFee"
-                                Title="Mesečna obaveza"
-                                HeaderStyle="white-space: nowrap; min-width: 220px;"
-                                CellStyle="min-width: 220px;">
-                    <CellTemplate>
-                        €@context.Item.MonthlyFee.ToString("N2")
-                    </CellTemplate>
-                </PropertyColumn>
+                    @* Klijent *@
+                    <PropertyColumn Property="c => c.ClientName"
+                                    Title="Klijent"
+                                    HeaderStyle="white-space: nowrap; min-width: 300px;"
+                                    CellStyle="min-width: 300px;">
+                        <CellTemplate>
+                            <MudText Typo="Typo.body2"
+                                     Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "font-weight: 500;")">
+                                @context.Item.ClientName
+                            </MudText>
+                        </CellTemplate>
+                    </PropertyColumn>
 
-                <PropertyColumn Property="c => c.Status" Title="Status">
-                    <CellTemplate>
-                        <MudChip Color="@ContractHelpers.GetStatusColor(context.Item.Status)" Size="Size.Small">
-                            @ContractHelpers.GetStatusText(context.Item.Status)
-                        </MudChip>
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <EnumColumnFilter TItem="ContractDto"
-                                          TEnum="ContractStatus"
-                                          Context="@context"
-                                          ValueSelector="@(client => client.Status)"
-                                          PopoverWidth="200"/>
-                    </FilterTemplate>
-                </PropertyColumn>
+                    @* Broj ugovora *@
+                    <PropertyColumn Property="c => c.ContractNumber"
+                                    Title="Broj ugovora"
+                                    HeaderStyle="white-space: nowrap; min-width: 200px;"
+                                    CellStyle="min-width: 200px;">
+                        <CellTemplate>
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body2"
+                                         Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "")">
+                                    @((!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                        ? context.Item.ActiveVersion.ContractNumber
+                                        : context.Item.ContractNumber)
+                                </MudText>
+                                @if (!IsAnnex(context.Item) && !context.Item.IsHistoryRow && context.Item.Annexes.Count > 0)
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @context.Item.Annexes.Count aneks(a)
+                                    </MudText>
+                                }
+                            </MudStack>
+                        </CellTemplate>
+                    </PropertyColumn>
 
-                <PropertyColumn Property="c => c.Type"
-                                Title="Tip"
-                                HeaderStyle="white-space: nowrap; min-width: 100px;"
-                                Sortable="false">
-                    <CellTemplate>
-                        @ContractHelpers.GetTypeText(context.Item.Type)
-                    </CellTemplate>
-                    <FilterTemplate>
-                        <EnumColumnFilter TItem="ContractDto"
-                                          TEnum="ContractType"
-                                          Context="@context"
-                                          ValueSelector="@(client => client.Type)"
-                                          PopoverWidth="200"/>
-                    </FilterTemplate>
-                </PropertyColumn>
+                    @* Mesečna obaveza *@
+                    <PropertyColumn Property="c => c.MonthlyFee"
+                                    Title="Mesečna obaveza"
+                                    HeaderStyle="white-space: nowrap; min-width: 220px;"
+                                    CellStyle="min-width: 220px;">
+                        <CellTemplate>
+                            @{
+                                var fee = (!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                    ? context.Item.ActiveVersion.MonthlyFee
+                                    : context.Item.MonthlyFee;
+                            }
+                            <MudText Typo="Typo.body2"
+                                     Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "")">
+                                €@fee.ToString("N2")
+                            </MudText>
+                        </CellTemplate>
+                    </PropertyColumn>
 
-                <PropertyColumn Property="c => c.StartDate" Title="Datum početka" Filterable="false"
-                                HeaderStyle="white-space: nowrap; min-width: 200px;">
-                    <CellTemplate>
-                        @context.Item.StartDate.ToString("dd.MM.yyyy")
-                    </CellTemplate>
-                </PropertyColumn>
+                    @* Status *@
+                    <PropertyColumn Property="c => c.Status" Title="Status">
+                        <CellTemplate>
+                            @{
+                                var status = (!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                    ? context.Item.ActiveVersion.Status
+                                    : context.Item.Status;
+                            }
+                            <MudChip Color="@ContractHelpers.GetStatusColor(status)" Size="Size.Small">
+                                @ContractHelpers.GetStatusText(status)
+                            </MudChip>
+                        </CellTemplate>
+                        <FilterTemplate>
+                            <EnumColumnFilter TItem="ContractDto"
+                                              TEnum="ContractStatus"
+                                              Context="@context"
+                                              ValueSelector="@(c => c.Status)"
+                                              PopoverWidth="200"/>
+                        </FilterTemplate>
+                    </PropertyColumn>
 
-                <TemplateColumn Title="Važenje do" Filterable="false"
-                                HeaderStyle="white-space: nowrap; min-width: 150px;">
-                    <CellTemplate>
-                        @if (context.Item.Duration == ContractDuration.Indefinite)
-                        {
-                            <MudChip Color="Color.Info" Size="Size.Small">Na neodređeno</MudChip>
-                        }
-                        else if (context.Item.EndDate.HasValue)
-                        {
-                            <span>@context.Item.EndDate.Value.ToString("dd.MM.yyyy")</span>
-                        }
-                        else
-                        {
-                            <MudText Typo="Typo.body2" Color="Color.Secondary">-</MudText>
-                        }
-                    </CellTemplate>
-                </TemplateColumn>
+                    @* Tip *@
+                    <PropertyColumn Property="c => c.Type"
+                                    Title="Tip"
+                                    HeaderStyle="white-space: nowrap; min-width: 100px;"
+                                    Sortable="false">
+                        <CellTemplate>
+                            @{
+                                var type = (!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                    ? context.Item.ActiveVersion.Type
+                                    : context.Item.Type;
+                            }
+                            <MudText Typo="Typo.body2"
+                                     Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "")">
+                                @ContractHelpers.GetTypeText(type)
+                            </MudText>
+                        </CellTemplate>
+                        <FilterTemplate>
+                            <EnumColumnFilter TItem="ContractDto"
+                                              TEnum="ContractType"
+                                              Context="@context"
+                                              ValueSelector="@(c => c.Type)"
+                                              PopoverWidth="200"/>
+                        </FilterTemplate>
+                    </PropertyColumn>
 
-                <PropertyColumn Property="c => c.Notes" Title="Komentar"/>
-                
-                <TemplateColumn Title="Izmeni" Filterable="false" Sortable="false">
-                    <CellTemplate>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       Color="Color.Primary"
-                                       Size="Size.Small"
-                                       OnClick="@(() => EditContract(context.Item))"/>
-                    </CellTemplate>
-                </TemplateColumn>
+                    @* Datum početka *@
+                    <PropertyColumn Property="c => c.StartDate"
+                                    Title="Datum početka"
+                                    Filterable="false"
+                                    HeaderStyle="white-space: nowrap; min-width: 200px;">
+                        <CellTemplate>
+                            @{
+                                var startDate = (!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                    ? context.Item.ActiveVersion.StartDate
+                                    : context.Item.StartDate;
+                            }
+                            <MudText Typo="Typo.body2"
+                                     Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "")">
+                                @startDate.ToString("dd.MM.yyyy")
+                            </MudText>
+                        </CellTemplate>
+                    </PropertyColumn>
 
-                <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
-                    <CellTemplate>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       Color="Color.Error"
-                                       Size="Size.Small"
-                                       OnClick="@(() => DeleteContract(context.Item))"/>
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
+                    @* Važenje do *@
+                    <TemplateColumn Title="Važenje do"
+                                    Filterable="false"
+                                    HeaderStyle="white-space: nowrap; min-width: 150px;">
+                        <CellTemplate>
+                            @{
+                                var version = (!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                    ? context.Item.ActiveVersion
+                                    : context.Item;
+                            }
+                            @if (version.Duration == ContractDuration.Indefinite)
+                            {
+                                <MudChip Color="Color.Info" Size="Size.Small">Na neodređeno</MudChip>
+                            }
+                            else if (version.EndDate.HasValue)
+                            {
+                                <MudText Typo="Typo.body2"
+                                         Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "")">
+                                    @version.EndDate.Value.ToString("dd.MM.yyyy")
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">-</MudText>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
 
-            <PagerContent>
-                <MudDataGridPager T="ContractDto"
-                                  InfoFormat="{first_item}-{last_item} od {all_items}"
-                                  RowsPerPageString="Redova po stranici:"/>
-            </PagerContent>
-        </MudDataGrid>
-    </MudPaper>
+                    @* Komentar *@
+                    <PropertyColumn Property="c => c.Notes" Title="Komentar">
+                        <CellTemplate>
+                            <MudText Typo="Typo.body2"
+                                     Style="@((IsAnnex(context.Item) || context.Item.IsHistoryRow) ? "padding-left: 16px; opacity: 0.8;" : "")">
+                                @((!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                                    ? context.Item.ActiveVersion.Notes
+                                    : context.Item.Notes)
+                            </MudText>
+                        </CellTemplate>
+                    </PropertyColumn>
+
+                    @* Dodaj aneks — samo za glavni red *@
+                    <TemplateColumn Title="Dodaj aneks" Filterable="false" Sortable="false">
+                        <CellTemplate>
+                            @if (!IsAnnex(context.Item) && !context.Item.IsHistoryRow)
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.PostAdd"
+                                               Color="Color.Secondary"
+                                               Size="Size.Small"
+                                               Title="Dodaj aneks"
+                                               OnClick="@(() => AddAnnex(context.Item))"/>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    @* Izmeni — svi osim glavnog reda koji nema anekse se menja direktno,
+                               glavni red sa aneksima menja ActiveVersion,
+                               history row menja osnovni,
+                               aneks menja sebe *@
+                    <TemplateColumn Title="Izmeni" Filterable="false" Sortable="false">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Color="Color.Primary"
+                                           Size="Size.Small"
+                                           OnClick="@(() => EditContract(context.Item))"/>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    @* Obriši — glavni red samo ako nema aneksa,
+                               aneks uvek,
+                               history row nikad *@
+                    <TemplateColumn Title="Obriši" Filterable="false" Sortable="false">
+                        <CellTemplate>
+                            @if (!context.Item.IsHistoryRow &&
+                                 (IsAnnex(context.Item) || context.Item.Annexes.Count == 0))
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                               Color="Color.Error"
+                                               Size="Size.Small"
+                                               OnClick="@(() => DeleteContract(context.Item))"/>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+
+                <PagerContent>
+                    <MudDataGridPager T="ContractDto"
+                                      InfoFormat="{first_item}-{last_item} od {all_items}"
+                                      RowsPerPageString="Redova po stranici:"/>
+                </PagerContent>
+            </MudDataGrid>
+        </MudPaper>
     }
     else
     {
@@ -228,9 +350,7 @@ else
                          Size="Size.Large"
                          Color="Color.Default"
                          Style="font-size: 36px; opacity: 0.3;"/>
-                <MudText Typo="Typo.h6" Color="Color.Default">
-                    Nema ugovora
-                </MudText>
+                <MudText Typo="Typo.h6" Color="Color.Default">Nema ugovora</MudText>
                 <MudText Typo="Typo.body2" Color="Color.Default">
                     Kliknite na "Dodaj ugovor" da dodate prvi ugovor
                 </MudText>

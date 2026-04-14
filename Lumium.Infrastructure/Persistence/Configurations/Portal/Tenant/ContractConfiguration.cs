@@ -18,10 +18,14 @@ public class ContractConfiguration : TenantEntityConfiguration<Contract>
         builder.Property(c => c.Status).HasColumnName("status").HasConversion<int>();
         builder.Property(c => c.Type).HasColumnName("type").HasConversion<int>();
         builder.Property(c => c.Duration).HasColumnName("duration").HasConversion<int>();
+        builder.Property(c => c.Kind).HasColumnName("kind").HasConversion<int>();
         builder.Property(c => c.StartDate).HasColumnName("start_date");
         builder.Property(c => c.EndDate).HasColumnName("end_date");
         builder.Property(c => c.ClientId).HasColumnName("client_id");
+        builder.Property(c => c.ParentContractId).HasColumnName("parent_contract_id");
 
         builder.HasOne(c => c.Client).WithMany(cl => cl.Contracts).HasForeignKey(c => c.ClientId);
+
+        builder.HasOne(c => c.ParentContract).WithMany(c => c.Annexes).HasForeignKey(c => c.ParentContractId);
     }
 }

@@ -3,6 +3,7 @@ using Lumium.Application.Common.Models;
 using Lumium.Application.Features.Clients.Queries;
 using Lumium.Application.Features.Contracts.Commands;
 using Lumium.Application.Features.Contracts.DTOs;
+using Lumium.Application.Features.Contracts.Queries;
 using LumiumPortal.Web.Components.Pages.Contracts.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -14,6 +15,8 @@ public partial class ContractDialog : ComponentBase
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public Guid ClientId { get; set; }
+    [Parameter] public Guid ParentContractId { get; set; }
+    [Parameter] public string ParentContractNumber { get; set; } = string.Empty;
     [Parameter] public ContractDto? ExistingContract { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 
@@ -25,11 +28,13 @@ public partial class ContractDialog : ComponentBase
     private List<(Guid Id, string Name)> _clients = [];
     private DateTime? _startDate = DateTime.Today;
     private DateTime? _endDate = DateTime.Today.AddYears(1);
+
     private bool DisableClientSelection => ClientId != Guid.Empty || IsEditMode;
+    private bool IsAnnexMode => ParentContractId != Guid.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadClients();
+        _clients = await Mediator.Send(new GetClientIdsQuery());
 
         if (IsEditMode && ExistingContract != null)
         {
@@ -41,9 +46,13 @@ public partial class ContractDialog : ComponentBase
                 Status = ExistingContract.Status,
                 Type = ExistingContract.Type,
                 Duration = ExistingContract.Duration,
+                Kind = ExistingContract.Kind,
                 StartDate = ExistingContract.StartDate,
                 EndDate = ExistingContract.EndDate,
-                SelectedClient = _clients.FirstOrDefault(c => c.Id == ExistingContract.ClientId)
+                SelectedClient = _clients.FirstOrDefault(c => c.Id == ExistingContract.ClientId),
+                SelectedParentContract = ExistingContract.ParentContractId.HasValue
+                    ? (ExistingContract.ParentContractId.Value, ExistingContract.ContractNumber)
+                    : default
             };
 
             _startDate = ExistingContract.StartDate;
@@ -57,26 +66,19 @@ public partial class ContractDialog : ComponentBase
                 EndDate = DateTime.Today.AddYears(1),
                 Status = ContractStatus.Active,
                 Type = ContractType.Recurring,
-                Duration = ContractDuration.Fixed
+                Duration = ContractDuration.Fixed,
+                Kind = IsAnnexMode ? ContractKind.Annex : ContractKind.Main
             };
 
             _startDate = DateTime.Today;
             _endDate = DateTime.Today.AddYears(1);
 
             PreselectClient();
-        }
-    }
 
-    private async Task LoadClients()
-    {
-        try
-        {
-            _clients = await Mediator.Send(new GetClientIdsQuery());
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add($"Greška pri učitavanju klijenata: {ex.Message}", Severity.Error);
-            Console.WriteLine($"[ERROR] Load clients failed: {ex}");
+            if (IsAnnexMode)
+            {
+                _model.SelectedParentContract = (ParentContractId, ParentContractNumber);
+            }
         }
     }
 
@@ -90,10 +92,7 @@ public partial class ContractDialog : ComponentBase
 
     private async Task HandleSubmit()
     {
-        if (_form == null)
-        {
-            return;
-        }
+        if (_form == null) return;
 
         await _form.Validate();
 
@@ -108,9 +107,7 @@ public partial class ContractDialog : ComponentBase
         try
         {
             if (_startDate.HasValue)
-            {
                 _model.StartDate = _startDate.Value;
-            }
 
             _model.EndDate = _model.Duration switch
             {
@@ -123,13 +120,11 @@ public partial class ContractDialog : ComponentBase
 
             if (IsEditMode && ExistingContract != null)
             {
-                // UPDATE
                 var updateCommand = new UpdateContractCommand(ExistingContract.Id, _model);
                 result = await Mediator.Send(updateCommand);
             }
             else
             {
-                // CREATE
                 var createCommand = new CreateContractCommand(_model);
                 result = await Mediator.Send(createCommand);
             }
@@ -147,7 +142,7 @@ public partial class ContractDialog : ComponentBase
         catch (Exception ex)
         {
             Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
-            Console.WriteLine($"[ERROR] Create contract failed: {ex}");
+            Console.WriteLine($"[ERROR] Contract submit failed: {ex}");
         }
         finally
         {
@@ -160,9 +155,7 @@ public partial class ContractDialog : ComponentBase
     private Task<IEnumerable<(Guid Id, string Name)>> SearchClients(string value, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(value))
-        {
             return Task.FromResult<IEnumerable<(Guid Id, string Name)>>(_clients);
-        }
 
         return Task.FromResult(_clients.Where(c =>
             c.Name.Contains(value, StringComparison.OrdinalIgnoreCase)));

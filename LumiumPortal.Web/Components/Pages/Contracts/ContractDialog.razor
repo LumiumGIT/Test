@@ -4,13 +4,20 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6" Style="font-weight: 600;">
-            @(IsEditMode ? "Izmeni ugovor" : "Dodaj ugovor")
+            @if (IsAnnexMode)
+            {
+                <span>Dodaj aneks — @ParentContractNumber</span>
+            }
+            else
+            {
+                <span>@(IsEditMode ? "Izmeni ugovor" : "Dodaj ugovor")</span>
+            }
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm @ref="_form" Model="@_model" Validation="@_validator.ValidateValue">
             <MudStack Spacing="3">
-                
+
                 <MudPaper Elevation="0" Class="pa-4" Style="background-color: var(--mud-palette-table-striped); border-radius: 8px;">
                     <MudAutocomplete T="(Guid Id, string Name)"
                                      @bind-Value="_model.SelectedClient"
@@ -134,7 +141,7 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="@Cancel" 
+        <MudButton OnClick="@Cancel"
                    Disabled="_isSubmitting"
                    Style="text-transform: uppercase;">
             Otkaži

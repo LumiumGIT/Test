@@ -1,4 +1,5 @@
 using AutoMapper;
+using Domain.Enums.Contracts;
 using Lumium.Application.Common.Extensions;
 using Lumium.Application.Common.Interfaces;
 using Lumium.Application.Features.Contracts.DTOs;
@@ -17,7 +18,8 @@ public class GetContractsByClientQueryHandler(IApplicationDbContextFactory conte
         await contextFactory.ExecuteInContextAsync(async context =>
         {
             var contracts = await context.Contracts
-                .Where(c => c.ClientId == request.ClientId)
+                .Include(c => c.Annexes)
+                .Where(c => c.ClientId == request.ClientId && c.Kind == ContractKind.Main)
                 .OrderByDescending(c => c.StartDate)
                 .ToListAsync(cancellationToken);
 
